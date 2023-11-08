@@ -1,0 +1,24 @@
+- name: Spawn dstat process
+  shell: |
+    source {{ bench_script }}/util.sh
+    spawn-dstat-process {{ session_name }} {{ execution_results_dir }}/dstat-execution.csv
+
+
+- name: run db bench setup execution
+  shell: |
+    source {{ bench_script }}/benchmark.sh
+    run_db_bench {{ setup_execution_names[session_name] }} {{ execution_phase_num }} {{ execution_phase_threads }}
+  register: execution_out
+
+  # Not the same as 2>&1 but hopefully does the job
+- name: Write log
+  lineinfile:
+    path: "{{ execution_results_dir }}/log-execution.txt"
+    line: "{{ execution_out.stdout_lines + execution.stderr_lines | join('\n') }}"
+    create: yes
+
+
+- name: join dstat process
+  shell: |
+    source {{ bench_script }}/utils.sh
+    join-dstat-process {{ session_name }}

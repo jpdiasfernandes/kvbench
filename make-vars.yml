@@ -1,0 +1,6 @@
+---
+
+- name: Prepare inventory with information from cloud
+  hosts: cloudinha
+  roles:
+    - make_vars

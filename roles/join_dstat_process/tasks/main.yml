@@ -1,0 +1,3 @@
+- name: Join dstat process
+  shell: |
+    screen -X -S {{ session_name }} stuff "^C"

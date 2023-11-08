@@ -1,0 +1,37 @@
+#Still need to test this in a clean install
+- name: Download Cmake version
+  ansible.builtin.get_url:
+    url: "https://github.com/Kitware/CMake/releases/download/v{{ cmake_version }}/cmake-{{ cmake_version }}.tar.gz"
+    dest: "{{ main_dir }}"
+  set_fact:
+    cmake_file_prefix: "cmake-{{ cmake_version }}"
+
+- name: Uncrompress cmake tar
+  unarchive:
+    src: "{{ main_dir }}/{{ cmake_file_prefix }}.tar.gz"
+    dest: "{{main_dir}}"
+
+
+- name: Execute bootstrap binary
+  ansible.builtin.command:
+    cmd: ./bootstrap
+  chdir: "{{ main_dir }}/{{ cmake_file_prefix }}"
+
+- name: Run make
+  make:
+    chdir: "{{ main_dir }}/{{ cmake_file_prefix }}"
+    params:
+      NUM_THREADS: "{{ ansible_processor_vcpus }}"
+
+- name: Run make install
+  make:
+    chdir: "{{ main_dir }}/{{ cmake_file_prefix }}"
+    target: install
+  become: yes
+
+- name: Remove cmake installation dir
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: absent
+  with_fileglob:
+    - "{{main_dir}}/{{cmake_file_prefix}}*"

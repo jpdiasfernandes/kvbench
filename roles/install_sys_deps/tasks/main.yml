@@ -1,0 +1,31 @@
+---
+
+- name: Update system package manager
+  apt: 
+    update_cache: yes
+  become: yes
+
+- name: Installing system deps
+  apt: 
+    name:
+      "{{apt_pkg_deps}}"
+    state: present
+  become: yes
+
+- name: Get current Cmake Version
+  shell: cmake --version | grep -Eo "[0-9]+.[0-9]+.[0-9]+"
+  register: cmake_output
+
+
+- name: Debug cmake_version
+  debug:
+    msg: "CMAKE_VERSION: {{cmake_output.stdout_lines[0]}}"
+
+- name: Set cmake versioon
+  set_fact:
+    current_cmake_version: "{{cmake_output.stdout_lines[0]}}"
+
+#Still need to check this in a clean install
+- name: Include cmake_installation tasks
+  include_tasks: cmake_install.yml
+  when: cmake_version != current_cmake_version

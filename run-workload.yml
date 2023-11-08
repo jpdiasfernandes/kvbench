@@ -1,0 +1,27 @@
+- name: Run the workload specified by session_name
+  hosts: cloudinha
+  gather_facts: True
+  roles:
+    - set_vars_workload
+
+    # ---------- Setup loading ----------
+    #
+    # Clean heap and limit memory before running db_bench
+    - clean_heap
+    #- limit_mem
+    - set_vars_loading
+    - add_fixed_options
+    - spawn_dstat_process
+    - run_db_bench
+    - join_dstat_process
+
+    # Original script did a reset_opts maybe it is important
+
+    # ---------- Setup execution ----------
+    #
+    - clean_heap
+    - set_vars_execution
+    - add_fixed_options
+    - spawn_dstat_process
+    - run_db_bench
+    - join_dstat_process

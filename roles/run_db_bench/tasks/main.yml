@@ -1,0 +1,13 @@
+#
+# For now it will not be able to add aditional flags just to test the setup1 workload
+# Pipe operation has precedence when it comes to division
+- name: Call db_bench
+  shell: |
+    sudo systemd-run --scope -p MemoryLimit={{ memory_limit }} -p MemoryAccounting=true \
+    sudo -E numactl -N {{ numa_node_set }} -m {{ numa_node_set }} \
+    {{ build_dir }}/db_bench --benchmarks="{{ workload }},sstables" \
+                             --num={{ (num_operations/ num_threads) | round | int}} \
+                             --threads={{ num_threads }} \
+                             --db={{db_dir}} \
+                             {{ db_bench_options_string }}
+  become: yes

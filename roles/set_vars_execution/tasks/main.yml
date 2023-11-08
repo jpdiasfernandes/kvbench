@@ -1,0 +1,36 @@
+- name: Set execution_results_dir
+  set_fact:
+    execution_results_dir: "{{ workload_results_dir }}/execution"
+
+- name: Create  directory for execution_dir if it does not exist
+  ansible.builtin.file:
+    path: "{{ execution_results_dir }}"
+    state: directory
+
+- name: Set num_threads to execution_phase_threads
+  set_fact:
+    num_threads: "{{ execution_phase_threads }}"
+
+
+- name: Set num_operations to execution_phase_num
+  set_fact:
+    num_operations: "{{ execution_phase_num }}"
+
+- name: Set workload to setup_execution_names workload
+  set_fact:
+    workload: "{{ setup_execution_names[session_name] }}"
+
+- name: Set dstat_output_file to execution_results_dir/dstat-execution.csv
+  set_fact:
+    dstat_output_file: "{{ execution_results_dir }}/dstat-execution.csv"
+
+
+- name: Get session map for variable db_bench options
+  set_fact:
+    session_options: "{{ db_bench_session_options[session_name ]}}"
+  when: db_bench_session_options[session_name] is defined
+
+- name: Get loading options map from  session_options
+  set_fact:
+    session_phase_options: "{{ session_options['execution'] | dict2items }}"
+  when: session_options['execution'] is defined

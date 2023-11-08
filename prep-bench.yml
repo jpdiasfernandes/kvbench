@@ -1,0 +1,10 @@
+---
+# Playbook to ensure all the dependencies to build the Key Value stores and to monitor it are installed
+
+- name: Prepare Key Value Store for benchmarking
+  hosts: cloudinha
+  gather_facts: False
+  roles:
+    - install_sys_deps
+
+

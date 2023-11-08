@@ -1,0 +1,29 @@
+cloudinha:
+  hosts:
+    cloud148:
+      ansible_host: cloud148.cluster.lsd.di.uminho.pt
+  vars:
+    ansible_user: {{ ansible_user }}
+    message: "Hello I'm in cloud 148"
+    uname_r: {{ uname_r }}
+    apt_pkg_deps:
+      - libsnappy-dev
+      - libsnappy-dev 
+      - libssl-dev 
+      - libgflags-dev 
+      - zlib1g-dev 
+      - libbz2-dev 
+      - liblz4-dev 
+      - libzstd-dev 
+      - pandoc 
+      - cgroup-tools           
+      - numactl                
+      - pcp                    
+      - screen                 
+      - dstat                  
+      - pkg-config             
+      - libndctl-dev           
+      - libdaxctl-dev          
+      - linux-tools-common     
+      - linux-tools-{{ uname_r }}
+

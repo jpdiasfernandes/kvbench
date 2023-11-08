@@ -1,0 +1,25 @@
+- name: Get list of pair flag-value of all the fixed options of db_bench
+  set_fact:
+    db_bench_options: "{{ db_bench_fixed_options | dict2items }}"
+
+
+- name: Add Phase options
+  set_fact:
+    db_bench_options: "{{ db_bench_options + session_phase_options }}"
+  when: session_phase_options is defined
+
+- name: Init empty list
+  set_fact:
+    db_bench_options_strings: []
+
+- name: Make string with flag command line syntax
+  set_fact:
+    db_bench_options_strings: "{{ db_bench_options_strings + [ '--' + (item.key|string) + '=' + (item.value|string) ] }}"
+  loop: "{{ db_bench_options }}"
+
+- name: Debug Joined String
+  debug:
+    msg: "{{ db_bench_options_strings | join(' ') }}"
+- name: Join string to make command line flags string
+  set_fact:
+    db_bench_options_string: "{{ db_bench_options_strings | join(' ') }}"

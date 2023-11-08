@@ -1,0 +1,6 @@
+---
+
+- name: Print variables
+  debug:
+    var: hostvars[inventory_hostname]
+  delegate_to: localhost

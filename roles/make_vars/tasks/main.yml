@@ -1,0 +1,15 @@
+- name: Get uname -r 
+  shell: uname -r 
+  register: uname_output
+  until: uname_output.stdout.0 is defined
+  retries: 5
+
+- name: Set uname_r
+  set_fact:
+    uname_r: "{{ uname_output.stdout_lines[0] }}"
+
+- name: Update inventory.yml
+  template:
+    src: inventory_template.j2
+    dest: inventory.yml
+  delegate_to: localhost
