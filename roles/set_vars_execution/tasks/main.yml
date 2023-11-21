@@ -24,6 +24,9 @@
   set_fact:
     dstat_output_file: "{{ execution_results_dir }}/dstat-execution.csv"
 
+- name: Set db_bench_log to execution_results_dir/db-bench-log
+  set_fact:
+    db_bench_log: "{{ execution_results_dir }}/db-bench-log"
 
 - name: Get session map for variable db_bench options
   set_fact:

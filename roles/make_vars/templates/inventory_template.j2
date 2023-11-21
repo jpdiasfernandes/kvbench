@@ -4,26 +4,52 @@ cloudinha:
       ansible_host: cloud148.cluster.lsd.di.uminho.pt
   vars:
     ansible_user: {{ ansible_user }}
-    message: "Hello I'm in cloud 148"
     uname_r: {{ uname_r }}
-    apt_pkg_deps:
-      - libsnappy-dev
-      - libsnappy-dev 
-      - libssl-dev 
-      - libgflags-dev 
-      - zlib1g-dev 
-      - libbz2-dev 
-      - liblz4-dev 
-      - libzstd-dev 
-      - pandoc 
-      - cgroup-tools           
-      - numactl                
-      - pcp                    
-      - screen                 
-      - dstat                  
-      - pkg-config             
-      - libndctl-dev           
-      - libdaxctl-dev          
-      - linux-tools-common     
-      - linux-tools-{{ uname_r }}
+    main_dir: {{ main_dir }}
+    db_name: {{ db_name }}
+    source_dir: {{ source_dir }}
+    build_dir: {{ build_dir }}
+    results_dir: {{ results_dir }}
+    utils_dir: {{ utils_dir }}
+    db_dir: {{ db_dir }}
+    cmake_version: {{ cmake_version }}
 
+    apt_pkg_deps:
+      {% for item in apt_pkg_deps %}
+        - {{ item }}
+      {% endfor %}
+
+    memory_limit: {{ memory_limit }}
+    session_name: {{ session_name }}
+
+    setup_execution_names:
+      {% for k, v in setup_execution_names.items() %}
+      {{k}}: {{v}}
+      {% endfor %}
+
+    setup_loading_names:
+      {% for k, v in setup_loading_names.items() %}
+      {{k}}: {{v}}
+      {% endfor %}
+
+    execution_phase_num: {{ execution_phase_num }}
+    loading_phase_num: {{ loading_phase_num }}
+    execution_phase_threads: {{ execution_phase_threads }}
+    loading_phase_threads: {{ loading_phase_threads }}
+    numa_node_set: {{ numa_node_set }}
+
+    db_bench_fixed_options:
+      {% for k, v in db_bench_fixed_options.items() %}
+      {{k}}: {{v}}
+      {% endfor %}
+
+    db_bench_session_options:
+      {% for session, phases in db_bench_session_options.items() %}
+      {{session}}:
+        {% for phase, options in phases.items() %}
+        {{phase}}:
+          {% for option, value in options.items() %}
+          {{option}}: {{value}}
+          {% endfor %}
+        {% endfor %}
+      {% endfor %}

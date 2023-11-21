@@ -11,3 +11,6 @@
                              --db={{db_dir}} \
                              {{ db_bench_options_string }}
   become: yes
+  register: execution_out
+
+

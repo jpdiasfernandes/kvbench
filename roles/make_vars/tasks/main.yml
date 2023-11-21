@@ -1,8 +1,6 @@
 - name: Get uname -r 
   shell: uname -r 
   register: uname_output
-  until: uname_output.stdout.0 is defined
-  retries: 5
 
 - name: Set uname_r
   set_fact:

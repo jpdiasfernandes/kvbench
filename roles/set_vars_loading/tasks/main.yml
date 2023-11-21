@@ -24,6 +24,15 @@
     dstat_output_file: "{{ loading_results_dir }}/dstat-loading.csv"
 
 
+- name: Set db_bench_log to loading_results_dir/db-bench-log
+  set_fact:
+    db_bench_log: "{{ loading_results_dir }}/db-bench-log"
+
+- name: Set mem_graph_output_file to loading_results_dir/graph_mem.csv
+  set_fact:
+    memgraph_output_file: "{{ loading_results_dir }}/memgraph-loading.png"
+
+
 - name: Get session map for variable db_bench options
   set_fact:
     session_options: "{{ db_bench_session_options[session_name ]}}"

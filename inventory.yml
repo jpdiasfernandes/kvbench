@@ -4,75 +4,78 @@ cloudinha:
       ansible_host: cloud148.cluster.lsd.di.uminho.pt
   vars:
     ansible_user: gsd
-    message: "Hello I'm in cloud 148"
     uname_r: 5.15.0-87-generic
-    main_dir: "/home/gsd"
-    db_name: "rocksdb"
-    source_dir: "{{ main_dir }}/Apps/{{db_name}}"
-    build_dir: "{{ source_dir }}/build"
-    results_dir: "{{ main_dir }}/setup_results"
-    utils_dir: "{{main_dir}}/scripts"
-    db_dir: "{{ main_dir }}/db/{{ db_name }}"
-    cmake_version: "3.22.2"
-    apt_pkg_deps:
-      - libsnappy-dev
-      - libsnappy-dev 
-      - libssl-dev 
-      - libgflags-dev 
-      - zlib1g-dev 
-      - libbz2-dev 
-      - liblz4-dev 
-      - libzstd-dev 
-      - pandoc 
-      - cgroup-tools           
-      - numactl                
-      - pcp                    
-      - screen                 
-      - dstat                  
-      - pkg-config             
-      - libndctl-dev           
-      - libdaxctl-dev          
-      - linux-tools-common     
-      - linux-tools-5.15.0-87-generic
+    main_dir: /home/gsd
+    db_name: rocksdb
+    source_dir: /home/gsd/Apps/rocksdb
+    build_dir: /home/gsd/Apps/rocksdb/build
+    results_dir: /home/gsd/setup_results
+    utils_dir: /home/gsd/scripts
+    db_dir: /home/gsd/db/rocksdb
+    cmake_version: 3.22.2
 
-    #cgroup variables
-    cgroup_mem_name: "limitmem"
-    cgroup_config: 'group {{ cgroup_mem_name }} { memory { memory.limit_in_bytes = -1\; } }'
-    cgroup_rules: "*:db_bench memory {{ cgroup_mem_name }}"
-    memory_limit: "8G"
-    session_name: setup1
+    apt_pkg_deps:
+              - libsnappy-dev
+              - libsnappy-dev
+              - libssl-dev
+              - libgflags-dev
+              - zlib1g-dev
+              - libbz2-dev
+              - liblz4-dev
+              - libzstd-dev
+              - pandoc
+              - cgroup-tools
+              - numactl
+              - pcp
+              - screen
+              - pkg-config
+              - libndctl-dev
+              - libdaxctl-dev
+              - linux-tools-common
+              - linux-tools-5.15.0-87-generic
+              - python3-pip
+      
+    memory_limit: 1G
+    session_name: write-intensive
+
     setup_execution_names:
-      setup1: "ycsbwklda"
+            write-intensive: ycsbwklda
+            read-intensive: ycsbwkldb
+      
     setup_loading_names:
-      setup1: "ycsbfill"
+            write-intensive: ycsbfill
+            read-intensive: ycsbfill
+      
     execution_phase_num: 5000000
     loading_phase_num: 5000000
-    execution_phase_threads: 8
+    execution_phase_threads: 4
     loading_phase_threads: 1
     numa_node_set: 0
 
     db_bench_fixed_options:
-      block_align: true
-      key_size: 16
-      value_size: 1024
-      max_background_flushes: 1
-      max_background_compactions: 3
-      cache_size: 1073741824
-      stats_interval_seconds: 1
-      histogram: true
-      compression_type: none
-      write_buffer_size: 134217728
-      disable_wal: false
-      level0_file_num_compaction_trigger: 4
-      max_write_buffer_number: 2
+            block_align: True
+            key_size: 16
+            value_size: 1024
+            max_background_flushes: 1
+            max_background_compactions: 3
+            cache_size: 1073741824
+            stats_interval_seconds: 1
+            histogram: True
+            compression_type: none
+            write_buffer_size: 134217728
+            disable_wal: False
+            level0_file_num_compaction_trigger: 4
+            max_write_buffer_number: 2
+            max_total_wal_size: 1000000
 
+      
     db_bench_session_options:
-      setup1:
-        execution:
-          YCSB_uniform_distribution: true
-          use_existing_db: true
-          duration: 60
-
-    group_limitmem: "limitmem"
-    config_limitmem: 'group {{ group_limitmem }} { memory { memory.limit_in_bytes = -1\; } }'
-    rules_limitmem: "*:db_bench memory {{ group_limitmem }}"
+            write-intensive:
+                execution:
+                    YCSB_uniform_distribution: True
+                    use_existing_db: True
+                    duration: 30
+            read-intensive:
+                execution:
+                    use_existing_db: True
+                    duration: 240

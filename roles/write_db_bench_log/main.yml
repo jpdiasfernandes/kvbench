@@ -1,0 +1,5 @@
+- name: Write db_bench log
+  lineinfile:
+    path: "{{ db_bench_log }}"
+    line: "{{ execution_out.stdout_lines | join('\n') }}"
+    create: yes
