@@ -1,0 +1,8 @@
+- name: Set session_results_dir
+  set_fact:
+    session_results_dir: "{{ results_dir }}/{{ db_name }}/{{ session_name }}/{{ hostvars[inventory_hostname]['ansible_date_time']['iso8601'] }}"
+
+- name: Create directory for sessions_results_dir if it does not exist
+  file:
+    path: "{{ session_results_dir }}"
+    state: directory

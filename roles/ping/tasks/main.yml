@@ -1,5 +1,0 @@
----
-
-- name: Print message variable
-  ansible.builtin.debug:
-    msg: "Printing variable message: {{ message }}"

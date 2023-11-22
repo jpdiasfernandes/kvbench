@@ -22,21 +22,16 @@ cloudinha:
     memory_limit: {{ memory_limit }}
     session_name: {{ session_name }}
 
-    setup_execution_names:
-      {% for k, v in setup_execution_names.items() %}
-      {{k}}: {{v}}
-      {% endfor %}
-
-    setup_loading_names:
-      {% for k, v in setup_loading_names.items() %}
-      {{k}}: {{v}}
-      {% endfor %}
-
-    execution_phase_num: {{ execution_phase_num }}
-    loading_phase_num: {{ loading_phase_num }}
-    execution_phase_threads: {{ execution_phase_threads }}
-    loading_phase_threads: {{ loading_phase_threads }}
     numa_node_set: {{ numa_node_set }}
+
+    workload_settings:
+      {%- for workload, settings in workload_settings.items() +%}
+      {{workload}}:
+        {%- for setting, value in settings.items() +%}
+        {{setting}}: {{value}}
+        {%- endfor %}
+      {%- endfor %}
+
 
     db_bench_fixed_options:
       {% for k, v in db_bench_fixed_options.items() %}
@@ -44,12 +39,9 @@ cloudinha:
       {% endfor %}
 
     db_bench_session_options:
-      {% for session, phases in db_bench_session_options.items() %}
-      {{session}}:
-        {% for phase, options in phases.items() %}
-        {{phase}}:
-          {% for option, value in options.items() %}
-          {{option}}: {{value}}
-          {% endfor %}
-        {% endfor %}
-      {% endfor %}
+    {%- for workload, options in db_bench_session_options.items() +%}
+      {{workload}}:
+        {%- for option, value in options.items() +%}
+        {{option}}: {{value}}
+        {%- endfor %}
+    {%- endfor +%}

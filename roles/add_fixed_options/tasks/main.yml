@@ -5,8 +5,8 @@
 
 - name: Add Phase options
   set_fact:
-    db_bench_options: "{{ db_bench_options + session_phase_options }}"
-  when: session_phase_options is defined
+    db_bench_options: "{{ db_bench_options + session_options }}"
+  when: session_options is defined
 
 - name: Init empty list
   set_fact:

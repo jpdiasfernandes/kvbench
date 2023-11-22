@@ -4,7 +4,7 @@ cloudinha:
       ansible_host: cloud148.cluster.lsd.di.uminho.pt
   vars:
     ansible_user: gsd
-    uname_r: 5.15.0-87-generic
+    uname_r: 5.15.0-88-generic
     main_dir: /home/gsd
     db_name: rocksdb
     source_dir: /home/gsd/Apps/rocksdb
@@ -36,21 +36,21 @@ cloudinha:
               - python3-pip
       
     memory_limit: 1G
-    session_name: write-intensive
+    session_name: fill-write_intensive
 
-    setup_execution_names:
-            write-intensive: ycsbwklda
-            read-intensive: ycsbwkldb
-      
-    setup_loading_names:
-            write-intensive: ycsbfill
-            read-intensive: ycsbfill
-      
-    execution_phase_num: 5000000
-    loading_phase_num: 5000000
-    execution_phase_threads: 4
-    loading_phase_threads: 1
     numa_node_set: 0
+
+    workload_settings:
+      ycsbfill_5M:
+        num_operations: 5000000
+        threads: 1
+        bench_workload_name: ycsbfill
+        cool_down_time: 15
+      write_intensive:
+        num_operations: 5000000
+        threads: 4
+        bench_workload_name: ycsbwklda
+        cool_down_time: 30
 
     db_bench_fixed_options:
             block_align: True
@@ -67,15 +67,12 @@ cloudinha:
             level0_file_num_compaction_trigger: 4
             max_write_buffer_number: 2
             max_total_wal_size: 1000000
-
       
     db_bench_session_options:
-            write-intensive:
-                execution:
-                    YCSB_uniform_distribution: True
-                    use_existing_db: True
-                    duration: 30
-            read-intensive:
-                execution:
-                    use_existing_db: True
-                    duration: 240
+      write_intensive:
+        YCSB_uniform_distribution: True
+        use_existing_db: True
+        duration: 30
+      read_intensive:
+        use_existing_db: True
+        duration: 30

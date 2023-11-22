@@ -1,3 +1,61 @@
-- name: Set workload_results_dir
+- name: set num_threads to workload threads
   set_fact:
-    workload_results_dir: "{{ results_dir }}/{{ db_name }}/{{ session_name }}/{{ hostvars[inventory_hostname]['ansible_date_time']['iso8601'] }}"
+    num_threads: "{{ workload_settings[workload]['threads']}}"
+
+- name: set num_operations to workload num_operations
+  set_fact:
+    num_operations: "{{ workload_settings[workload]['num_operations'] }}"
+
+- name: set bench_workload to workload bench_workload_name
+  set_fact:
+    bench_workload_name : "{{workload_settings[workload]['bench_workload_name']}}"
+
+- name: set cool_down_time to workload cool_down_time
+  set_fact:
+    cool_down_time: "{{workload_settings[workload]['cool_down_time']}}"
+- name: get stat from dstat_output_file for this workload
+  stat:
+    path: "{{ session_results_dir }}/dstat-{{workload}}"
+  register: dstat_file_status
+
+- name: get stat from db_bench_log for this workload
+  stat:
+    path: "{{ session_results_dir }}/db-bench-log-{{ workload }}"
+  register: log_file_status
+
+- name: If file does not exist reset result_num
+  set_fact:
+    result_num: 0
+  when: (not dstat_file_status.stat.exists) and (not log_file_status.stat.exists)
+
+- name: If file exists increment result_num
+  set_fact:
+    result_num: "{{result_num + 1}}"
+  when: (dstat_file_status.stat.exists) or (log_file_status.stat.exists)
+
+- name: set dstat_output_file when result_num = 0
+  set_fact:
+    dstat_output_file: "{{session_results_dir}}/dstat-{{workload}}.csv"
+  when: result_num == 0
+
+- name: set dstat_output_file when result_num != 0
+  set_fact:
+    dstat_output_file: "{{sessions_results_dir}}/dstat-{{workload}}-{{result_num}}.csv"
+  when: result_num != 0
+
+
+- name: set bench_log when result_num = 0
+  set_fact:
+    bench_log: "{{ session_results_dir }}/bench-log-{{workload}}.log"
+  when: result_num == 0
+
+- name: set bench_log when result_num != 0
+  set_fact:
+    bench_log: "{{ sessions_results_dir }}/bench-log-{{workload}}-{{result_num}}.log"
+  when: result_num != 0
+
+
+- name: Get session map for variable db_bench options
+  set_fact:
+    session_options: "{{ db_bench_session_options[workload] | dict2items }}"
+  when: db_bench_session_options[workload] is defined

@@ -1,0 +1,4 @@
+
+- name: Sleep for cooldown time
+  wait_for:
+    timeout: "{{ cool_down_time }}"

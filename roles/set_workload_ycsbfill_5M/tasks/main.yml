@@ -1,0 +1,3 @@
+- name: set workload to ycsbfill_5M
+  set_fact:
+    workload: ycsbfill_5M

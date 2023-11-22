@@ -5,12 +5,16 @@
   shell: |
     sudo systemd-run --scope -p MemoryLimit={{ memory_limit }} -p MemoryAccounting=true \
     sudo -E numactl -N {{ numa_node_set }} -m {{ numa_node_set }} \
-    {{ build_dir }}/db_bench --benchmarks="{{ workload }},sstables" \
-                             --num={{ (num_operations/ num_threads) | round | int}} \
+    {{ build_dir }}/db_bench --benchmarks="{{ bench_workload_name }},sstables" \
+                             --num={{ ( (num_operations|int)/ (num_threads|int) ) | round | int}} \
                              --threads={{ num_threads }} \
                              --db={{db_dir}} \
                              {{ db_bench_options_string }}
   become: yes
   register: execution_out
 
-
+- name: Write db_bench log
+  lineinfile:
+    path: "{{ bench_log }}"
+    line: "{{ execution_out.stdout_lines | join('\n') }}"
+    create: yes
