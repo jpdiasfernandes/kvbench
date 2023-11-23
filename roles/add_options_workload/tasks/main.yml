@@ -1,0 +1,16 @@
+#Requires db_bench_options_string calculation
+
+- name: Get all workload that have the pattern of the options used
+  find:
+    paths: "{{session_results_dir}}"
+    file_type: file
+    use_regex: yes
+    patterns: "options-{{workload}}\\.log"
+  register: find_options
+
+- name: if does not exist then create file with db_bench options
+  lineinfile:
+    path: "{{session_results_dir}}/options-{{workload}}.log"
+    line: "DB_BENCH OPTIONS: \n\t{{ db_bench_options_strings | join('\n\t')}}\nWORKLOAD_NAME: {{bench_workload_name}}\nNUM_OPERATIONS: {{num_operations}}\nNUM_FOREGROUND_THREADS: {{num_threads}}\nMEMORY_LIMIT: {{memory_limit}}"
+    create: yes
+  when: find_options['matched'] == 0
