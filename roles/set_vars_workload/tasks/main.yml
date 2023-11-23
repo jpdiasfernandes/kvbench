@@ -15,44 +15,54 @@
     cool_down_time: "{{workload_settings[workload]['cool_down_time']}}"
 - name: get stat from dstat_output_file for this workload
   stat:
-    path: "{{ session_results_dir }}/dstat-{{workload}}"
+    path: "{{ session_results_dir }}/dstat-{{workload}}.csv"
   register: dstat_file_status
 
-- name: get stat from db_bench_log for this workload
-  stat:
-    path: "{{ session_results_dir }}/db-bench-log-{{ workload }}"
-  register: log_file_status
 
-- name: If file does not exist reset result_num
-  set_fact:
-    result_num: 0
-  when: (not dstat_file_status.stat.exists) and (not log_file_status.stat.exists)
+- name: Get all dstat files that have the pattern of the same workload
+  find:
+    paths: "{{session_results_dir}}"
+    file_type: file
+    use_regex: yes
+    patterns: "dstat-{{workload}}(-[0-9]+)?\\.csv"
+  register: find_dstat
 
-- name: If file exists increment result_num
-  set_fact:
-    result_num: "{{result_num + 1}}"
-  when: (dstat_file_status.stat.exists) or (log_file_status.stat.exists)
+- name: Debug find dstat result
+  debug:
+    msg: "{{find_dstat}}"
 
-- name: set dstat_output_file when result_num = 0
+- name: set dstat_output_file when find_dstat.matched == 0
   set_fact:
     dstat_output_file: "{{session_results_dir}}/dstat-{{workload}}.csv"
-  when: result_num == 0
+  when: find_dstat['matched'] == 0
 
-- name: set dstat_output_file when result_num != 0
+- name: set dstat_output_file when find_dstat.matched != 0
   set_fact:
-    dstat_output_file: "{{sessions_results_dir}}/dstat-{{workload}}-{{result_num}}.csv"
-  when: result_num != 0
+    dstat_output_file: "{{session_results_dir}}/dstat-{{workload}}-{{find_dstat['matched']}}.csv"
+  when: find_dstat['matched'] != 0
 
+- name: Get all db-bench-log files that have the pattern of the same workload
+  find:
+    paths: "{{session_results_dir}}"
+    file_type: file
+    use_regex: yes
+    patterns: "bench-log-{{workload}}(-[0-9]+)?\\.log"
+  register: find_bench
 
-- name: set bench_log when result_num = 0
+- name: Debug find bench result
+  debug:
+    msg: "{{find_bench}}"
+
+- name: set bench_log when find_bench.matched == 0
   set_fact:
-    bench_log: "{{ session_results_dir }}/bench-log-{{workload}}.log"
-  when: result_num == 0
+    bench_log: "{{session_results_dir}}/bench-log-{{workload}}.log"
+  when: find_bench['matched'] == 0
 
-- name: set bench_log when result_num != 0
+- name: set bench_log when find_bench.matched != 0
   set_fact:
-    bench_log: "{{ sessions_results_dir }}/bench-log-{{workload}}-{{result_num}}.log"
-  when: result_num != 0
+    bench_log: "{{session_results_dir}}/bench-log-{{workload}}-{{find_bench['matched']}}.log"
+  when: find_bench['matched'] != 0
+
 
 
 - name: Get session map for variable db_bench options
