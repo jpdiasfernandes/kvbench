@@ -4,20 +4,27 @@
   roles:
     - set_vars_session
 
-    - set_workload_ycsbfill_5M
-    - set_vars_workload
-    - add_fixed_options
-    - cool_down_sleep
-    - clean_heap
-    - spawn_dstat_process
-    - run_db_bench
-    - join_dstat_process
+    #- set_workload_ycsbfill_5M
+    #- set_vars_workload
+    #- add_fixed_options
+    #- cool_down_sleep
+    #- clean_heap
+    #- spawn_dstat_process
+    #- run_db_bench
+    #- join_dstat_process
+    #- plot_graph
 
-    - set_workload_write_intensive
-    - set_vars_workload
-    - add_fixed_options
-    - cool_down_sleep
-    - clean_heap
-    - spawn_dstat_process
-    - run_db_bench
-    - join_dstat_process
+    - role: prepare_run_monitor_graph
+      workload: ycsbfill_5M
+
+    #- set_workload_write_intensive
+    #- set_vars_workload
+    #- add_fixed_options
+    #- cool_down_sleep
+    #- clean_heap
+    #- spawn_dstat_process
+    #- run_db_bench
+    #- join_dstat_process
+    #- plot_graph
+    - role: prepare_run_monitor_graph
+      workload: write_intensive
