@@ -34,9 +34,11 @@ cloudinha:
               - linux-tools-common
               - linux-tools-5.15.0-87-generic
               - python3-pip
-      
+              - python3-matplotlib
+              - python3-pandas
+
     memory_limit: 1G
-    session_name: fill-write_intensive
+    session_name: test_consecutive_workload
 
     numa_node_set: 0
 
@@ -51,15 +53,41 @@ cloudinha:
         threads: 4
         bench_workload_name: ycsbwklda
         cool_down_time: 30
+      50-50_1T:
+        num_operations: 5000000
+        threads: 1
+        bench_workload_name: ycsbwklda
+        cool_down_time: 30
+      50-50_2T:
+        num_operations: 5000000
+        threads: 2
+        bench_workload_name: ycsbwklda
+        cool_down_time: 30
+      50-50_4T:
+        num_operations: 5000000
+        threads: 4
+        bench_workload_name: ycsbwklda
+        cool_down_time: 30
+      50-50_8T:
+        num_operations: 5000000
+        threads: 8
+        bench_workload_name: ycsbwklda
+        cool_down_time: 30
+      50-50_16T:
+        num_operations: 5000000
+        threads: 16
+        bench_workload_name: ycsbwklda
+        cool_down_time: 30
+
 
     db_bench_fixed_options:
             block_align: True
             key_size: 16
             value_size: 1024
             max_background_flushes: 1
-            max_background_compactions: 3
             cache_size: 1073741824
             stats_interval_seconds: 1
+            max_background_compactions: 3
             histogram: True
             compression_type: none
             write_buffer_size: 134217728
@@ -72,7 +100,27 @@ cloudinha:
       write_intensive:
         YCSB_uniform_distribution: True
         use_existing_db: True
-        duration: 30
+        duration: 60
       read_intensive:
         use_existing_db: True
-        duration: 30
+        duration: 60
+      50-50_1T:
+        YCSB_uniform_distribution: True
+        use_existing_db: True
+        duration: 60
+      50-50_2T:
+        YCSB_uniform_distribution: True
+        use_existing_db: True
+        duration: 60
+      50-50_4T:
+        YCSB_uniform_distribution: True
+        use_existing_db: True
+        duration: 60
+      50-50_8T:
+        YCSB_uniform_distribution: True
+        use_existing_db: True
+        duration: 60
+      50-50_16T:
+        YCSB_uniform_distribution: True
+        use_existing_db: True
+        duration: 60

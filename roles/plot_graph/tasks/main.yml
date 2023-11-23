@@ -1,0 +1,4 @@
+
+- name: Plot dstat graphs
+  shell: |
+    python3 {{utils_dir}}/plot.py {{dstat_output_file}}
