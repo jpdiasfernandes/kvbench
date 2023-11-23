@@ -1,0 +1,15 @@
+- name: Call the roles
+  include_role:
+    name: "{{roleinputvar}}"
+  loop:
+    - set_vars_workload
+    - add_fixed_options
+    - add_options_workload
+    - cool_down_sleep
+    - clean_heap
+    - spawn_dstat_process
+    - run_db_bench
+    - join_dstat_process
+    - plot_graph
+  loop_control:
+    loop_var: roleinputvar
