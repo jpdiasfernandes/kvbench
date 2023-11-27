@@ -2,3 +2,7 @@
 - name: Plot dstat graphs
   shell: |
     python3 {{utils_dir}}/plot.py {{dstat_output_file}}
+
+- name: Plot throughput graph
+  shell: |
+    python3 {{utils_dir}}/plot_throughput.py {{bench_log}}

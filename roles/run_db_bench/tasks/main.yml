@@ -16,5 +16,5 @@
 - name: Write db_bench log
   lineinfile:
     path: "{{ bench_log }}"
-    line: "{{ execution_out.stdout_lines | join('\n') }}"
+    line: "{{ (execution_out.stderr_lines + execution_out.stdout_lines) | join('\n') }}"
     create: yes
