@@ -2,8 +2,6 @@ all:
   hosts:
     cloud148:
       ansible_host: cloud148.cluster.lsd.di.uminho.pt
-    localhost:
-      connection: local
 
   vars:
     local_dir: /home/jpdiasfernandes/Projetos/Dissertação
