@@ -54,7 +54,7 @@ all:
         bench_workload_name: ycsbfill
         cool_down_time: 15
       fillrandom_50M:
-        num_operations: 5000000
+        num_operations: 50000000
         threads: 1
         bench_workload_name: filluniquerandom
         cool_down_time: 15
@@ -74,7 +74,7 @@ all:
         bench_workload_name: ycsbwklda
         cool_down_time: 30
       50-50_4T:
-        num_operations: 5000000
+        num_operations: 50000000
         threads: 4
         bench_workload_name: ycsbwklda
         cool_down_time: 30
@@ -125,7 +125,7 @@ all:
       50-50_4T:
         YCSB_uniform_distribution: True
         use_existing_db: True
-        duration: 60
+        duration: 600
       50-50_8T:
         YCSB_uniform_distribution: True
         use_existing_db: True
