@@ -1,0 +1,4 @@
+- name: Install ansible
+  shell: |
+    python3 -m pip install --user ansible
+

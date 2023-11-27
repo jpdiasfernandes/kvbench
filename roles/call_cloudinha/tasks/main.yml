@@ -1,0 +1,5 @@
+- name: call ansible playbook
+  shell: |
+    screen -S ansible -d -m /home/gsd/.local/bin/ansible-playbook -i inventory.yml {{ playbook}} -v
+  args:
+    chdir: "{{ kvbench_dir }}"

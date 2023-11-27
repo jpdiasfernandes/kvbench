@@ -1,17 +1,24 @@
-cloudinha:
+all:
   hosts:
     cloud148:
       ansible_host: cloud148.cluster.lsd.di.uminho.pt
+    localhost:
+      connection: local
+
   vars:
+    local_dir: /home/jpdiasfernandes/Projetos/Dissertação
     ansible_user: gsd
     uname_r: 5.15.0-88-generic
     main_dir: /home/gsd
     db_name: rocksdb
+    app_dir: /home/gsd/Apps
+    kvbench_dir: "{{ app_dir }}/kvbench"
     source_dir: /home/gsd/Apps/rocksdb
     build_dir: /home/gsd/Apps/rocksdb/build
     results_dir: /home/gsd/setup_results
     utils_dir: /home/gsd/scripts
     db_dir: /home/gsd/db/rocksdb
+    db_backup_dir: "{{main_dir}}/db_backup/rocksdb"
     cmake_version: 3.22.2
 
     apt_pkg_deps:
@@ -37,8 +44,8 @@ cloudinha:
               - python3-matplotlib
               - python3-pandas
 
-    memory_limit: 1G
-    session_name: test_consecutive_workload
+    memory_limit: 8G
+    session_name: test_histogram
 
     numa_node_set: 0
 
@@ -47,6 +54,11 @@ cloudinha:
         num_operations: 5000000
         threads: 1
         bench_workload_name: ycsbfill
+        cool_down_time: 15
+      fillrandom_50M:
+        num_operations: 5000000
+        threads: 1
+        bench_workload_name: filluniquerandom
         cool_down_time: 15
       write_intensive:
         num_operations: 5000000
@@ -88,8 +100,8 @@ cloudinha:
             cache_size: 1073741824
             stats_interval_seconds: 1
             max_background_compactions: 3
-            histogram: True
             compression_type: none
+            histogram: True
             write_buffer_size: 134217728
             disable_wal: False
             level0_file_num_compaction_trigger: 4
