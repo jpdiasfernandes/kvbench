@@ -1,0 +1,11 @@
+- name: Run one fillrandom workload, create backup and execute 50/50 workload with 4 foreground threads
+  hosts: localhost
+  gather_facts: True
+  roles:
+    - set_vars_session
+
+    - role: prepare_run_monitor_graph
+      workload: fillrandom_50M
+
+    - role: prepare_run_monitor_graph
+      workload: 50-50_4T
