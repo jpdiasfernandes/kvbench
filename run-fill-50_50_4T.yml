@@ -8,5 +8,7 @@
     - role: prepare_run_monitor_graph
       workload: fillrandom_50M
 
+    - create_backup
+
     - role: prepare_run_monitor_graph
       workload: 50-50_4T

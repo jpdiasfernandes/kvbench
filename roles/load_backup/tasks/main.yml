@@ -1,0 +1,14 @@
+- name: Delete db dir
+  file:
+    path: "{{ db_dir }}"
+    state: absent
+  become: yes
+
+- name: Create empty directory for db
+  file:
+    path: "{{ db_dir }}"
+    state: directory
+
+- name: Copy backup to db
+  shell: |
+    sudo rsync --info=progress2 -r -a {{db_backup_dir}}/* {{db_dir}}
