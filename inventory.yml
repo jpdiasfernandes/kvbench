@@ -118,20 +118,20 @@ all:
       50-50_1T:
         YCSB_uniform_distribution: True
         use_existing_db: True
-        duration: 600
+        duration: 60
       50-50_2T:
         YCSB_uniform_distribution: True
         use_existing_db: True
-        duration: 600
+        duration: 60
       50-50_4T:
         YCSB_uniform_distribution: True
         use_existing_db: True
-        duration: 600
+        duration: 60
       50-50_8T:
         YCSB_uniform_distribution: True
         use_existing_db: True
-        duration: 600
+        duration: 60
       50-50_16T:
         YCSB_uniform_distribution: True
         use_existing_db: True
-        duration: 600
+        duration: 60
