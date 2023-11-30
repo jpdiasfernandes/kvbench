@@ -1,0 +1,7 @@
+- name: Run a playbook on remote
+  hosts: cloud148
+  gather_facts: False
+  roles:
+    - copy_files_dep
+    - role: call_cloudinha
+      playbook: run-fill-50_50_4T.yml
