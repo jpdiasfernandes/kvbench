@@ -1,5 +1,6 @@
 - name: Run the workload specified by session_name
-  hosts: cloudinha
+  hosts: localhost
+  connection: local
   gather_facts: True
   roles:
     - set_vars_session
