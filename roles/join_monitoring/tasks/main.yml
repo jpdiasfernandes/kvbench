@@ -1,3 +1,11 @@
 - name: Join dstat process
   shell: |
     screen -X -S {{ dstat_screen_name }} stuff "^C"
+
+- name: Join temperature process
+  shell: |
+    screen -X -S {{ temp_screen_name }} stuff "^C"
+
+- name: Join energy process
+  shell: |
+    screen -X -S {{ energy_screen_name }} stuff "^C"

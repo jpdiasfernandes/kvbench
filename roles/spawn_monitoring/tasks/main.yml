@@ -6,3 +6,8 @@
 - name: Spawn temperature logger process
   shell: |
     screen -S {{ temp_screen_name }} -d -m python3 {{utils_dir}}/temp_logger.py {{ temp_output_file }}
+
+- name: Spawn energy logger process
+  shell: |
+    screen -S {{ energy_screen_name }} -d -m sudo python3 {{utils_dir}}/energy_logger.py {{ energy_output_file }}
+  become: yes

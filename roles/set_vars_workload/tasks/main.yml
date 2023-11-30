@@ -60,6 +60,24 @@
     temp_output_file: "{{session_results_dir}}/temp-{{workload}}-{{find_temp['matched']}}.csv"
   when: find_temp['matched'] != 0
 
+- name: Get all energy log files that have the pattern of the same workload
+  find:
+    paths: "{{session_results_dir}}"
+    file_type: file
+    use_regex: yes
+    patterns: "energy-{{workload}}(-[0-9]+)?\\.csv"
+  register: find_energy
+
+- name: set energy_output_file when find_energy.matched == 0
+  set_fact:
+    energy_output_file: "{{session_results_dir}}/energy-{{workload}}.csv"
+  when: find_energy['matched'] == 0
+
+- name: set energy_output_file when find_energy.matched != 0
+  set_fact:
+    energy_output_file: "{{session_results_dir}}/energy-{{workload}}-{{find_energy['matched']}}.csv"
+  when: find_energy['matched'] != 0
+
 - name: Get all db-bench-log files that have the pattern of the same workload
   find:
     paths: "{{session_results_dir}}"
@@ -92,6 +110,9 @@
   set_fact:
     temp_screen_name:  "temp-{{ session_name }}-{{hostvars[inventory_hostname]['ansible_date_time']['iso8601']}}"
 
+- name: Set energy screen session name
+  set_fact:
+    energy_screen_name:  "energy-{{ session_name }}-{{hostvars[inventory_hostname]['ansible_date_time']['iso8601']}}"
 
 - name: Get session map for variable db_bench options
   set_fact:
