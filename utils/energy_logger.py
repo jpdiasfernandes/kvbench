@@ -18,7 +18,8 @@ def microJ_to_J(micro):
 
 def get_energy():
     result = subprocess.run(['cat', '/sys/class/powercap/intel-rapl/intel-rapl:0/energy_uj'], stdout=subprocess.PIPE)
-    return microJ_to_J(int(result.stdout))
+    result_int = int(result.stdout.decode("utf-8", "ignore"))
+    return microJ_to_J(result_int)
 
 def get_power(before, interval):
     energy = get_energy()
