@@ -6,3 +6,7 @@
 - name: Plot throughput graph
   shell: |
     python3 {{utils_dir}}/plot_throughput.py {{bench_log}}
+
+- name: Plot temperature graph
+  shell: |
+    python3 {{utils_dir}}/plot_temp.py {{temp_output_file}}
