@@ -1,0 +1,33 @@
+- name: Run the workload specified by session_name
+  hosts: cloudinha
+  gather_facts: True
+  roles:
+    - set_vars_session
+
+    - load_backup
+
+    - role: prepare_run_monitor_graph
+      workload: 50-50_1T
+
+
+    - load_backup
+
+    - role: prepare_run_monitor_graph
+      workload: 50-50_2T
+
+    - load_backup
+
+    - role: prepare_run_monitor_graph
+      workload: 50-50_4T
+
+
+    - load_backup
+
+    - role: prepare_run_monitor_graph
+      workload: 50-50_8T
+
+
+    - load_backup
+
+    - role: prepare_run_monitor_graph
+      workload: 50-50_16T

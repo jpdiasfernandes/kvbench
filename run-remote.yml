@@ -4,4 +4,4 @@
   roles:
     - copy_files_dep
     - role: call_cloudinha
-      playbook: run-fill-50_50_4T.yml
+      playbook: run-progressive_foreground.yml

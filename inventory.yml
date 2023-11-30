@@ -44,7 +44,7 @@ all:
               - lm-sensors
 
     memory_limit: 8G
-    session_name: test_histogram
+    session_name: incremental_foreground_threads
 
     numa_node_set: 0
 
@@ -65,12 +65,12 @@ all:
         bench_workload_name: ycsbwklda
         cool_down_time: 30
       50-50_1T:
-        num_operations: 5000000
+        num_operations: 50000000
         threads: 1
         bench_workload_name: ycsbwklda
         cool_down_time: 30
       50-50_2T:
-        num_operations: 5000000
+        num_operations: 50000000
         threads: 2
         bench_workload_name: ycsbwklda
         cool_down_time: 30
@@ -80,12 +80,12 @@ all:
         bench_workload_name: ycsbwklda
         cool_down_time: 30
       50-50_8T:
-        num_operations: 5000000
+        num_operations: 50000000
         threads: 8
         bench_workload_name: ycsbwklda
         cool_down_time: 30
       50-50_16T:
-        num_operations: 5000000
+        num_operations: 50000000
         threads: 16
         bench_workload_name: ycsbwklda
         cool_down_time: 30
@@ -118,11 +118,11 @@ all:
       50-50_1T:
         YCSB_uniform_distribution: True
         use_existing_db: True
-        duration: 60
+        duration: 600
       50-50_2T:
         YCSB_uniform_distribution: True
         use_existing_db: True
-        duration: 60
+        duration: 600
       50-50_4T:
         YCSB_uniform_distribution: True
         use_existing_db: True
@@ -130,8 +130,8 @@ all:
       50-50_8T:
         YCSB_uniform_distribution: True
         use_existing_db: True
-        duration: 60
+        duration: 600
       50-50_16T:
         YCSB_uniform_distribution: True
         use_existing_db: True
-        duration: 60
+        duration: 600
