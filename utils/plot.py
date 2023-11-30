@@ -12,6 +12,16 @@ csv = csv_lines[5:]
 
 csv.pop(1)
 
+header_length = len(csv[0].split(','))
+
+line_no = 1
+for line in csv[1:]:
+    line_split = line.split(',')
+    if len(line_split) > header_length:
+        line_split = line_split[:header_length]
+        csv[line_no] = ",".join(line_split) + "\n"
+    line_no += 1
+
 csv_string_io = StringIO("".join(csv))
 
 workload = pd.read_csv(csv_string_io)
