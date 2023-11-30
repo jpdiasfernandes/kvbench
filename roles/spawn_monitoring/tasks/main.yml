@@ -10,4 +10,3 @@
 - name: Spawn energy logger process
   shell: |
     screen -S {{ energy_screen_name }} -d -m sudo python3 {{utils_dir}}/energy_logger.py {{ energy_output_file }}
-  become: yes
