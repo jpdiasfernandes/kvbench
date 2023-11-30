@@ -1,0 +1,8 @@
+- name: Spawn dstat process
+  shell: |
+    screen -S {{ dstat_screen_name }} -d -m pcp dstat -tcdm --noheaders --output {{ dstat_output_file }}
+  async: 0
+
+- name: Spawn temperature logger process
+  shell: |
+    screen -S {{ temp_screen_name }} -d -m python3 {{utils_dir}}/temp_logger.py {{ temp_output_file }}

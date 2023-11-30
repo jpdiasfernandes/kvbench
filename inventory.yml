@@ -41,6 +41,7 @@ all:
               - python3-pip
               - python3-matplotlib
               - python3-pandas
+              - lm-sensors
 
     memory_limit: 8G
     session_name: test_histogram

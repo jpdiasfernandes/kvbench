@@ -1,3 +1,0 @@
-- name: Spawn dstat process
-  shell: |
-    screen -S {{ session_name }} -d -m pcp dstat -tcdm --noheaders --output {{ dstat_output_file }}

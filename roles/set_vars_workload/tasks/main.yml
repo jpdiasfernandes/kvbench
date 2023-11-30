@@ -19,6 +19,7 @@
   register: dstat_file_status
 
 
+# Workloads output files
 - name: Get all dstat files that have the pattern of the same workload
   find:
     paths: "{{session_results_dir}}"
@@ -40,6 +41,24 @@
   set_fact:
     dstat_output_file: "{{session_results_dir}}/dstat-{{workload}}-{{find_dstat['matched']}}.csv"
   when: find_dstat['matched'] != 0
+
+- name: Get all temperature log files that have the pattern of the same workload
+  find:
+    paths: "{{session_results_dir}}"
+    file_type: file
+    use_regex: yes
+    patterns: "temp-{{workload}}(-[0-9]+)?\\.csv"
+  register: find_temp
+
+- name: set temp_output_file when find_temp.matched == 0
+  set_fact:
+    temp_output_file: "{{session_results_dir}}/temp-{{workload}}.csv"
+  when: find_temp['matched'] == 0
+
+- name: set temp_output_file when find_temp.matched != 0
+  set_fact:
+    temp_output_file: "{{session_results_dir}}/temp-{{workload}}-{{find_temp['matched']}}.csv"
+  when: find_temp['matched'] != 0
 
 - name: Get all db-bench-log files that have the pattern of the same workload
   find:
@@ -63,6 +82,15 @@
     bench_log: "{{session_results_dir}}/bench-log-{{workload}}-{{find_bench['matched']}}.log"
   when: find_bench['matched'] != 0
 
+
+# screen session name variables
+- name: Set dstat screen session name
+  set_fact:
+    dstat_screen_name: "dstat-{{ session_name }}-{{hostvars[inventory_hostname]['ansible_date_time']['iso8601']}}"
+
+- name: Set temperature screen session name
+  set_fact:
+    temp_screen_name:  "temp-{{ session_name }}-{{hostvars[inventory_hostname]['ansible_date_time']['iso8601']}}"
 
 
 - name: Get session map for variable db_bench options
