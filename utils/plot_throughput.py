@@ -17,6 +17,14 @@ hist_df = pd.DataFrame()
 def to_datetime(date_string):
     return pd.to_datetime(date_string, format="%Y/%m/%d-%H:%M:%S")
 
+def get_duration(date_time, df):
+    if len(df) == 0:
+        return 0
+
+    return (date_time - first_date_time).total_seconds()
+
+first_date_time = None
+
 for match_iter in iterator:
     date_time_str = match_iter.group('date_time')
     thread_no = match_iter.group('thread_no')
@@ -27,12 +35,23 @@ for match_iter in iterator:
 
     if throughput_match:
         throughput = float(throughput_match.group('first'))/1000 #convert to KOps
-        hist_df.at[date_time, 'thread_' + thread_no] = throughput
 
+        if first_date_time == None:
+            first_date_time = date_time
+
+        dur = get_duration(date_time, hist_df)
+        hist_df.at[dur, 'thread_' + thread_no] = throughput
+
+
+df = hist_df.interpolate().dropna(axis=0)
+
+df['throughput'] = df.sum(axis=1)
+
+final_df = df[['throughput']]
 #remove .log extension
 file_no_format = sys.argv[1][:-4]
 print(file_no_format)
-hist_df.plot()
+final_df.plot()
 plt.title('Thread throughput progression')
 plt.ylabel('KOps/s')
 plt.savefig(file_no_format + "-throughput.png")
