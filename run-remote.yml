@@ -2,6 +2,6 @@
   hosts: alibaba
   gather_facts: False
   roles:
-    - clone_kvbench_dir
+    - clone_kvbench_remote
     - role: call_cloudinha
       playbook: run-progressive_foreground.yml
