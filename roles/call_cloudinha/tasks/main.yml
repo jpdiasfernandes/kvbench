@@ -2,6 +2,6 @@
   shell: |
     /home/gsd/.local/bin/ansible-playbook -i inventory.yml {{ playbook}} -v
   async: 86400
-  poll: 60
+  poll: 10
   args:
     chdir: "{{ kvbench_dir }}"
