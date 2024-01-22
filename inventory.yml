@@ -1,22 +1,25 @@
-all:
+cloudinha:
   hosts:
     cloud148:
       ansible_host: cloud148.cluster.lsd.di.uminho.pt
+    alibaba:
+      ansible_host: alibaba.cluster.lsd.di.uminho.pt
 
   vars:
     local_dir: /home/jpdiasfernandes/Projetos/Dissertação
     ansible_user: gsd
-    uname_r: 5.15.0-88-generic
+    uname_r: 5.4.0-169-generic
     main_dir: /home/gsd
     db_name: rocksdb
-    app_dir: /home/gsd/Apps
-    kvbench_dir: "{{ app_dir }}/kvbench"
-    source_dir: /home/gsd/Apps/rocksdb
-    build_dir: /home/gsd/Apps/rocksdb/build
-    results_dir: /home/gsd/setup_results
-    utils_dir: /home/gsd/scripts
-    db_dir: /home/gsd/db/rocksdb
+    app_dir: /home/gsd
+    kvbench_dir : "{{ app_dir }}/kvbench"
+    source_dir: "{{ app_dir }}/rocksdb"
+    build_dir: "{{ source_dir }}/build"
+    results_dir: "{{ main_dir }}/setup_results"
+    utils_dir: "{{ main_dir }}/scripts"
+    db_dir: "{{ main_dir }}/db/rocksdb"
     db_backup_dir: "{{main_dir}}/db_backup/rocksdb"
+
     cmake_version: 3.22.2
 
     apt_pkg_deps:
@@ -37,12 +40,12 @@ all:
               - libndctl-dev
               - libdaxctl-dev
               - linux-tools-common
-              - linux-tools-5.15.0-87-generic
+              - linux-tools-5.4.0-169-generic
               - python3-pip
               - python3-matplotlib
               - python3-pandas
               - lm-sensors
-
+      
     memory_limit: 8G
     session_name: incremental_foreground_threads
 
@@ -57,7 +60,7 @@ all:
       fillrandom_50M:
         num_operations: 50000000
         threads: 1
-        bench_workload_name: filluniquerandom
+        bench_workload_name: fillrandom
         cool_down_time: 15
       write_intensive:
         num_operations: 5000000
@@ -89,7 +92,6 @@ all:
         threads: 16
         bench_workload_name: ycsbwklda
         cool_down_time: 30
-
 
     db_bench_fixed_options:
             block_align: True

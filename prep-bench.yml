@@ -2,8 +2,11 @@
 # Playbook to ensure all the dependencies to build the Key Value stores and to monitor it are installed
 
 - name: Prepare Key Value Store for benchmarking
-  hosts: cloud148
+  hosts: alibaba
   gather_facts: False
   roles:
+    - make_vars
     - install_sys_deps
     - install_ansible
+    - clone_kvbench_remote
+    - copy_utils_dir

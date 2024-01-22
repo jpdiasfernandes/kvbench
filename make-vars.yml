@@ -1,6 +1,6 @@
 ---
 
 - name: Prepare inventory with information from cloud
-  hosts: cloudinha
+  hosts: alibaba
   roles:
     - make_vars

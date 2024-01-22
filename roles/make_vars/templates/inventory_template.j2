@@ -2,16 +2,24 @@ cloudinha:
   hosts:
     cloud148:
       ansible_host: cloud148.cluster.lsd.di.uminho.pt
+    alibaba:
+      ansible_host: alibaba.cluster.lsd.di.uminho.pt
+
   vars:
+    local_dir: {{ local_dir }}
     ansible_user: {{ ansible_user }}
     uname_r: {{ uname_r }}
     main_dir: {{ main_dir }}
     db_name: {{ db_name }}
-    source_dir: {{ source_dir }}
-    build_dir: {{ build_dir }}
-    results_dir: {{ results_dir }}
-    utils_dir: {{ utils_dir }}
-    db_dir: {{ db_dir }}
+    app_dir: {{ app_dir }}
+    kvbench_dir : "{{ "{{ app_dir }}/kvbench" }}"
+    source_dir: "{{ "{{ app_dir }}/rocksdb" }}"
+    build_dir: "{{ "{{ source_dir }}/build" }}"
+    results_dir: "{{ "{{ main_dir }}/setup_results" }}"
+    utils_dir: "{{ "{{ main_dir }}/scripts" }}"
+    db_dir: "{{ "{{ main_dir }}/db/rocksdb" }}"
+    db_backup_dir: "{{ "{{main_dir}}/db_backup/rocksdb" }}"
+
     cmake_version: {{ cmake_version }}
 
     apt_pkg_deps:

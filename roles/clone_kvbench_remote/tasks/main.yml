@@ -1,0 +1,5 @@
+- name: Copy ansible dir to remote kvbench location
+  git:
+    repo: https://github.com/jpdiasfernandes/kvbench.git
+    dest: "{{ kvbench_dir }}"
+    version: main

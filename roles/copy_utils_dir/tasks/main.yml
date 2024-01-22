@@ -1,0 +1,4 @@
+- name: copy utils dir to remote
+  copy:
+    src: "{{local_dir}}/kvbench/utils"
+    dest: "{{ utils_dir }}"
