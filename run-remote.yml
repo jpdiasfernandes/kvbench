@@ -1,7 +1,7 @@
 - name: Run a playbook on remote
-  hosts: cloud148
+  hosts: alibaba
   gather_facts: False
   roles:
-    - copy_files_dep
+    - clone_kvbench_dir
     - role: call_cloudinha
       playbook: run-progressive_foreground.yml
