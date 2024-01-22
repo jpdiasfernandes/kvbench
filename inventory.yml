@@ -1,7 +1,5 @@
 all:
   hosts:
-    localhost:
-      ansible_host: 127.0.0.1
     cloud148:
       ansible_host: cloud148.cluster.lsd.di.uminho.pt
     alibaba:
