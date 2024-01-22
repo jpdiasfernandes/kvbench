@@ -58,7 +58,7 @@ all:
         bench_workload_name: ycsbfill
         cool_down_time: 15
       fillrandom_50M:
-        num_operations: 50000000
+        num_operations: 5000000
         threads: 1
         bench_workload_name: fillrandom
         cool_down_time: 15
