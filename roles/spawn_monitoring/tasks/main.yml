@@ -1,7 +1,15 @@
-- name: Spawn dstat process
+- name: Spawn dstat process for jammy ubuntu (22.04)
   shell: |
     screen -S {{ dstat_screen_name }} -d -m pcp dstat -tcdm --noheaders --output {{ dstat_output_file }}
   async: 0
+  when: hostvars[inventory_hostname]["ansible_distribution"] == "Ubuntu" and hostvars[inventory_hostname]["ansible_distribution_version"] == "22.04"
+
+- name: Spawn dstat process for ubuntu 20.04
+  shell: |
+    screen -S {{ dstat_screen_name }} -d -m dstat -tcdm --noheaders --output {{ dstat_output_file }}
+  async: 0
+  when: hostvars[inventory_hostname]["ansible_distribution"] == "Ubuntu" and hostvars[inventory_hostname]["ansible_distribution_version"] == "20.04"
+
 
 - name: Spawn temperature logger process
   shell: |
