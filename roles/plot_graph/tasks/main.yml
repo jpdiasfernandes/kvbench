@@ -11,6 +11,6 @@
   shell: |
     python3 {{utils_dir}}/plot_temp.py {{temp_output_file}}
 
-- name: Plot energy graph
-  shell: |
-    python3 {{utils_dir}}/plot_energy.py {{energy_output_file}}
+#- name: Plot energy graph
+#  shell: |
+#    python3 {{utils_dir}}/plot_energy.py {{energy_output_file}}

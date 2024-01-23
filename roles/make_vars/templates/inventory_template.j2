@@ -19,6 +19,10 @@ cloudinha:
     utils_dir: "{{ "{{ main_dir }}/scripts" }}"
     db_dir: "{{ "{{ main_dir }}/db/rocksdb" }}"
     db_backup_dir: "{{ "{{main_dir}}/db_backup/rocksdb" }}"
+    energy_tool_dir: "{{ "{{app_dir}}/software-defined-power" }}"
+    energy_tool_bin: "{{ "{{ energy_tool_dir }}/cmake/build" }}"
+    energy_tool_server :"{{ "{{ energy_tool_bin }}/MonitorServer" }}"
+    energy_tool_client :"{{ "{{ energy_tool_client }}/libMonitorClient.so" }} "
 
     cmake_version: {{ cmake_version }}
 
