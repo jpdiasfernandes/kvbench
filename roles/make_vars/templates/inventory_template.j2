@@ -22,7 +22,7 @@ cloudinha:
     energy_tool_dir: "{{ "{{app_dir}}/software-defined-power" }}"
     energy_tool_bin: "{{ "{{ energy_tool_dir }}/cmake/build" }}"
     energy_tool_server :"{{ "{{ energy_tool_bin }}/MonitorServer" }}"
-    energy_tool_client :"{{ "{{ energy_tool_client }}/libMonitorClient.so" }} "
+    energy_tool_client :"{{ "{{ energy_tool_bin }}/libMonitorClient.so" }} "
 
     cmake_version: {{ cmake_version }}
 
