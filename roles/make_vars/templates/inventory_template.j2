@@ -6,13 +6,14 @@ cloudinha:
       ansible_host: alibaba.cluster.lsd.di.uminho.pt
 
   vars:
+    # Dirs and files
     local_dir: {{ local_dir }}
     ansible_user: {{ ansible_user }}
     uname_r: {{ uname_r }}
     main_dir: {{ main_dir }}
     db_name: {{ db_name }}
     app_dir: {{ app_dir }}
-    kvbench_dir : "{{ "{{ app_dir }}/kvbench" }}"
+    kvbench_dir: "{{ "{{ app_dir }}/kvbench" }}"
     source_dir: "{{ "{{ app_dir }}/rocksdb" }}"
     build_dir: "{{ "{{ source_dir }}/build" }}"
     results_dir: "{{ "{{ main_dir }}/setup_results" }}"
@@ -21,21 +22,28 @@ cloudinha:
     db_backup_dir: "{{ "{{main_dir}}/db_backup/rocksdb" }}"
     energy_tool_dir: "{{ "{{app_dir}}/software-defined-power" }}"
     energy_tool_bin: "{{ "{{ energy_tool_dir }}/cmake/build" }}"
-    energy_tool_server :"{{ "{{ energy_tool_bin }}/MonitorServer" }}"
-    energy_tool_client :"{{ "{{ energy_tool_bin }}/libMonitorClient.so" }} "
+    energy_tool_server: "{{ "{{ energy_tool_bin }}/MonitorServer" }}"
+    energy_tool_client: "{{ "{{ energy_tool_bin }}/libMonitorClient.so" }}"
+    ssh_local_git: {{ ssh_local_git }}
 
+    # Cmake version
     cmake_version: {{ cmake_version }}
 
+    # System apt dependencies
     apt_pkg_deps:
       {% for item in apt_pkg_deps %}
         - {{ item }}
       {% endfor %}
 
-    memory_limit: {{ memory_limit }}
+    # Session name
     session_name: {{ session_name }}
 
+    # Systems hardware limitations
+    memory_limit: {{ memory_limit }}
     numa_node_set: {{ numa_node_set }}
 
+
+    # Workload db_bench options
     workload_settings:
       {%- for workload, settings in workload_settings.items() +%}
       {{workload}}:
@@ -45,11 +53,14 @@ cloudinha:
       {%- endfor %}
 
 
+    # Db_bench fixed options
     db_bench_fixed_options:
       {% for k, v in db_bench_fixed_options.items() %}
       {{k}}: {{v}}
       {% endfor %}
 
+
+    # Db_bench variable options depending on workload
     db_bench_session_options:
     {%- for workload, options in db_bench_session_options.items() +%}
       {{workload}}:

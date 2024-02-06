@@ -1,4 +1,4 @@
-all:
+cloudinha:
   hosts:
     cloud148:
       ansible_host: cloud148.cluster.lsd.di.uminho.pt
@@ -6,13 +6,14 @@ all:
       ansible_host: alibaba.cluster.lsd.di.uminho.pt
 
   vars:
+    # Dirs and files
     local_dir: /home/jpdiasfernandes/Projetos/Dissertação
     ansible_user: gsd
-    uname_r: 5.4.0-169-generic
+    uname_r: 5.15.0-89-generic
     main_dir: /home/gsd
     db_name: rocksdb
-    app_dir: /home/gsd
-    kvbench_dir : "{{ app_dir }}/kvbench"
+    app_dir: /home/gsd/Apps
+    kvbench_dir: "{{ app_dir }}/kvbench"
     source_dir: "{{ app_dir }}/rocksdb"
     build_dir: "{{ source_dir }}/build"
     results_dir: "{{ main_dir }}/setup_results"
@@ -21,12 +22,14 @@ all:
     db_backup_dir: "{{main_dir}}/db_backup/rocksdb"
     energy_tool_dir: "{{app_dir}}/software-defined-power"
     energy_tool_bin: "{{ energy_tool_dir }}/cmake/build"
-    energy_tool_server : "{{ energy_tool_bin }}/MonitorServer"
-    energy_tool_client : "{{ energy_tool_bin }}/libMonitorClient.so"
+    energy_tool_server: "{{ energy_tool_bin }}/MonitorServer"
+    energy_tool_client: "{{ energy_tool_bin }}/libMonitorClient.so"
+    ssh_local_git: /home/jpdiasfernandes/.ssh/id_ed25519.pub
 
-
+    # Cmake version
     cmake_version: 3.22.2
 
+    # System apt dependencies
     apt_pkg_deps:
               - libsnappy-dev
               - libsnappy-dev
@@ -45,17 +48,21 @@ all:
               - libndctl-dev
               - libdaxctl-dev
               - linux-tools-common
-              - linux-tools-5.4.0-169-generic
+              - linux-tools-5.15.0-89-generic
               - python3-pip
               - python3-matplotlib
               - python3-pandas
               - lm-sensors
       
-    memory_limit: 8G
+    # Session name
     session_name: incremental_foreground_threads
 
+    # Systems hardware limitations
+    memory_limit: 8G
     numa_node_set: 0
 
+
+    # Workload db_bench options
     workload_settings:
       ycsbfill_5M:
         num_operations: 5000000
@@ -98,6 +105,7 @@ all:
         bench_workload_name: ycsbwklda
         cool_down_time: 30
 
+    # Db_bench fixed options
     db_bench_fixed_options:
             block_align: True
             key_size: 16
@@ -114,6 +122,8 @@ all:
             max_write_buffer_number: 2
             max_total_wal_size: 1000000
       
+
+    # Db_bench variable options depending on workload
     db_bench_session_options:
       write_intensive:
         YCSB_uniform_distribution: True

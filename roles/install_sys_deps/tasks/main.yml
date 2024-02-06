@@ -31,3 +31,9 @@
 - name: Include cmake_installation tasks
   include_tasks: cmake_install.yml
   when: cmake_version != current_cmake_version
+
+- name: install zeromq_cpp
+  include_tasks: zeromq_cpp.yml
+
+- name: install software-defined-power
+  include_tasks: software_defined_power.yml

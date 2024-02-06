@@ -1,0 +1,22 @@
+- name: Clone software-defined-power
+  git:
+    repo: "git@github.com:jpdiasfernandes/software-defined-power.git"
+    dest: "{{ energy_tool_dir }}"
+
+- name: Build software-defined-power
+  shell: |
+    cmake -S{{energy_tool_dir}} -B{{energy_tool_bin}}
+    cmake --build {{energy_tool_bin}}
+
+- name: Change file permissions for MonitorServer
+  file:
+    path: "{{energy_tool_server}}"
+    mode: '0755'
+
+- name: Create symlink for MonitorServer
+  file:
+    src: "{{energy_tool_server}}"
+    dest: "/usr/local/bin/MonitorServer"
+    state: link
+    mode: '0755'
+  become: yes
