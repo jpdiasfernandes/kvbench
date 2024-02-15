@@ -7,6 +7,21 @@
   shell: |
     screen -S {{ temp_screen_name }} -d -m python3 {{utils_dir}}/temp_logger.py {{ temp_output_file }}
 
-- name: Spawn energy logger process
+
+#- name: Ensure service is created
+#  copy:
+#   src: monitor-server.service
+#   dest: /etc/systemd/system/monitor-server.service
+#  become: true
+#
+#- name: Spaen energy logger
+#  systemd_service:
+#    state: started
+#    name: monitor-server.service
+#  become: true
+
+- name: Spawn energy logger
   shell: |
-    screen -S {{ energy_screen_name }} -d -m sudo {{energy_tool_server}}
+    screen -S {{ energy_screen_name }} -d -m sudo MonitorServer
+  args:
+    chdir: "{{ session_results_dir }}"
