@@ -1,0 +1,21 @@
+- name: Clone libzmq
+  git:
+    repo: "https://github.com/zeromq/libzmq.git"
+    dest: "{{ app_dir }}/libzmq"
+
+- name: Build libzmq
+  shell: |
+    cmake -S{{ app_dir }}/libzmq -B{{ app_dir }}/libzmq/build
+    sudo cmake --build {{ app_dir }}/libzmq/build --target install -j $(nproc)
+  become: yes
+
+- name: Clone cppzmq
+  git:
+    repo: "https://github.com/zeromq/cppzmq.git"
+    dest: "{{ app_dir }}/cppzmq"
+
+- name: Build cppzmq
+  shell: |
+    cmake -S{{ app_dir }}/cppzmq -B{{ app_dir }}/cppzmq/build
+    sudo cmake --build {{ app_dir }}/cppzmq/build --target install -j $(nproc)
+  become: yes

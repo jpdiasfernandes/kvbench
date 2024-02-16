@@ -5,8 +5,8 @@
   hosts: cloud148
   gather_facts: False
   roles:
-    - make_vars
-    - install_sys_deps
+    #- make_vars
     #- install_ansible
-    #- clone_kvbench_remote
-    #- copy_utils_dir
+    - install_kvbench
+    #- install_software_defined_power
+    #- install_rocksdb

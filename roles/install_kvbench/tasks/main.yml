@@ -1,0 +1,21 @@
+- name: Clone kvbench
+  git:
+    repo: "https://github.com/jpdiasfernandes/kvbench.git"
+    dest: "{{ kvbench_dir }}"
+
+- name: Ensure ~/.ansible/plugins/modules exists
+  file:
+    path: "~/.ansible/plugins/modules"
+    state: directory
+
+- name: Copy utils modules to ansible path
+  copy:
+    src: "{{ kvbench_dir }}/utils/plot_energy.py"
+    dest: "~/.ansible/plugins/modules/plot_energy.py"
+    remote_src: yes
+
+- name: Copy utils scripts to utils path
+  copy:
+    src: "{{ kvbench_dir }}/utils/"
+    dest: "{{ utils_dir }}/"
+    remote_src: yes

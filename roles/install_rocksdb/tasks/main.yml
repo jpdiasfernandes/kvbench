@@ -1,0 +1,12 @@
+- name: Clone rocksdb from personal fork
+  git:
+    repo: "https://github.com/jpdiasfernandes/rocksdb.git"
+    dest: "{{ source_dir }}"
+    version: 8.7.fb
+
+- name: Build rocksdb
+  shell: |
+    cmake -DCMAKE_BUILD_TYPE=Release -DUSE_RTTI=true -B build -S .
+    cmake --build build -- -j {{ ansible_facts['ansible_processor_nproc'] }}
+  args:
+    chdir: "{{ source_dir }}"

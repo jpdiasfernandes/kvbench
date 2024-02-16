@@ -1,0 +1,18 @@
+- name: Get current Cmake Version
+  shell: cmake --version | grep -Eo "[0-9]+.[0-9]+.[0-9]+"
+  register: cmake_output
+  ignore_errors: yes
+
+
+- name: Debug cmake_version
+  debug:
+    msg: "CMAKE_VERSION: {{cmake_output.stdout_lines[0]}}"
+
+- name: Set cmake versioon
+  set_fact:
+    current_cmake_version: "{{cmake_output.stdout_lines[0]}}"
+  when: cmake_output is defined and cmake_output.rc == 0
+
+- name: Include cmake_installation tasks
+  include_tasks: cmake_install.yml
+  when: cmake_version != current_cmake_version
