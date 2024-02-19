@@ -1,5 +1,5 @@
 - name: Run a playbook on remote
-  hosts: alibaba
+  hosts: cloud148
   gather_facts: False
   roles:
     - clone_kvbench_remote
