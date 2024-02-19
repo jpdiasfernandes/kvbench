@@ -2,6 +2,6 @@
   hosts: cloud148
   gather_facts: False
   roles:
-    - clone_kvbench_remote
+    - install_kvbench
     - role: call_cloudinha
       playbook: run-progressive_foreground.yml
