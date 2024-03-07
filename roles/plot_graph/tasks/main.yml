@@ -13,7 +13,7 @@
 
 - name: Find process name
   shell: |
-     ls | grep -E "pid-[0-9]+\.csv"
+     ls -t pid-*.csv | head -1
   args:
     chdir: "{{ session_results_dir }}"
   register: energy_pid_file
