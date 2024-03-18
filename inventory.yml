@@ -114,8 +114,6 @@ all:
             compression_type: lz4
             #Ratio of memtable size used for bloom filter. 0 means no bloom filter
             memtable_bloom_size_ratio: 0
-            #Uses old Block-based Bloom filter if true.  Uses more cache. May lead to bigger cache churn which may lead to higher disk usage.
-            use_block_based_filter: False
             #Controls the total write rate of compaction and flush in bytes per second. Only flush and compaction.
             rate_limiter_bytes_per_sec: 0
             #Enable dynamic adjustment of rate limit according to demand for background I/O
