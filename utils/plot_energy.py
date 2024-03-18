@@ -60,6 +60,7 @@ def run_module():
     module_args = dict(
         energy_file=dict(type='str', required=True),
         event_file=dict(type='str', required=True),
+        output_prefix=dict(type='str', required=False),
         chdir=dict(type='str', required=False)
     )
 
@@ -91,6 +92,11 @@ def run_module():
     if module.params['chdir'] != None:
         os.chdir(module.params['chdir'])
         print(os.getcwd())
+
+    if module.params['output_prefix'] == None:
+        file_no_format = module.params['energy_file'][:-4]
+    else:
+        file_no_format = module.params['output_prefix']
 
     energy_pd = open(module.params['energy_file'])
     metrics = {}
@@ -133,8 +139,6 @@ def run_module():
     threads_df = df.filter(regex=(r' Tid \d+ Energy'))
     pid_acc = df.filter(regex=(r' Pid \d+ Accumulated Energy'))
     pids = df.filter(regex=(r' Pid \d+ Energy'))
-
-    file_no_format = module.params['energy_file'][:-4]
 
 
     threads_df.plot()
