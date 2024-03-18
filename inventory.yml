@@ -21,9 +21,9 @@ all:
     db_dir: "{{ main_dir }}/db/rocksdb"
     db_backup_dir: "{{main_dir}}/db_backup/rocksdb"
     energy_tool_dir: "{{app_dir}}/software-defined-power"
-    energy_tool_bin: "{{ energy_tool_dir }}/cmake/build"
-    energy_tool_server: "{{ energy_tool_bin }}/MonitorServer"
-    energy_tool_client: "{{ energy_tool_bin }}/libMonitorClient.so"
+    energy_tool_bin: "{{ energy_tool_dir }}/build"
+    energy_tool_server: "sdpmonserver"
+    energy_tool_client: "/usr/local/lib/libsdpmonclient.so"
     ssh_local_git: /home/jpdiasfernandes/.ssh/id_ed25519.pub
 
     # Cmake version
@@ -31,7 +31,6 @@ all:
 
     # System apt dependencies
     apt_pkg_deps:
-              - libsnappy-dev
               - libsnappy-dev
               - libssl-dev
               - libgflags-dev
@@ -213,11 +212,11 @@ all:
       50-50_1T:
         YCSB_uniform_distribution: True
         use_existing_db: True
-        duration: 600
+        duration: 60
       50-50_2T:
         YCSB_uniform_distribution: True
         use_existing_db: True
-        duration: 600
+        duration: 60
       50-50_4T:
         YCSB_uniform_distribution: True
         use_existing_db: True
