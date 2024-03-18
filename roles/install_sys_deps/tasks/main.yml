@@ -9,10 +9,6 @@
   apt: 
     name:
       "{{apt_pkg_deps}}"
-    state: presen
-
-t
+    state: present
   become: yes
 
-- name: install software-defined-power
-  include_tasks: software_defined_power.yml
