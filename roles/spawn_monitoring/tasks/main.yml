@@ -22,6 +22,6 @@
 
 - name: Spawn energy logger
   shell: |
-    screen -S {{ energy_screen_name }} -d -m sudo MonitorServer
+    screen -S {{ energy_screen_name }} -d -m sudo {{energy_tool_server}}
   args:
     chdir: "{{ session_results_dir }}"
