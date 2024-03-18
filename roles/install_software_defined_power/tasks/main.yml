@@ -7,16 +7,4 @@
   shell: |
     cmake -S{{energy_tool_dir}} -B{{energy_tool_bin}}
     cmake --build {{energy_tool_bin}}
-
-- name: Change file permissions for MonitorServer
-  file:
-    path: "{{energy_tool_server}}"
-    mode: '0755'
-
-- name: Create symlink for MonitorServer
-  file:
-    src: "{{energy_tool_server}}"
-    dest: "/usr/local/bin/MonitorServer"
-    state: link
-    mode: '0755'
-  become: yes
+    sudo cmake --install {{energy_tool_bin}}
