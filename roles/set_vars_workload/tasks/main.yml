@@ -137,7 +137,7 @@
     paths: "{{workload_results_dir}}"
     file_type: file
     use_regex: yes
-    patterns: "sys-{{workload}}(-[0-9]+)?\\.csv"
+    patterns: "sys-energy-{{workload}}(-[0-9]+)?\\.csv"
   register: find_sys
 
 - name: set sys-energy-workload
