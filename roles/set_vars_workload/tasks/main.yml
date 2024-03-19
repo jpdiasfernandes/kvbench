@@ -143,3 +143,9 @@
 - name: set sys-energy-workload
   set_fact:
     sys_energy_file: "{{workload_results_dir}}/sys-energy-{{workload}}.csv"
+  when: find_sys['matched'] == 0
+
+- name: set sys-energy-workload when find_energy.matched != 0
+  set_fact:
+    sys_energy_file: "{{workload_results_dir}}/sys-energy-{{workload}}-{{find_sys['matched']}}.csv"
+  when: find_sys['matched'] != 0
