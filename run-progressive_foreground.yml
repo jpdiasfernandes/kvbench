@@ -9,7 +9,7 @@
 
     - role: prepare_run_monitor_graph
       workload: 50-50_1T
-
+      repetitions: 2
 
     - load_backup
 
