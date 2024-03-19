@@ -70,12 +70,12 @@
 
 - name: set energy_output_file when find_energy.matched == 0
   set_fact:
-    energy_output_file: "{{session_results_dir}}/energy-{{workload}}.csv"
+    energy_output_file: "{{session_results_dir}}/energy-{{workload}}"
   when: find_energy['matched'] == 0
 
 - name: set energy_output_file when find_energy.matched != 0
   set_fact:
-    energy_output_file: "{{session_results_dir}}/energy-{{workload}}-{{find_energy['matched']}}.csv"
+    energy_output_file: "{{session_results_dir}}/energy-{{workload}}-{{find_energy['matched']}}"
   when: find_energy['matched'] != 0
 
 - name: Get all db-bench-log files that have the pattern of the same workload

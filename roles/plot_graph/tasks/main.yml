@@ -29,6 +29,8 @@
     energy_file: "{{ energy_pid_file.stdout_lines[0] | trim }}"
     event_file: "rocksdb.log"
     chdir: "{{ session_results_dir }}"
+    output_prefix: "{{energy_output_file}}"
+
   register: out_plot_energy
   ignore_errors: True
 
