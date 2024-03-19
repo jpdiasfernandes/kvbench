@@ -11,7 +11,7 @@
                              --db={{db_dir}} \
                              {{ db_bench_options_string }}
   args:
-    chdir: "{{ session_results_dir }}"
+    chdir: "{{ workload_results_dir }}"
   become: yes
   register: execution_out
 

@@ -13,16 +13,27 @@
 - name: set cool_down_time to workload cool_down_time
   set_fact:
     cool_down_time: "{{workload_settings[workload]['cool_down_time']}}"
+
+
+- name: set workload_results_dir
+  set_fact:
+    workload_results_dir: "{{ session_results_dir }}/{{ workload }}"
+
+- name: Create directory for workload_results_dir if it does not exist
+  file:
+    path: "{{ workload_results_dir }}"
+    state: directory
+
 - name: get stat from dstat_output_file for this workload
   stat:
-    path: "{{ session_results_dir }}/dstat-{{workload}}.csv"
+    path: "{{ workload_results_dir }}/dstat-{{workload}}.csv"
   register: dstat_file_status
 
 
 # Workloads output files
 - name: Get all dstat files that have the pattern of the same workload
   find:
-    paths: "{{session_results_dir}}"
+    paths: "{{workload_results_dir}}"
     file_type: file
     use_regex: yes
     patterns: "dstat-{{workload}}(-[0-9]+)?\\.csv"
@@ -34,17 +45,17 @@
 
 - name: set dstat_output_file when find_dstat.matched == 0
   set_fact:
-    dstat_output_file: "{{session_results_dir}}/dstat-{{workload}}.csv"
+    dstat_output_file: "{{workload_results_dir}}/dstat-{{workload}}.csv"
   when: find_dstat['matched'] == 0
 
 - name: set dstat_output_file when find_dstat.matched != 0
   set_fact:
-    dstat_output_file: "{{session_results_dir}}/dstat-{{workload}}-{{find_dstat['matched']}}.csv"
+    dstat_output_file: "{{workload_results_dir}}/dstat-{{workload}}-{{find_dstat['matched']}}.csv"
   when: find_dstat['matched'] != 0
 
 - name: Get all temperature log files that have the pattern of the same workload
   find:
-    paths: "{{session_results_dir}}"
+    paths: "{{workload_results_dir}}"
     file_type: file
     use_regex: yes
     patterns: "temp-{{workload}}(-[0-9]+)?\\.csv"
@@ -52,17 +63,17 @@
 
 - name: set temp_output_file when find_temp.matched == 0
   set_fact:
-    temp_output_file: "{{session_results_dir}}/temp-{{workload}}.csv"
+    temp_output_file: "{{workload_results_dir}}/temp-{{workload}}.csv"
   when: find_temp['matched'] == 0
 
 - name: set temp_output_file when find_temp.matched != 0
   set_fact:
-    temp_output_file: "{{session_results_dir}}/temp-{{workload}}-{{find_temp['matched']}}.csv"
+    temp_output_file: "{{workload_results_dir}}/temp-{{workload}}-{{find_temp['matched']}}.csv"
   when: find_temp['matched'] != 0
 
 - name: Get all energy log files that have the pattern of the same workload
   find:
-    paths: "{{session_results_dir}}"
+    paths: "{{workload_results_dir}}"
     file_type: file
     use_regex: yes
     patterns: "energy-{{workload}}(-[0-9]+)?\\.csv"
@@ -70,17 +81,17 @@
 
 - name: set energy_output_file when find_energy.matched == 0
   set_fact:
-    energy_output_file: "{{session_results_dir}}/energy-{{workload}}"
+    energy_output_file: "{{workload_results_dir}}/energy-{{workload}}"
   when: find_energy['matched'] == 0
 
 - name: set energy_output_file when find_energy.matched != 0
   set_fact:
-    energy_output_file: "{{session_results_dir}}/energy-{{workload}}-{{find_energy['matched']}}"
+    energy_output_file: "{{workload_results_dir}}/energy-{{workload}}-{{find_energy['matched']}}"
   when: find_energy['matched'] != 0
 
 - name: Get all db-bench-log files that have the pattern of the same workload
   find:
-    paths: "{{session_results_dir}}"
+    paths: "{{workload_results_dir}}"
     file_type: file
     use_regex: yes
     patterns: "bench-log-{{workload}}(-[0-9]+)?\\.log"
@@ -92,12 +103,12 @@
 
 - name: set bench_log when find_bench.matched == 0
   set_fact:
-    bench_log: "{{session_results_dir}}/bench-log-{{workload}}.log"
+    bench_log: "{{workload_results_dir}}/bench-log-{{workload}}.log"
   when: find_bench['matched'] == 0
 
 - name: set bench_log when find_bench.matched != 0
   set_fact:
-    bench_log: "{{session_results_dir}}/bench-log-{{workload}}-{{find_bench['matched']}}.log"
+    bench_log: "{{workload_results_dir}}/bench-log-{{workload}}-{{find_bench['matched']}}.log"
   when: find_bench['matched'] != 0
 
 
