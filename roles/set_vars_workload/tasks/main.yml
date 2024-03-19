@@ -129,3 +129,17 @@
   set_fact:
     session_options: "{{ db_bench_session_options[workload] | dict2items }}"
   when: db_bench_session_options[workload] is defined
+
+
+# Renaming variables (special case where there is a need to rename and not possible to decide output file name)
+- name: Find the existing sys-energy-workload files
+  find:
+    paths: "{{workload_results_dir}}"
+    file_type: file
+    use_regex: yes
+    patterns: "sys-{{workload}}(-[0-9]+)?\\.csv"
+  register: find_sys
+
+- name: set sys-energy-workload
+  set_fact:
+    sys_energy_file: "{{workload_results_dir}}/sys-energy-{{workload}}.csv"
