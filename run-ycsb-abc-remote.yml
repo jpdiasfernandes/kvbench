@@ -1,0 +1,24 @@
+- name: Create db and create backup or load backup and run ycsb a->b->c
+  hosts: localhost
+  connection: local
+  gather_facts: True
+  roles:
+    - set_vars_session
+
+    - role: prepare_run_monitor_graph
+      workload: fillrandom_5M
+
+    - create_backup
+
+    - role: prepare_run_monitor_graph
+      workload: 50-50_4T
+
+    - load_backup
+
+    - role: prepare_run_monitor_graph
+      workload: Readonly_4T
+
+    - load_backup
+
+    - role: prepare_run_monitor_graph
+      workload: 95-5_4T

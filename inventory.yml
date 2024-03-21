@@ -54,7 +54,7 @@ all:
               - lm-sensors
       
     # Session name
-    session_name: incremental_foreground_threads
+    session_name: ycsba_ycsbc_ycsbd_base
 
     # Systems hardware limitations
     memory_limit: 8G
@@ -68,7 +68,7 @@ all:
         threads: 1
         bench_workload_name: ycsbfill
         cool_down_time: 15
-      fillrandom_50M:
+      fillrandom_5M:
         num_operations: 5000000
         threads: 1
         bench_workload_name: fillrandom
@@ -89,7 +89,7 @@ all:
         bench_workload_name: ycsbwklda
         cool_down_time: 30
       50-50_4T:
-        num_operations: 50000000
+        num_operations: 5000000
         threads: 4
         bench_workload_name: ycsbwklda
         cool_down_time: 30
@@ -103,6 +103,20 @@ all:
         threads: 16
         bench_workload_name: ycsbwklda
         cool_down_time: 30
+      Readonly_4T:
+        num_operations: 5000000
+        threads: 4
+        bench_workload_name: ycsbwkldc
+        cool_down_time: 30
+      95-5_4T:
+        num_operations: 5000000
+        threads: 4
+        bench_workload_name: ycsbwkldd
+        cool_down_time: 30
+
+
+
+
 
     # Db_bench fixed options
     db_bench_fixed_options:
@@ -220,7 +234,7 @@ all:
       50-50_4T:
         YCSB_uniform_distribution: True
         use_existing_db: True
-        duration: 600
+        duration: 120
       50-50_8T:
         YCSB_uniform_distribution: True
         use_existing_db: True
@@ -229,3 +243,11 @@ all:
         YCSB_uniform_distribution: True
         use_existing_db: True
         duration: 600
+      Readonly_4T:
+        YCSB_uniform_distribution: True
+        use_existing_db: True
+        duration: 120
+      95-5_4T:
+        YCSB_uniform_distribution: True
+        use_existing_db: True
+        duration: 120
