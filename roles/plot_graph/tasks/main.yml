@@ -27,7 +27,7 @@
 - name: Plot energy graph
   plot_energy:
     energy_file: "{{ energy_pid_file.stdout_lines[0] | trim }}"
-    event_file: "{{rocksdb_log}}"
+    event_file: "{{rocksdb_log_file}}"
     chdir: "{{ workload_results_dir }}"
     output_prefix: "{{energy_output_file}}"
 
