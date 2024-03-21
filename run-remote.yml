@@ -4,4 +4,4 @@
   roles:
     - install_kvbench
     - role: call_cloudinha
-      playbook: run-progressive_foreground.yml
+      playbook: run-ycsb-abc-remote.yml
