@@ -162,7 +162,6 @@ def run_module():
     events = open(module.params['event_file'], "r")
     lines_events = events.readlines()
 
-
     plt.figure().set_figwidth(22)
 
     event_tids = []
@@ -194,8 +193,7 @@ def run_module():
     plt.xlabel('Time (seconds)')
     plt.ylabel("Energy (Joules)")
     plt.legend()
-    name = file_no_format + '-tids-energy-events'
-    plt.savefig(name)
+    plt.savefig(file_no_format + '-tids-energy-events.png')
 
     module.exit_json(**result)
 

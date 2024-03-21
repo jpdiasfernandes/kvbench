@@ -18,3 +18,9 @@
   args:
     creates: "{{sys_energy_file}}"
     removes: "{{workload_results_dir}}/sys.csv"
+
+- name: move rocksdb.log to rocksdb_log_file location
+  command: mv "{{workload_results_dir}}/rocksdb.csv" "{{rocksdb_log_file}}"
+  args:
+    creates: "{{rocksdb_log_file}}"
+    removes: "{{workload_results_dir}}/rocksdb.csv"

@@ -112,6 +112,24 @@
   when: find_bench['matched'] != 0
 
 
+- name: Get all rocksdb log files that have the same prefix
+  find:
+    paths: "{{workload_results_dir}}"
+    file_type: file
+    use_regex: yes
+    patterns: "rocksdb-{{workload}}(-[0-9]+)?\\.log"
+  register: find_rocksdb_log
+
+- name: set rocksdb_log_file when find_rocksdb_log == 0
+  set_fact:
+    rocksdb_log_file: "{{workload_results_dir}}/rocksdb-{{workload}}.log"
+  when: find_rocksdb_log['matched'] == 0
+
+- name: set rocksdb_log_file when find_rocksdb_log != 0
+  set_fact:
+    rocksdb_log_file: "{{workload_results_dir}}/rocksdb-{{workload}}-{{find_rocksdb_log['matched']}}.log"
+  when: find_rocksdb_log['matched'] != 0
+
 # screen session name variables
 - name: Set dstat screen session name
   set_fact:
