@@ -9,7 +9,7 @@ all:
     # Dirs and files
     local_dir: /home/jpdiasfernandes/Projetos/Dissertação
     ansible_user: gsd
-    uname_r: 5.15.0-89-generic
+    uname_r: 5.4.0-173-generic
     main_dir: /home/gsd
     db_name: rocksdb
     app_dir: /home/gsd/Apps
@@ -47,7 +47,7 @@ all:
               - libndctl-dev
               - libdaxctl-dev
               - linux-tools-common
-              - linux-tools-5.15.0-89-generic
+              - linux-tools-5.4.0-173-generic
               - python3-pip
               - python3-matplotlib
               - python3-pandas
@@ -57,7 +57,7 @@ all:
     session_name: ycsba_ycsbc_ycsbd_base
 
     # Systems hardware limitations
-    memory_limit: 8G
+    memory_limit: 32G
     numa_node_set: 0
 
 
@@ -68,8 +68,8 @@ all:
         threads: 1
         bench_workload_name: ycsbfill
         cool_down_time: 15
-      fillrandom_5M:
-        num_operations: 5000000
+      fillrandom_100M:
+        num_operations: 100000000
         threads: 1
         bench_workload_name: fillrandom
         cool_down_time: 15
@@ -79,28 +79,43 @@ all:
         bench_workload_name: ycsbwklda
         cool_down_time: 30
       50-50_1T:
-        num_operations: 50000000
+        num_operations: 100000000
         threads: 1
         bench_workload_name: ycsbwklda
         cool_down_time: 30
       50-50_2T:
-        num_operations: 50000000
+        num_operations: 100000000
         threads: 2
         bench_workload_name: ycsbwklda
         cool_down_time: 30
       50-50_4T:
-        num_operations: 5000000
+        num_operations: 100000000
         threads: 4
         bench_workload_name: ycsbwklda
         cool_down_time: 30
       50-50_8T:
-        num_operations: 50000000
+        num_operations: 100000000
         threads: 8
         bench_workload_name: ycsbwklda
         cool_down_time: 30
       50-50_16T:
-        num_operations: 50000000
+        num_operations: 100000000
         threads: 16
+        bench_workload_name: ycsbwklda
+        cool_down_time: 30
+      50-50_32T:
+        num_operations: 100000000
+        threads: 32
+        bench_workload_name: ycsbwklda
+        cool_down_time: 30
+      50-50_64T:
+        num_operations: 100000000
+        threads: 64
+        bench_workload_name: ycsbwklda
+        cool_down_time: 30
+      50-50_128T:
+        num_operations: 100000000
+        threads: 128
         bench_workload_name: ycsbwklda
         cool_down_time: 30
       Readonly_4T:
@@ -122,9 +137,9 @@ all:
     db_bench_fixed_options:
             #Change based on available memory. Should be around 1/3 of available memory
             #Number of bytes to use as a cache of uncompressed data (AKA Block cache size)
-            cache_size: 1073741824
+            cache_size: 34359738368
             #Algorithm to use to compress the database
-            compression_type: lz4
+            compression_type: none
             #Ratio of memtable size used for bloom filter. 0 means no bloom filter
             memtable_bloom_size_ratio: 0
             #Controls the total write rate of compaction and flush in bytes per second. Only flush and compaction.
@@ -135,7 +150,7 @@ all:
             level_compaction_dynamic_level_bytes: True
             #The maximum number of concurrent background compactions that can occur in parallel
             #Should be max(n_cores, disk_throughput/avg_thread_compaction_throughput)
-            max_background_compactions: 3
+            max_background_compactions: 4
             #The maximum number of concurrent background compactions that can occur in parallel
             max_background_flushes: 1
             #Allows OS to incrementally sync SST files to disk while they are being written, in the background.
@@ -226,23 +241,35 @@ all:
       50-50_1T:
         YCSB_uniform_distribution: True
         use_existing_db: True
-        duration: 60
+        duration: 900
       50-50_2T:
         YCSB_uniform_distribution: True
         use_existing_db: True
-        duration: 60
+        duration: 900
       50-50_4T:
         YCSB_uniform_distribution: True
         use_existing_db: True
-        duration: 30
+        duration: 900
       50-50_8T:
         YCSB_uniform_distribution: True
         use_existing_db: True
-        duration: 600
+        duration: 900
       50-50_16T:
         YCSB_uniform_distribution: True
         use_existing_db: True
-        duration: 600
+        duration: 900
+      50-50_32T:
+        YCSB_uniform_distribution: True
+        use_existing_db: True
+        duration: 900
+      50-50_64T:
+        YCSB_uniform_distribution: True
+        use_existing_db: True
+        duration: 900
+      50-50_128T:
+        YCSB_uniform_distribution: True
+        use_existing_db: True
+        duration: 900
       Readonly_4T:
         YCSB_uniform_distribution: True
         use_existing_db: True
