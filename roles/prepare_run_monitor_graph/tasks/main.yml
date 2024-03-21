@@ -3,9 +3,23 @@
     repetitions: 1
   when: repetition is not defined
 
+- name: Create roles lists base
+  set_fact:
+    loop_list_roles: "{{ [ 'set_vars_workload', 'add_fixed_options', 'add_options_workload', 'cool_down_sleep', 'clean_heap', 'spawn_monitoring', 'run_db_bench', 'join_monitoring', 'plot_graph' ] }}"
+
+- name: load_backup if defined
+  set_fact:
+    loop_list_roles: "{{ ['load_backup'] + loop_list_roles }}"
+  when: load_backup is defined and load_backup
+
+- name: create_backup if defined
+  set_fact:
+    loop_list_roles: "{{ loop_list_roles + ['create_backup'] }}"
+  when: create_backup is defined and create_backup
+
 - name: Call the roles
   include_role:
     name: "{{roleinputvar}}"
-  loop: "{{ [ 'set_vars_workload', 'add_fixed_options', 'add_options_workload', 'cool_down_sleep', 'clean_heap', 'spawn_monitoring', 'run_db_bench', 'join_monitoring', 'plot_graph' ] * repetitions }}"
+  loop: "{{ loop_list_roles * repetitions }}"
   loop_control:
     loop_var: roleinputvar
