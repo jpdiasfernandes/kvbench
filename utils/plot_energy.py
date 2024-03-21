@@ -194,7 +194,7 @@ def run_module():
     plt.xlabel('Time (seconds)')
     plt.ylabel("Energy (Joules)")
     plt.legend()
-    name = file_no_format + 'tids-energy-events'
+    name = file_no_format + '-tids-energy-events'
     plt.savefig(name)
 
     module.exit_json(**result)

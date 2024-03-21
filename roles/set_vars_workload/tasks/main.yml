@@ -36,7 +36,7 @@
     paths: "{{workload_results_dir}}"
     file_type: file
     use_regex: yes
-    patterns: "dstat-{{workload}}(-[0-9]+)?.*?\\.csv"
+    patterns: "dstat-{{workload}}(-[0-9]+)?\\.csv"
   register: find_dstat
 
 - name: Debug find dstat result
@@ -58,7 +58,7 @@
     paths: "{{workload_results_dir}}"
     file_type: file
     use_regex: yes
-    patterns: "temp-{{workload}}(-[0-9]+)?.*?\\.csv"
+    patterns: "temp-{{workload}}(-[0-9]+)?\\.csv"
   register: find_temp
 
 - name: set temp_output_file when find_temp.matched == 0
@@ -76,7 +76,7 @@
     paths: "{{workload_results_dir}}"
     file_type: file
     use_regex: yes
-    patterns: "energy-{{workload}}(-[0-9]+)?.*?\\.csv"
+    patterns: "sys-energy-{{workload}}(-[0-9]+)?\\.csv"
   register: find_energy
 
 - name: set energy_output_file when find_energy.matched == 0
@@ -94,7 +94,7 @@
     paths: "{{workload_results_dir}}"
     file_type: file
     use_regex: yes
-    patterns: "bench-log-{{workload}}(-[0-9]+)?.*?\\.log"
+    patterns: "bench-log-{{workload}}(-[0-9]+)?\\.log"
   register: find_bench
 
 - name: Debug find bench result
