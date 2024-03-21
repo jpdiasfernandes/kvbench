@@ -6,7 +6,7 @@
 - name: Fix pcp dstat output csv when versions is lower than 5.2.5
   shell: |
     python3 {{utils_dir}}/fix_pcp_dstat.py {{dstat_output_file}}
-  when: pcp_version.stdout_lines[0] is version('3.2.5', '<')
+  when: pcp_version.stdout_lines[0] is version('5.2.5', '<')
 
 - name: Plot dstat graphs
   shell: |
