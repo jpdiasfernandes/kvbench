@@ -234,7 +234,7 @@ all:
       50-50_4T:
         YCSB_uniform_distribution: True
         use_existing_db: True
-        duration: 120
+        duration: 30
       50-50_8T:
         YCSB_uniform_distribution: True
         use_existing_db: True
