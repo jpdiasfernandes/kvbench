@@ -31,12 +31,12 @@
 
 
 # Workloads output files
-- name: Get all dstat files that have the pattern of the same workload
+- name: Get all dstat files that have the prefix of the same workload
   find:
     paths: "{{workload_results_dir}}"
     file_type: file
     use_regex: yes
-    patterns: "dstat-{{workload}}(-[0-9]+)?\\.csv"
+    patterns: "dstat-{{workload}}(-[0-9]+)?.*?\\.csv"
   register: find_dstat
 
 - name: Debug find dstat result
@@ -53,12 +53,12 @@
     dstat_output_file: "{{workload_results_dir}}/dstat-{{workload}}-{{find_dstat['matched']}}.csv"
   when: find_dstat['matched'] != 0
 
-- name: Get all temperature log files that have the pattern of the same workload
+- name: Get all temperature log files that have the prefix of the same workload
   find:
     paths: "{{workload_results_dir}}"
     file_type: file
     use_regex: yes
-    patterns: "temp-{{workload}}(-[0-9]+)?\\.csv"
+    patterns: "temp-{{workload}}(-[0-9]+)?.*?\\.csv"
   register: find_temp
 
 - name: set temp_output_file when find_temp.matched == 0
@@ -71,12 +71,12 @@
     temp_output_file: "{{workload_results_dir}}/temp-{{workload}}-{{find_temp['matched']}}.csv"
   when: find_temp['matched'] != 0
 
-- name: Get all energy log files that have the pattern of the same workload
+- name: Get all energy log files that have the prefix of the same workload
   find:
     paths: "{{workload_results_dir}}"
     file_type: file
     use_regex: yes
-    patterns: "energy-{{workload}}(-[0-9]+)?\\.csv"
+    patterns: "energy-{{workload}}(-[0-9]+)?.*?\\.csv"
   register: find_energy
 
 - name: set energy_output_file when find_energy.matched == 0
@@ -89,12 +89,12 @@
     energy_output_file: "{{workload_results_dir}}/energy-{{workload}}-{{find_energy['matched']}}"
   when: find_energy['matched'] != 0
 
-- name: Get all db-bench-log files that have the pattern of the same workload
+- name: Get all db-bench-log files that have the prefix of the same workload
   find:
     paths: "{{workload_results_dir}}"
     file_type: file
     use_regex: yes
-    patterns: "bench-log-{{workload}}(-[0-9]+)?\\.log"
+    patterns: "bench-log-{{workload}}(-[0-9]+)?.*?\\.log"
   register: find_bench
 
 - name: Debug find bench result
