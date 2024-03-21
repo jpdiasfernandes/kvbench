@@ -5,9 +5,9 @@
   roles:
     - set_vars_session
 
-    #- role: prepare_run_monitor_graph
-    #  workload: fillrandom_5M
-    #  create_backup: True
+    - role: prepare_run_monitor_graph
+      workload: fillrandom_5M
+      create_backup: True
 
     - role: prepare_run_monitor_graph
       workload: 50-50_4T
