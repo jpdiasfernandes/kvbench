@@ -5,30 +5,47 @@
   roles:
     - set_vars_session
 
-    - load_backup
-
     - role: prepare_run_monitor_graph
-      workload: 50-50_1T
-      repetitions: 2
+      workload: fillrandom_100M
 
-    - load_backup
+    - create_backup
 
-    - role: prepare_run_monitor_graph
-      workload: 50-50_2T
+    #- role: prepare_run_monitor_graph
+    #  workload: 50-50_1T
+    #  repetitions: 2
+    #  load_backup: True
 
-    #- load_backup
+    #- role: prepare_run_monitor_graph
+    #  workload: 50-50_2T
+    #  repetitions: 2
+    #  load_backup: True
 
     #- role: prepare_run_monitor_graph
     #  workload: 50-50_4T
-
-
-    #- load_backup
+    #  repetitions: 2
+    #  load_backup: True
 
     #- role: prepare_run_monitor_graph
     #  workload: 50-50_8T
-
-
-    #- load_backup
+    #  repetitions: 2
+    #  load_backup: True
 
     #- role: prepare_run_monitor_graph
     #  workload: 50-50_16T
+    #  repetitions: 2
+    #  load_backup: True
+
+    #- role: prepare_run_monitor_graph
+    #  workload: 50-50_32T
+    #  repetitions: 2
+    #  load_backup: True
+
+    #- role: prepare_run_monitor_graph
+    #  workload: 50-50_64T
+    #  repetitions: 2
+    #  load_backup: True
+
+    #- role: prepare_run_monitor_graph
+    #  workload: 50-50_128T
+    #  repetitions: 2
+    #  load_backup: True
