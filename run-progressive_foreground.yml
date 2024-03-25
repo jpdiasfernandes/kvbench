@@ -5,6 +5,8 @@
   roles:
     - set_vars_session
 
+    - cpu_governor_performance
+
     #- role: prepare_run_monitor_graph
     #  workload: fillrandom_100M
 
