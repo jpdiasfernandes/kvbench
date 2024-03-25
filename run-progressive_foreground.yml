@@ -7,8 +7,10 @@
 
     - cpu_governor_performance
 
-    #- role: prepare_run_monitor_graph
-    #  workload: fillrandom_100M
+    - delete_cur_db
+
+    - role: prepare_run_monitor_graph
+      workload: fillrandom_100M
 
     #- create_backup
 
