@@ -50,7 +50,7 @@ import pandas as pd
 import os
 
 def to_datetime(date_string):
-    return pd.to_datetime(date_string, format="%H:%M:%S")
+    return pd.to_datetime(date_string, format="%d-%m %H:%M:%S")
 
 def get_duration(date_time, first_date):
     return (date_time - first_date).total_seconds()
@@ -145,7 +145,7 @@ def run_module():
     plt.title('Threads Energy')
     plt.ylabel('J')
     plt.xlabel('seconds')
-    plt.savefig(file_no_format + "-tids-energy.png"                 )
+    plt.savefig(file_no_format + "-tids-energy.png")
 
     pid_acc.plot()
     plt.title('Pid Accumulated Energy')
