@@ -9,7 +9,7 @@ all:
     # Dirs and files
     local_dir: /home/jpdiasfernandes/Projetos/Dissertação
     ansible_user: gsd
-    uname_r: 5.4.0-173-generic
+    uname_r: 5.4.0-174-generic
     main_dir: /home/gsd
     db_name: rocksdb
     app_dir: /home/gsd/Apps
@@ -47,7 +47,7 @@ all:
               - libndctl-dev
               - libdaxctl-dev
               - linux-tools-common
-              - linux-tools-5.4.0-173-generic
+              - linux-tools-5.4.0-174-generic
               - python3-pip
               - python3-matplotlib
               - python3-pandas
@@ -57,7 +57,7 @@ all:
     session_name: ycsba_ycsbc_ycsbd_base
 
     # Systems hardware limitations
-    memory_limit: 32G
+    memory_limit: 16G
     numa_node_set: 0
 
 
@@ -137,7 +137,7 @@ all:
     db_bench_fixed_options:
             #Change based on available memory. Should be around 1/3 of available memory
             #Number of bytes to use as a cache of uncompressed data (AKA Block cache size)
-            cache_size: 34359738368
+            cache_size: 1073741824
             #Algorithm to use to compress the database
             compression_type: none
             #Ratio of memtable size used for bloom filter. 0 means no bloom filter
@@ -145,7 +145,7 @@ all:
             #Controls the total write rate of compaction and flush in bytes per second. Only flush and compaction.
             rate_limiter_bytes_per_sec: 0
             #Enable dynamic adjustment of rate limit according to demand for background I/O
-            rate_limiter_auto_tuned: True
+            rate_limiter_auto_tuned: False
             #If the level size is dynamic. (based on the last level size) or not
             level_compaction_dynamic_level_bytes: True
             #The maximum number of concurrent background compactions that can occur in parallel
@@ -169,7 +169,7 @@ all:
             # 3 - kMinOverlappingRatio (looks at ratio between overlapping size in next level and its size) default
             compaction_pri: 3
             #Number of bytes in a block
-            block_size: 16384
+            block_size: 4096
             #Cache index/filter blocks in block cache. For performance it is recommended for it to be true
             cache_index_and_filter_blocks: False
             #Pin index/filter blocks of L0 files in block cache so they dont get evicted. For performance it is recommended to be true
@@ -184,9 +184,9 @@ all:
             #It is possible to estimate a level 0 size by doing → write_buffer_size * min_write_buffer_number_to_merge * level0_file_num_compaction_trigger
             level0_file_num_compaction_trigger: 4
             #Max number of bytes in level 1. It is recommended to be around the same size of level 0
-            max_bytes_for_level_base: 536870912
+            max_bytes_for_level_base: 268435456
             #Multiplier to get the size of levels bigger than 1
-            max_bytes_for_level_multiplier: 2
+            max_bytes_for_level_multiplier: 10
             #Size of a sstable in level 1
             target_file_size_base: 134217728
             #Multiplier to get the size of sstables when level ≥ 2. The default is 1 so sstables are the same in all levels.
