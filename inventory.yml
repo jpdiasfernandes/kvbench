@@ -54,7 +54,7 @@ all:
               - lm-sensors
       
     # Session name
-    session_name: ycsba_ycsbc_ycsbd_base
+    session_name: run-progressive-foreground-threads
 
     # Systems hardware limitations
     memory_limit: 16G
