@@ -82,42 +82,42 @@ all:
         num_operations: 100000000
         threads: 1
         bench_workload_name: ycsbwklda
-        cool_down_time: 30
+        cool_down_time: 90
       50-50_2T:
         num_operations: 100000000
         threads: 2
         bench_workload_name: ycsbwklda
-        cool_down_time: 30
+        cool_down_time: 90
       50-50_4T:
         num_operations: 100000000
         threads: 4
         bench_workload_name: ycsbwklda
-        cool_down_time: 30
+        cool_down_time: 90
       50-50_8T:
         num_operations: 100000000
         threads: 8
         bench_workload_name: ycsbwklda
-        cool_down_time: 30
+        cool_down_time: 90
       50-50_16T:
         num_operations: 100000000
         threads: 16
         bench_workload_name: ycsbwklda
-        cool_down_time: 30
+        cool_down_time: 90
       50-50_32T:
         num_operations: 100000000
         threads: 32
         bench_workload_name: ycsbwklda
-        cool_down_time: 30
+        cool_down_time: 90
       50-50_64T:
         num_operations: 100000000
         threads: 64
         bench_workload_name: ycsbwklda
-        cool_down_time: 30
+        cool_down_time: 90
       50-50_128T:
         num_operations: 100000000
         threads: 128
         bench_workload_name: ycsbwklda
-        cool_down_time: 30
+        cool_down_time: 90
       Readonly_4T:
         num_operations: 5000000
         threads: 4

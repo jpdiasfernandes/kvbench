@@ -44,12 +44,12 @@
       repetitions: 2
       load_backup: True
 
-    - role: prepare_run_monitor_graph
-      workload: 50-50_64T
-      repetitions: 2
-      load_backup: True
+    #- role: prepare_run_monitor_graph
+    #  workload: 50-50_64T
+    #  repetitions: 2
+    #  load_backup: True
 
-    - role: prepare_run_monitor_graph
-      workload: 50-50_128T
-      repetitions: 2
-      load_backup: True
+    #- role: prepare_run_monitor_graph
+    #  workload: 50-50_128T
+    #  repetitions: 2
+    #  load_backup: True
