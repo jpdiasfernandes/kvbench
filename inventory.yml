@@ -34,6 +34,7 @@ all:
               - libsnappy-dev
               - libssl-dev
               - libgflags-dev
+              - libspdlog-dev
               - zlib1g-dev
               - libbz2-dev
               - liblz4-dev
@@ -52,6 +53,7 @@ all:
               - python3-matplotlib
               - python3-pandas
               - lm-sensors
+
       
     # Session name
     session_name: run-progressive-foreground-threads
