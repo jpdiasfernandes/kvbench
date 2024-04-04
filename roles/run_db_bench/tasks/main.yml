@@ -4,7 +4,7 @@
 - name: Call db_bench
   shell: |
     sudo numactl -N {{ numa_node_set }} -m {{ numa_node_set }} \
-    systemd-run --setenv=LD_PRELOAD={{ energy_tool_client }} --setenv=ALLOWED_CPUS={{ allowed_cpus }} --scope -p MemoryLimit={{ memory_limit }} -p MemoryAccounting=true \
+    systemd-run --setenv=LD_PRELOAD={{ energy_tool_client }} --setenv=ALLOWED_CPUS={{ allowed_cpus }} --scope -p MemoryLimit={{ memory_limit }} -p MemoryAccounting=true -p AllowedCPUs={{ allowed_cpus }} \
     {{ build_dir }}/db_bench --benchmarks="{{ bench_workload_name }},sstables" \
                              --num={{ ( (num_operations|int)/ (num_threads|int) ) | round | int}} \
                              --threads={{ num_threads }} \
