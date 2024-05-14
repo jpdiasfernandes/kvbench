@@ -9,7 +9,7 @@ all:
     # Dirs and files
     local_dir: /home/jpdiasfernandes/Projetos/Dissertação
     ansible_user: gsd
-    uname_r: 5.4.0-174-generic
+    uname_r: 5.15.0-89-generic
     main_dir: /home/gsd
     db_name: rocksdb
     app_dir: /home/gsd/Apps
@@ -31,6 +31,7 @@ all:
 
     # System apt dependencies
     apt_pkg_deps:
+              - libfmt-dev
               - libsnappy-dev
               - libssl-dev
               - libgflags-dev
@@ -48,7 +49,7 @@ all:
               - libndctl-dev
               - libdaxctl-dev
               - linux-tools-common
-              - linux-tools-5.4.0-174-generic
+              - linux-tools-5.15.0-89-generic
               - python3-pip
               - python3-matplotlib
               - python3-pandas
@@ -219,9 +220,6 @@ all:
             sync: False
             #Format version of SST files (Recommended latest version)
             format_version: 6
-
-
-
             # Cannot use block_align with compression
             block_align: false
             key_size: 16
