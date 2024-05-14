@@ -145,7 +145,7 @@
 
 - name: Get session map for variable db_bench options
   set_fact:
-    session_options: "{{ db_bench_session_options[workload] | dict2items }}"
+    session_options: "{{ db_bench_session_options[workload] }}"
   when: db_bench_session_options[workload] is defined
 
 

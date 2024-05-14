@@ -6,9 +6,12 @@
     - print_vars
   vars:
     dict_example: {'a' : 1, 'b' : 2}
+    db_bench_fixed_options:
+      cache_size: 10
+      YCSB_uniform_distribution: false
     db_bench_session_options:
-      setup1:
         execution:
+          cache_size: 99
           YCSB_uniform_distribution: true
           use_existing_db: true
           duration: 60
@@ -54,20 +57,24 @@
       debug:
         msg: "{{ {'a' : {'c' : 2}, 'b': 2} | dict2items }}"
 
-    - name: Convert dictionary to list of pairs
-      set_fact:
-        session_options: "{{ db_bench_session_options['setup1'] }}"
-      when: db_bench_session_options['setup1'] is defined
-
     - name: Stuff
       set_fact:
-        session_phase_options: "{{ session_options['execution'] | dict2items }}"
-      when: session_options['execution'] is defined
+        session_phase_options: "{{ db_bench_session_options['execution'] | dict2items }}"
+      when: db_bench_session_options['execution'] is defined
 
     - name: Print session_phase_options
       debug:
         msg: "{{ session_phase_options  }}"
       when: session_phase_options is defined
+
+    - name: merge fixed with session options
+      set_fact:
+        session_phase_options: "{{ db_bench_fixed_options | combine(db_bench_session_options['execution']) | dict2items }}"
+
+    - name: Print combined dict with options
+      debug:
+        msg: "{{session_phase_options }}"
+
 
     - name: Init empty list
       set_fact:
@@ -136,3 +143,38 @@
     - name: Debug list of strings * 3
       debug:
         msg: "{{ [ 'set_vars_workload', 'add_fixed_options', 'add_options_workload', 'cool_down_sleep', 'clean_heap', 'spawn_monitoring', 'run_db_bench', 'join_monitoring', 'plot_graph' ] * 3  }}"
+
+    - name: Debug version function
+      debug:
+        msg: "5.1.3 is lower than 5.2.5 {{'5.1.3' is version('5.2.5', '<')}}"
+
+    - name: Debug version function
+      debug:
+        msg: "5.2.5 is not lower than 5.2.5 {{'5.2.5' is version('5.2.5', '<')}}"
+
+
+    - name: Create roles lists base
+      set_fact:
+        loop_list_roles: "{{ [ 'set_vars_workload', 'add_fixed_options', 'add_options_workload', 'cool_down_sleep', 'clean_heap', 'spawn_monitoring', 'run_db_bench', 'join_monitoring', 'plot_graph' ] }}"
+
+    - name: load_backup if defined
+      set_fact:
+        loop_list_roles: "{{ ['load_backup'] + loop_list_roles }}"
+      when: load_backup is defined and load_backup
+
+    - name: Debug loop_list_roles
+      debug:
+        msg: "{{loop_list_roles}}"
+
+    - name: define load_backup
+      set_fact:
+        load_backup: True
+
+    - name: load_backup if defined
+      set_fact:
+        loop_list_roles: "{{ ['load_backup'] + loop_list_roles }}"
+      when: load_backup is defined and load_backup
+
+    - name: Debug loop_list_roles
+      debug:
+        msg: "{{loop_list_roles}}"
