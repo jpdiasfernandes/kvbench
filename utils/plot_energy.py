@@ -48,9 +48,16 @@ from ansible.module_utils.basic import AnsibleModule
 import matplotlib.pyplot as plt
 import pandas as pd
 import os
+import json
 
 def to_datetime(date_string):
     return pd.to_datetime(date_string, format="%d-%m %H:%M:%S")
+
+def to_datetime_nodate(date_string):
+    return pd.to_datetime(date_string, format="%H:%M:%S")
+
+def to_datetime_year(date_string):
+    return pd.to_datetime(date_string, format="%Y-%m-%d %H:%M:%S").floor("S")
 
 def get_duration(date_time, first_date):
     return (date_time - first_date).total_seconds()
@@ -116,7 +123,7 @@ def run_module():
         splitted_line = line.split(';')
         timestamp = splitted_line[0]
         if first_date_time == None:
-            first_date_time = to_datetime(timestamp)
+            first_date_time = to_datetime_year(timestamp)
         metrics[timestamp] = {}
         for i in range(1, len(splitted_header)-1):
             metrics[timestamp][splitted_header[i]] = splitted_line[i]
@@ -133,7 +140,7 @@ def run_module():
 
     for time, metric in metrics.items():
         for key, value in metric.items():
-            dur = get_duration(to_datetime(time), first_date_time)
+            dur = get_duration(to_datetime_year(time), first_date_time)
             df.at[dur, key] = float(value)
 
     threads_df = df.filter(regex=(r' Tid \d+ Energy'))
@@ -160,35 +167,74 @@ def run_module():
     plt.savefig(file_no_format + "-pids-energy.png")
 
     events = open(module.params['event_file'], "r")
-    lines_events = events.readlines()
+
+    event_json = json.load(events)
+
+    sub_events = event_json["open_event"]["sub_events"]
 
     plt.figure().set_figwidth(22)
 
     event_tids = []
-    for event in lines_events[1:]:
-        splited = event.split(";")
-        tid = splited[2].split(" ")[1].strip("\n")
+    for event in sub_events:
+        tid = event["thread_id_system"]["start"]
         if tid not in event_tids:
             event_tids.append(tid)
             name = ' Tid ' + str(tid) + ' Energy'
             label = 'Tid ' + str(tid) + ' energy'
             plt.plot(threads_df.index.tolist(), threads_df[name].tolist(), label=label, linestyle='dashed')
 
-    for event in lines_events[1:]:
-        splited = event.split(";")
-        event_type = splited[0]
-        timestamp = splited[1]
-        dur = get_duration(to_datetime(timestamp), first_date_time)
-        tid = splited[2].split(" ")[1].strip("\n")
+    for event in sub_events:
+        split_name = event["name"].split("#")
+        event_type = split_name[0]
+        tid = event["thread_id_system"]["start"]
+        date_time_start = event["date_time"]["start"]
+        date_time_end = event["date_time"]["end"]
+        dur_start = get_duration(to_datetime_year(date_time_start), first_date_time)
+        dur_end = get_duration(to_datetime_year(date_time_end), first_date_time)
         collumn_name = ' Tid ' + str(tid) + ' Energy'
 
-        if dur in threads_df.index:
-            y = threads_df.loc[dur, collumn_name]
-            if event_type == "Compaction":
-                plt.plot([dur], [y], "p", color="b")
-            elif event_type == "Flush":
-                plt.plot([dur], [y], "s", color="r")
 
+        if dur_start in threads_df.index:
+            y = threads_df.loc[dur_start, collumn_name]
+            if event_type == "compaction":
+                plt.plot([dur_start], [y], ">", color="b")
+            elif event_type == "flush":
+                plt.plot([dur_start], [y], ">", color="r")
+
+        if dur_end in threads_df.index:
+            y = threads_df.loc[dur_end, collumn_name]
+            if event_type == "compaction":
+                plt.plot([dur_end], [y], "x", color="b")
+            elif event_type == "flush":
+                plt.plot([dur_start], [y], "x", color="r")
+
+
+
+    #lines_events = events.readlines()
+
+    #for event in lines_events[1:]:
+    #    splited = event.split(";")
+    #    tid = splited[2].split(" ")[1].strip("\n")
+    #    if tid not in event_tids:
+    #        event_tids.append(tid)
+    #        name = ' Tid ' + str(tid) + ' Energy'
+    #        label = 'Tid ' + str(tid) + ' energy'
+    #        plt.plot(threads_df.index.tolist(), threads_df[name].tolist(), label=label, linestyle='dashed')
+
+    #for event in lines_events[1:]:
+    #    splited = event.split(";")
+    #    event_type = splited[0]
+    #    timestamp = splited[1]
+    #    dur = get_duration(to_datetime_nodate(timestamp), first_date_time)
+    #    tid = splited[2].split(" ")[1].strip("\n")
+    #    collumn_name = ' Tid ' + str(tid) + ' Energy'
+
+    #    if dur in threads_df.index:
+    #        y = threads_df.loc[dur, collumn_name]
+    #        if event_type == "Compaction":
+    #            plt.plot([dur], [y], "p", color="b")
+    #        elif event_type == "Flush":
+    #            plt.plot([dur], [y], "s", color="r")
 
     plt.xlabel('Time (seconds)')
     plt.ylabel("Energy (Joules)")
