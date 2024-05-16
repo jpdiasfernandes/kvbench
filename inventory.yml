@@ -132,6 +132,72 @@ all:
         bench_workload_name: ycsbwkldd
         cool_down_time: 30
 
+###############Memory delta tests#################
+      #cache_size param
+      50-50_delta_cache_8G:
+        num_operations: 100000000
+        threads: 16
+        bench_workload_name: ycsbwklda
+        cool_down_time: 90
+      50-50_delta_cache_16G:
+        num_operations: 100000000
+        threads: 16
+        bench_workload_name: ycsbwklda
+        cool_down_time: 90
+      50-50_delta_cache_32G:
+        num_operations: 100000000
+        threads: 16
+        bench_workload_name: ycsbwklda
+        cool_down_time: 90
+      50-50_delta_cache_64G:
+        num_operations: 100000000
+        threads: 16
+        bench_workload_name: ycsbwklda
+        cool_down_time: 90
+      #cache_index_and_filter_blocks
+      50-50_delta_cache_index_filter_true:
+        num_operations: 100000000
+        threads: 16
+        bench_workload_name: ycsbwklda
+        cool_down_time: 90
+      #write_buffer_size
+      50-50_delta_write_buffer_size_64M:
+        num_operations: 100000000
+        threads: 16
+        bench_workload_name: ycsbwklda
+        cool_down_time: 90
+      50-50_delta_write_buffer_size_256M:
+        num_operations: 100000000
+        threads: 16
+        bench_workload_name: ycsbwklda
+        cool_down_time: 90
+      50-50_delta_write_buffer_size_512M:
+        num_operations: 100000000
+        threads: 16
+        bench_workload_name: ycsbwklda
+        cool_down_time: 90
+      50-50_delta_write_buffer_size_1G:
+        num_operations: 100000000
+        threads: 16
+        bench_workload_name: ycsbwklda
+        cool_down_time: 90
+     #max_write_buffer_number
+     50-50_delta_max_write_buffer_number_1:
+        num_operations: 100000000
+        threads: 16
+        bench_workload_name: ycsbwklda
+        cool_down_time: 90
+     50-50_delta_max_write_buffer_number_4:
+        num_operations: 100000000
+        threads: 16
+        bench_workload_name: ycsbwklda
+        cool_down_time: 90
+     50-50_delta_max_write_buffer_number_8:
+        num_operations: 100000000
+        threads: 16
+        bench_workload_name: ycsbwklda
+        cool_down_time: 90
+
 
 
 
@@ -278,3 +344,69 @@ all:
         YCSB_uniform_distribution: True
         use_existing_db: True
         duration: 120
+
+###############Memory delta tests#################
+      #cache_size param
+      50-50_delta_cache_8G:
+        YCSB_uniform_distribution: True
+        use_existing_db: True
+        cache_size: 8589934592
+        duration: 300
+      50-50_delta_cache_16G:
+        YCSB_uniform_distribution: True
+        use_existing_db: True
+        cache_size: 17179869184
+        duration: 300
+      50-50_delta_cache_32G:
+        YCSB_uniform_distribution: True
+        use_existing_db: True
+        cache_size: 34359738368
+        duration: 300
+      50-50_delta_cache_64G:
+        YCSB_uniform_distribution: True
+        use_existing_db: True
+        cache_size: 68719476736
+        duration: 300
+      #cache_index_and_filter_blocks
+      50-50_delta_cache_index_filter_true:
+        YCSB_uniform_distribution: True
+        use_existing_db: True
+        cache_index_and_filter_blocks: True
+        duration: 300
+      #write_buffer_size
+      50-50_delta_write_buffer_size_64M:
+        YCSB_uniform_distribution: True
+        use_existing_db: True
+        write_buffer_size:  67108864
+        duration: 300
+      50-50_delta_write_buffer_size_256M:
+        YCSB_uniform_distribution: True
+        use_existing_db: True
+        write_buffer_size: 268435456
+        duration: 300
+      50-50_delta_write_buffer_size_512M:
+        YCSB_uniform_distribution: True
+        use_existing_db: True
+        write_buffer_size: 536870912
+        duration: 300
+      50-50_delta_write_buffer_size_1G:
+        YCSB_uniform_distribution: True
+        use_existing_db: True
+        write_buffer_size:  1073741824
+        duration: 300
+     #max_write_buffer_number
+     50-50_delta_max_write_buffer_number_1:
+        YCSB_uniform_distribution: True
+        use_existing_db: True
+        max_write_buffer_number: 1
+        duration: 300
+     50-50_delta_max_write_buffer_number_4:
+        YCSB_uniform_distribution: True
+        use_existing_db: True
+        max_write_buffer_number: 4
+        duration: 300
+     50-50_delta_max_write_buffer_number_8:
+        YCSB_uniform_distribution: True
+        use_existing_db: True
+        max_write_buffer_number: 8
+        duration: 300
