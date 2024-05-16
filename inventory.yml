@@ -9,7 +9,7 @@ all:
     # Dirs and files
     local_dir: /home/jpdiasfernandes/Projetos/Dissertação
     ansible_user: gsd
-    uname_r: 5.15.0-89-generic
+    uname_r: 5.4.0-181-generic
     main_dir: /home/gsd
     db_name: rocksdb
     app_dir: /home/gsd/Apps
@@ -49,7 +49,7 @@ all:
               - libndctl-dev
               - libdaxctl-dev
               - linux-tools-common
-              - linux-tools-5.15.0-89-generic
+              - linux-tools-5.4.0-181-generic
               - python3-pip
               - python3-matplotlib
               - python3-pandas
@@ -184,18 +184,18 @@ all:
         threads: 16
         bench_workload_name: ycsbwklda
         cool_down_time: 90
-     #max_write_buffer_number
-     50-50_delta_max_write_buffer_number_1:
+      #max_write_buffer_number
+      50-50_delta_max_write_buffer_number_1:
         num_operations: 100000000
         threads: 16
         bench_workload_name: ycsbwklda
         cool_down_time: 90
-     50-50_delta_max_write_buffer_number_4:
+      50-50_delta_max_write_buffer_number_4:
         num_operations: 100000000
         threads: 16
         bench_workload_name: ycsbwklda
         cool_down_time: 90
-     50-50_delta_max_write_buffer_number_8:
+      50-50_delta_max_write_buffer_number_8:
         num_operations: 100000000
         threads: 16
         bench_workload_name: ycsbwklda
@@ -397,18 +397,18 @@ all:
         use_existing_db: True
         write_buffer_size:  1073741824
         duration: 300
-     #max_write_buffer_number
-     50-50_delta_max_write_buffer_number_1:
+      #max_write_buffer_number
+      50-50_delta_max_write_buffer_number_1:
         YCSB_uniform_distribution: True
         use_existing_db: True
         max_write_buffer_number: 1
         duration: 300
-     50-50_delta_max_write_buffer_number_4:
+      50-50_delta_max_write_buffer_number_4:
         YCSB_uniform_distribution: True
         use_existing_db: True
         max_write_buffer_number: 4
         duration: 300
-     50-50_delta_max_write_buffer_number_8:
+      50-50_delta_max_write_buffer_number_8:
         YCSB_uniform_distribution: True
         use_existing_db: True
         max_write_buffer_number: 8
