@@ -138,9 +138,11 @@ def run_module():
     df = pd.DataFrame()
 
 
+    last_dur = 1
     for time, metric in metrics.items():
         for key, value in metric.items():
             dur = get_duration(to_datetime_year(time), first_date_time)
+            last_dur = dur
             df.at[dur, key] = float(value)
 
     threads_df = df.filter(regex=(r' Tid \d+ Energy'))
@@ -172,7 +174,7 @@ def run_module():
 
     sub_events = event_json["open_event"]["sub_events"]
 
-    plt.figure().set_figwidth(22)
+    plt.figure().set_figwidth(last_dur/2)
 
     event_tids = []
     for event in sub_events:
