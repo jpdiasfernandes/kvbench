@@ -3,6 +3,18 @@
     path: "{{ db_dir }}"
     state: directory
 
+- name: Get time before
+  set_fact:
+    start_time: "{{ ansible_date_time.iso8601[:19] }}"
+
 - name: Copy backup to db
   shell: |
     sudo rsync --info=progress2 -r -a {{db_backup_dir}}/* {{db_dir}}
+
+- name: Get runtime
+ set_fact:
+    runtime: "{{ ((ansible_date_time.iso8601[:19] | to_datetime('%Y-%m-%dT%H:%M:%S')) - (start_time | to_datetime('%Y-%m-%dT%H:%M:%S'))).seconds }}"
+
+- name: Print Runtime duration of load backup
+  debug:
+    msg: "The backup loading took: {{runtime}}."
