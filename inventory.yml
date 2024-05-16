@@ -56,11 +56,14 @@ all:
               - lm-sensors
 
       
-    # Session name
-    session_name: run-progressive-foreground-threads
+    # Session name change whenever
+    # When playbooks are called through run-remote (i.e. locally inside the remote host) its needed
+    # to set this variable since its not supported the overlay of ansible variables passed through
+    # the command line to run-remote playbool
+    session_name: run-memory-tests
 
     # Systems hardware limitations
-    memory_limit: 16G
+    memory_limit: 64G
     numa_node_set: 0
     allowed_cpus: 0,2,4,6,8,10,12,14,16,18,20,22,24,26,28,30,32,34,36,38,40,42,44,46
 
