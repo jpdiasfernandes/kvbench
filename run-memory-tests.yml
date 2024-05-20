@@ -16,56 +16,52 @@
 
     ################ Start cache_size delta tests ################
     - role: prepare_run_monitor_graph
-      workload: 50-50_delta_cache_8G
+      workload: delta_cache_8G
       load_backup: True
 
     - role: prepare_run_monitor_graph
-      workload: 50-50_delta_cache_16G
+      workload: delta_cache_16G
       load_backup: True
 
     - role: prepare_run_monitor_graph
-      workload: 50-50_delta_cache_32G
+      workload: delta_cache_32G
       load_backup: True
 
     - role: prepare_run_monitor_graph
-      workload: 50-50_delta_cache_64G
-      load_backup: True
-
-    - role: prepare_run_monitor_graph
-      workload: 50-50_delta_cache_8G
+      workload: delta_cache_64G
       load_backup: True
 
     ################ Start cache_index_and_filter_blocks delta tests ################
     - role: prepare_run_monitor_graph
-      workload: 50-50_delta_cache_index_filter_true
+      workload: delta_cache_index_filter_true
       load_backup: True
 
     ################ Start write_buffer_size delta tests ################
     - role: prepare_run_monitor_graph
-      workload: 50-50_delta_write_buffer_size_64M
+      workload: delta_write_buffer_size_64M
       load_backup: True
 
     - role: prepare_run_monitor_graph
-      workload: 50-50_delta_write_buffer_size_256M
+      workload: delta_write_buffer_size_256M
       load_backup: True
 
     - role: prepare_run_monitor_graph
-      workload: 50-50_delta_write_buffer_size_512M
+      workload: delta_write_buffer_size_512M
       load_backup: True
 
     - role: prepare_run_monitor_graph
-      workload: 50-50_delta_write_buffer_size_1G
+      workload: delta_write_buffer_size_1G
       load_backup: True
 
     ################ Start write_buffer_size delta tests ################
     - role: prepare_run_monitor_graph
-      workload: 50-50_delta_max_write_buffer_number_1
+      workload: delta_max_write_buffer_number_1
       load_backup: True
 
     - role: prepare_run_monitor_graph
-      workload: 50-50_delta_max_write_buffer_number_4
+      workload: delta_max_write_buffer_number_4
       load_backup: True
 
     - role: prepare_run_monitor_graph
-      workload: 50-50_delta_max_write_buffer_number_8
+      workload: delta_max_write_buffer_number_8
       load_backup: True
