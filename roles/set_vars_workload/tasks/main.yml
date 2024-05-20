@@ -1,19 +1,41 @@
+# Set default workload settings
+- name: set num_threads to fixed workload setting
+  set_fact:
+    num_threads: "{{ workload_fixed_settings['threads'] }}"
+
+- name: set num_operations to fixed workload setting
+  set_fact:
+    num_operations: "{{ workload_fixed_settings['num_operations'] }}"
+
+- name: set bench_workload_name to fixed workload setting
+  set_fact:
+    bench_workload_name: "{{ workload_fixed_settings['bench_workload_name'] }}"
+
+- name: set cool_down_time to workload fixed setting
+  set_fact:
+    cool_down_time: "{{workload_fixed_settings['cool_down_time']}}"
+
+
+# Set workload session settings
 - name: set num_threads to workload threads
   set_fact:
     num_threads: "{{ workload_settings[workload]['threads']}}"
+  when: workload_settings[workload]['threads'] is defined
 
 - name: set num_operations to workload num_operations
   set_fact:
     num_operations: "{{ workload_settings[workload]['num_operations'] }}"
+  when: workload_settings[workload]['num_operations'] is defined
 
 - name: set bench_workload to workload bench_workload_name
   set_fact:
     bench_workload_name : "{{workload_settings[workload]['bench_workload_name']}}"
+  when: workload_settings[workload]['bench_workload_name'] is defined
 
 - name: set cool_down_time to workload cool_down_time
   set_fact:
     cool_down_time: "{{workload_settings[workload]['cool_down_time']}}"
-
+  when: workload_settings[workload]['cool_down_time'] is defined
 
 - name: set workload_results_dir
   set_fact:
@@ -147,6 +169,7 @@
   set_fact:
     session_options: "{{ db_bench_session_options[workload] }}"
   when: db_bench_session_options[workload] is defined
+
 
 
 # Renaming variables (special case where there is a need to rename and not possible to decide output file name)

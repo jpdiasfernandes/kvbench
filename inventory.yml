@@ -67,150 +67,62 @@ all:
     numa_node_set: 0
     allowed_cpus: 0,2,4,6,8,10,12,14,16,18,20,22,24,26,28,30,32,34,36,38,40,42,44,46
 
+    workload_fixed_settings:
+      num_operations: 50000000
+      threads: 16
+      bench_workload_name: ycsbwklda
+      cool_down_time: 30
+
     # Workload db_bench options
     workload_settings:
       ycsbfill_5M:
-        num_operations: 5000000
         threads: 1
         bench_workload_name: ycsbfill
         cool_down_time: 15
       fillrandom_100M:
-        num_operations: 100000000
         threads: 1
         bench_workload_name: fillrandom
         cool_down_time: 15
       write_intensive:
-        num_operations: 5000000
         threads: 4
         bench_workload_name: ycsbwklda
-        cool_down_time: 30
-      50-50_1T:
-        num_operations: 100000000
-        threads: 1
-        bench_workload_name: ycsbwklda
-        cool_down_time: 90
-      50-50_2T:
-        num_operations: 100000000
-        threads: 2
-        bench_workload_name: ycsbwklda
-        cool_down_time: 90
-      50-50_4T:
-        num_operations: 100000000
-        threads: 4
-        bench_workload_name: ycsbwklda
-        cool_down_time: 90
-      50-50_8T:
-        num_operations: 100000000
-        threads: 8
-        bench_workload_name: ycsbwklda
-        cool_down_time: 90
-      50-50_16T:
-        num_operations: 100000000
-        threads: 16
-        bench_workload_name: ycsbwklda
-        cool_down_time: 90
-      50-50_32T:
-        num_operations: 100000000
-        threads: 32
-        bench_workload_name: ycsbwklda
-        cool_down_time: 90
-      50-50_64T:
-        num_operations: 100000000
-        threads: 64
-        bench_workload_name: ycsbwklda
-        cool_down_time: 90
-      50-50_128T:
-        num_operations: 100000000
-        threads: 128
-        bench_workload_name: ycsbwklda
-        cool_down_time: 90
       Readonly_4T:
-        num_operations: 5000000
         threads: 4
         bench_workload_name: ycsbwkldc
-        cool_down_time: 30
       95-5_4T:
-        num_operations: 5000000
         threads: 4
         bench_workload_name: ycsbwkldd
-        cool_down_time: 30
-
-###############Memory delta tests#################
-      #cache_size param
-      50-50_delta_cache_8G:
-        num_operations: 100000000
-        threads: 16
-        bench_workload_name: ycsbwklda
-        cool_down_time: 90
-      50-50_delta_cache_16G:
-        num_operations: 100000000
-        threads: 16
-        bench_workload_name: ycsbwklda
-        cool_down_time: 90
-      50-50_delta_cache_32G:
-        num_operations: 100000000
-        threads: 16
-        bench_workload_name: ycsbwklda
-        cool_down_time: 90
-      50-50_delta_cache_64G:
-        num_operations: 100000000
-        threads: 16
-        bench_workload_name: ycsbwklda
-        cool_down_time: 90
-      #cache_index_and_filter_blocks
-      50-50_delta_cache_index_filter_true:
-        num_operations: 100000000
-        threads: 16
-        bench_workload_name: ycsbwklda
-        cool_down_time: 90
-      #write_buffer_size
-      50-50_delta_write_buffer_size_64M:
-        num_operations: 100000000
-        threads: 16
-        bench_workload_name: ycsbwklda
-        cool_down_time: 90
-      50-50_delta_write_buffer_size_256M:
-        num_operations: 100000000
-        threads: 16
-        bench_workload_name: ycsbwklda
-        cool_down_time: 90
-      50-50_delta_write_buffer_size_512M:
-        num_operations: 100000000
-        threads: 16
-        bench_workload_name: ycsbwklda
-        cool_down_time: 90
-      50-50_delta_write_buffer_size_1G:
-        num_operations: 100000000
-        threads: 16
-        bench_workload_name: ycsbwklda
-        cool_down_time: 90
-      #max_write_buffer_number
-      50-50_delta_max_write_buffer_number_1:
-        num_operations: 100000000
-        threads: 16
-        bench_workload_name: ycsbwklda
-        cool_down_time: 90
-      50-50_delta_max_write_buffer_number_4:
-        num_operations: 100000000
-        threads: 16
-        bench_workload_name: ycsbwklda
-        cool_down_time: 90
-      50-50_delta_max_write_buffer_number_8:
-        num_operations: 100000000
-        threads: 16
-        bench_workload_name: ycsbwklda
-        cool_down_time: 90
-
-
-
-
+################Concurrency delta tests###############
+      #foreground threads param
+      50-50_delta_1T:
+        threads: 1
+      50-50_delta_2T:
+        threads: 2
+      50-50_delta_4T:
+        threads: 4
+      50-50_delta_8T:
+        threads: 8
+      50-50_delta_32T:
+        threads: 32
+      50-50_delta_64T:
+        threads: 64
+      50-50_delta_128T:
+        threads: 128
+###############Workload delta tests###############
+      #bench_workload_name param
+      95-5_delta_B:
+        bench_workload_name: ycsbwkldb
+      100-0_delta_C:
+        bench_workload_name: ycsbwkldc
+      95-5_delta_D:
+        bench_workload_name: ycsbwkldd
 
     # Db_bench fixed options
     db_bench_fixed_options:
             #Change based on available memory. Should be around 1/3 of available memory
             #Number of bytes to use as a cache of uncompressed data (AKA Block cache size)
             cache_size: 1073741824
-            #Algorithm to use to compress the database
+            #Algorithm to use to compress the database (snappy, zlib, bzip2, lz4, lz4hc, xpress, zstd)
             compression_type: none
             #Ratio of memtable size used for bloom filter. 0 means no bloom filter
             memtable_bloom_size_ratio: 0
@@ -296,120 +208,136 @@ all:
             stats_interval_seconds: 1
             histogram: True
             max_total_wal_size: 0
-      
+            use_existing_db: True
+            YCSB_uniform_distribution: True
+            duration: 300 # Time in seconds for the random-ops tests to run. When 0 then num & reads determine the test duration
+
 
     # Db_bench variable options depending on workload
     db_bench_session_options:
-      write_intensive:
+      fillrandom_100M:
+        use_existing_db: False
         YCSB_uniform_distribution: True
-        use_existing_db: True
+        duration: 0
+      write_intensive:
         duration: 60
       read_intensive:
-        use_existing_db: True
         duration: 60
-      50-50_1T:
-        YCSB_uniform_distribution: True
-        use_existing_db: True
-        duration: 900
-      50-50_2T:
-        YCSB_uniform_distribution: True
-        use_existing_db: True
-        duration: 900
-      50-50_4T:
-        YCSB_uniform_distribution: True
-        use_existing_db: True
-        duration: 900
-      50-50_8T:
-        YCSB_uniform_distribution: True
-        use_existing_db: True
-        duration: 900
-      50-50_16T:
-        YCSB_uniform_distribution: True
-        use_existing_db: True
-        duration: 900
-      50-50_32T:
-        YCSB_uniform_distribution: True
-        use_existing_db: True
-        duration: 900
-      50-50_64T:
-        YCSB_uniform_distribution: True
-        use_existing_db: True
-        duration: 900
-      50-50_128T:
-        YCSB_uniform_distribution: True
-        use_existing_db: True
-        duration: 900
       Readonly_4T:
-        YCSB_uniform_distribution: True
-        use_existing_db: True
         duration: 120
       95-5_4T:
-        YCSB_uniform_distribution: True
-        use_existing_db: True
         duration: 120
-
+###############Base Test###############
+      #50-50_base_test:
+      #  duration: 300
 ###############Memory delta tests#################
       #cache_size param
       50-50_delta_cache_8G:
-        YCSB_uniform_distribution: True
-        use_existing_db: True
         cache_size: 8589934592
-        duration: 300
       50-50_delta_cache_16G:
-        YCSB_uniform_distribution: True
-        use_existing_db: True
         cache_size: 17179869184
-        duration: 300
       50-50_delta_cache_32G:
-        YCSB_uniform_distribution: True
-        use_existing_db: True
         cache_size: 34359738368
-        duration: 300
       50-50_delta_cache_64G:
-        YCSB_uniform_distribution: True
-        use_existing_db: True
         cache_size: 68719476736
-        duration: 300
       #cache_index_and_filter_blocks
       50-50_delta_cache_index_filter_true:
-        YCSB_uniform_distribution: True
-        use_existing_db: True
         cache_index_and_filter_blocks: True
-        duration: 300
       #write_buffer_size
       50-50_delta_write_buffer_size_64M:
-        YCSB_uniform_distribution: True
-        use_existing_db: True
         write_buffer_size:  67108864
-        duration: 300
       50-50_delta_write_buffer_size_256M:
-        YCSB_uniform_distribution: True
-        use_existing_db: True
         write_buffer_size: 268435456
-        duration: 300
       50-50_delta_write_buffer_size_512M:
-        YCSB_uniform_distribution: True
-        use_existing_db: True
         write_buffer_size: 536870912
-        duration: 300
       50-50_delta_write_buffer_size_1G:
-        YCSB_uniform_distribution: True
-        use_existing_db: True
         write_buffer_size:  1073741824
-        duration: 300
       #max_write_buffer_number
       50-50_delta_max_write_buffer_number_1:
-        YCSB_uniform_distribution: True
-        use_existing_db: True
         max_write_buffer_number: 1
-        duration: 300
       50-50_delta_max_write_buffer_number_4:
-        YCSB_uniform_distribution: True
-        use_existing_db: True
         max_write_buffer_number: 4
-        duration: 300
       50-50_delta_max_write_buffer_number_8:
-        YCSB_uniform_distribution: True
-        use_existing_db: True
         max_write_buffer_number: 8
-        duration: 300
+###############Concurrency delta tests#################
+      #foreground threads param
+      #50-50_delta_1T:
+      #  YCSB_uniform_distribution: True
+      #  use_existing_db: True
+      #  duration: 300
+      #50-50_delta_2T:
+      #  YCSB_uniform_distribution: True
+      #  use_existing_db: True
+      #  duration: 300
+      #50-50_delta_4T:
+      #  YCSB_uniform_distribution: True
+      #  use_existing_db: True
+      #  duration: 300
+      #50-50_delta_8T:
+      #  YCSB_uniform_distribution: True
+      #  use_existing_db: True
+      #  duration: 300
+      #50-50_delta_32T:
+      #  YCSB_uniform_distribution: True
+      #  use_existing_db: True
+      #  duration: 300
+      #50-50_delta_64T:
+      #  YCSB_uniform_distribution: True
+      #  use_existing_db: True
+      #  duration: 300
+      #50-50_delta_128T:
+      #  YCSB_uniform_distribution: True
+      #  use_existing_db: True
+      #  duration: 300
+      #max_background_compactions param
+      50-50_delta_compactions_1:
+        max_background_compactions: 1
+      50-50_delta_compactions_2:
+        max_background_compactions: 2
+      50-50_delta_compactions_8:
+        max_background_compactions: 8
+      50-50_delta_compactions_16:
+        max_background_compactions: 16
+      #max_background_flushes param
+      50-50_delta_flushes_2:
+        max_background_flushes: 2
+      50-50_delta_flushes_4:
+        max_background_flushes: 4
+###############Background delta tests###############
+      #compaction_style param
+      50-50_delta_compaction_style_universal:
+        compaction_style: 1
+      #sync param
+      50-50_delta_sync_on:
+        sync: True
+###############Workload delta tests###############
+      #key_size param
+      50-50_delta_key_size_64:
+        key_size: 64
+      50-50_delta_key_size_128:
+        key_size: 128
+      50-50_delta_key_size_512:
+        key_size: 512
+      50-50_delta_key_size_1K:
+        key_size: 1024
+      #value_size param
+      50-50_delta_value_size_512:
+        value_size: 512
+      50-50_delta_value_size_16K:
+        value_size: 16384
+      50-50_delta_value_size_256K:
+        value_size: 262144
+      50-50_delta_value_size_1M:
+        value_size: 1024000
+      #YCSB_uniform_distribution param
+      50-50_delta_YCSB_uniform_false:
+        YCSB_uniform_distribution: False
+###############Misc delta tests###############
+      50-50_delta_compression_snappy:
+        compression_type: snappy
+      50-50_delta_compression_zlib:
+        compression_type: zlib
+      50-50_delta_compression_lz4:
+        compression_type: lz4
+      50-50_delta_compression_zstd:
+        compression_type: zstd

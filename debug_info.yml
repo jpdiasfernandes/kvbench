@@ -178,3 +178,8 @@
     - name: Debug loop_list_roles
       debug:
         msg: "{{loop_list_roles}}"
+
+    - name: Check if is define work if a map being accesses is already not defined
+      debug:
+        msg: "Not expecting this to get here. Either an error shows or it skips this task."
+      when: db_bench_fixed_options['test']['var'] is defined
