@@ -1,6 +1,6 @@
 - name: call ansible playbook
   shell: |
-    screen -S ansible_remote -L -d -m /home/gsd/.local/bin/ansible-playbook -i inventory.yml {{ playbook}} -v
+    screen -S ansible_remote -L -d -m /home/gsd/.local/bin/ansible-playbook -i inventory.yml {{ playbook}} -v | at {{ time_of_day }}
   async: 604800
   poll: 30
   args:
