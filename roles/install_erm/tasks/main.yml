@@ -1,0 +1,10 @@
+- name: Clone erm
+  git:
+    repo: "git@github.com:jpdiasfernandes/erm.git"
+    dest: "{{ erm_dir }}"
+
+- name: Build erm
+  shell: |
+    cmake -S{{ erm_dir }} -B{{erm_bin}} -DBUILD_SHARED_LIBS=ON
+    cmake --build {{erm_bin}} -j8
+    sudo cmake --install {{erm_bin}}

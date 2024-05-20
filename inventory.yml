@@ -14,6 +14,8 @@ all:
     db_name: rocksdb
     app_dir: /home/gsd/Apps
     kvbench_dir: "{{ app_dir }}/kvbench"
+    erm_dir: "{{ app_dir }}/erm"
+    erm_bin: "{{ erm_dir }}/build"
     source_dir: "{{ app_dir }}/rocksdb"
     build_dir: "{{ source_dir }}/build"
     results_dir: "{{ main_dir }}/setup_results"

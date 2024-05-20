@@ -1,6 +1,6 @@
 - name: Clone software-defined-power
   git:
-    repo: "git@github.com:jpdiasfernandes/software-defined-power.git"
+    repo: "git@github.com:dianarodrigues2/software-defined-power.git"
     dest: "{{ energy_tool_dir }}"
     version: main
 
