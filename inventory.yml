@@ -9,7 +9,7 @@ all:
     # Dirs and files
     local_dir: /home/jpdiasfernandes/Projetos/Dissertação
     ansible_user: gsd
-    uname_r: 5.4.0-181-generic
+    uname_r: 5.15.0-89-generic
     main_dir: /home/gsd
     db_name: rocksdb
     app_dir: /home/gsd/Apps
@@ -52,7 +52,7 @@ all:
               - libndctl-dev
               - libdaxctl-dev
               - linux-tools-common
-              - linux-tools-5.4.0-181-generic
+              - linux-tools-{{ uname_r }}
               - python3-pip
               - python3-matplotlib
               - python3-pandas
