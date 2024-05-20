@@ -2,6 +2,7 @@
   git:
     repo: "https://github.com/jpdiasfernandes/kvbench.git"
     dest: "{{ kvbench_dir }}"
+    version: main
 
 - name: Ensure ~/.ansible/plugins/modules exists
   file:
