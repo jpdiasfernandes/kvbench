@@ -8,5 +8,6 @@
     #- make_vars
     #- install_ansible
     - install_kvbench
+    - install_at
     #- install_software_defined_power
     #- install_rocksdb

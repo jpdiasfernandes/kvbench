@@ -29,6 +29,9 @@ all:
     # Cmake version
     cmake_version: 3.22.2
 
+    #When to execute the playbook in remote host
+    time_of_day: now
+
     # System apt dependencies
     apt_pkg_deps:
               - libfmt-dev
@@ -54,6 +57,7 @@ all:
               - python3-matplotlib
               - python3-pandas
               - lm-sensors
+              - at
 
       
     # Session name change whenever

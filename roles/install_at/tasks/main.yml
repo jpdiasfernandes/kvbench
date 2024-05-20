@@ -1,0 +1,5 @@
+- name: Enable at deamon at boot
+  systemd_service:
+    name: atd
+    enabled: true
+    state: started
