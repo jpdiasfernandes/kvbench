@@ -60,7 +60,7 @@ all:
     # When playbooks are called through run-remote (i.e. locally inside the remote host) its needed
     # to set this variable since its not supported the overlay of ansible variables passed through
     # the command line to run-remote playbool
-    session_name: run-memory-tests
+    session_name: run-test-default
 
     # Systems hardware limitations
     memory_limit: 64G
@@ -68,7 +68,7 @@ all:
     allowed_cpus: 0,2,4,6,8,10,12,14,16,18,20,22,24,26,28,30,32,34,36,38,40,42,44,46
 
     workload_fixed_settings:
-      num_operations: 50000000
+      num_operations: 5000000
       threads: 16
       bench_workload_name: ycsbwklda
       cool_down_time: 30
@@ -210,7 +210,7 @@ all:
             max_total_wal_size: 0
             use_existing_db: True
             YCSB_uniform_distribution: True
-            duration: 300 # Time in seconds for the random-ops tests to run. When 0 then num & reads determine the test duration
+            duration: 10 # Time in seconds for the random-ops tests to run. When 0 then num & reads determine the test duration
 
 
     # Db_bench variable options depending on workload
@@ -227,9 +227,6 @@ all:
         duration: 120
       95-5_4T:
         duration: 120
-###############Base Test###############
-      #50-50_base_test:
-      #  duration: 300
 ###############Memory delta tests#################
       #cache_size param
       50-50_delta_cache_8G:
@@ -260,35 +257,6 @@ all:
       50-50_delta_max_write_buffer_number_8:
         max_write_buffer_number: 8
 ###############Concurrency delta tests#################
-      #foreground threads param
-      #50-50_delta_1T:
-      #  YCSB_uniform_distribution: True
-      #  use_existing_db: True
-      #  duration: 300
-      #50-50_delta_2T:
-      #  YCSB_uniform_distribution: True
-      #  use_existing_db: True
-      #  duration: 300
-      #50-50_delta_4T:
-      #  YCSB_uniform_distribution: True
-      #  use_existing_db: True
-      #  duration: 300
-      #50-50_delta_8T:
-      #  YCSB_uniform_distribution: True
-      #  use_existing_db: True
-      #  duration: 300
-      #50-50_delta_32T:
-      #  YCSB_uniform_distribution: True
-      #  use_existing_db: True
-      #  duration: 300
-      #50-50_delta_64T:
-      #  YCSB_uniform_distribution: True
-      #  use_existing_db: True
-      #  duration: 300
-      #50-50_delta_128T:
-      #  YCSB_uniform_distribution: True
-      #  use_existing_db: True
-      #  duration: 300
       #max_background_compactions param
       50-50_delta_compactions_1:
         max_background_compactions: 1

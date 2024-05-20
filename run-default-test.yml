@@ -1,0 +1,51 @@
+- name: Run workloads that focus on memory specific options of db_bench. Maintaning a fixed set of options, in order to be able to compare the energy consequences of certain changes in the memory specific options.
+  hosts: localhost
+  connection: local
+  gather_facts: True
+  roles:
+    - set_vars_session
+
+    - cpu_governor_performance
+
+    ################ Start cache_size delta tests ################
+    - role: prepare_run_monitor_graph
+      workload: 50-50_delta_cache_8G
+
+    - role: prepare_run_monitor_graph
+      workload: 50-50_delta_cache_16G
+
+    - role: prepare_run_monitor_graph
+      workload: 50-50_delta_cache_32G
+
+    - role: prepare_run_monitor_graph
+      workload: 50-50_delta_cache_64G
+
+    - role: prepare_run_monitor_graph
+      workload: 50-50_delta_cache_8G
+
+    ################ Start cache_index_and_filter_blocks delta tests ################
+    - role: prepare_run_monitor_graph
+      workload: 50-50_delta_cache_index_filter_true
+
+    ################ Start write_buffer_size delta tests ################
+    - role: prepare_run_monitor_graph
+      workload: 50-50_delta_write_buffer_size_64M
+
+    - role: prepare_run_monitor_graph
+      workload: 50-50_delta_write_buffer_size_256M
+
+    - role: prepare_run_monitor_graph
+      workload: 50-50_delta_write_buffer_size_512M
+
+    - role: prepare_run_monitor_graph
+      workload: 50-50_delta_write_buffer_size_1G
+
+    ################ Start write_buffer_size delta tests ################
+    - role: prepare_run_monitor_graph
+      workload: 50-50_delta_max_write_buffer_number_1
+
+    - role: prepare_run_monitor_graph
+      workload: 50-50_delta_max_write_buffer_number_4
+
+    - role: prepare_run_monitor_graph
+      workload: 50-50_delta_max_write_buffer_number_8
