@@ -14,54 +14,56 @@
 
     #- create_backup
 
-    ################ Start cache_size delta tests ################
+
+    ################ Start bench_workload delta test ################
     - role: prepare_run_monitor_graph
-      workload: delta_cache_8G
+      workload: delta_B
       load_backup: True
 
     - role: prepare_run_monitor_graph
-      workload: delta_cache_16G
+      workload: delta_C
       load_backup: True
 
     - role: prepare_run_monitor_graph
-      workload: delta_cache_32G
+      workload: delta_D
+      load_backup: True
+
+
+    ################ Start key_size delta test ################
+    - role: prepare_run_monitor_graph
+      workload: delta_key_size_64
       load_backup: True
 
     - role: prepare_run_monitor_graph
-      workload: delta_cache_64G
-      load_backup: True
-
-    ################ Start cache_index_and_filter_blocks delta tests ################
-    - role: prepare_run_monitor_graph
-      workload: delta_cache_index_filter_true
-      load_backup: True
-
-    ################ Start write_buffer_size delta tests ################
-    - role: prepare_run_monitor_graph
-      workload: delta_write_buffer_size_64M
+      workload: delta_key_size_128
       load_backup: True
 
     - role: prepare_run_monitor_graph
-      workload: delta_write_buffer_size_256M
+      workload: delta_key_size_512
       load_backup: True
 
     - role: prepare_run_monitor_graph
-      workload: delta_write_buffer_size_512M
+      workload: delta_key_size_1K
+      load_backup: True
+
+    ################ Start value_size delta test ################
+    - role: prepare_run_monitor_graph
+      workload: delta_value_size_512
       load_backup: True
 
     - role: prepare_run_monitor_graph
-      workload: delta_write_buffer_size_1G
-      load_backup: True
-
-    ################ Start write_buffer_size delta tests ################
-    - role: prepare_run_monitor_graph
-      workload: delta_max_write_buffer_number_1
+      workload: delta_value_size_16K
       load_backup: True
 
     - role: prepare_run_monitor_graph
-      workload: delta_max_write_buffer_number_4
+      workload: delta_value_size_256K
       load_backup: True
 
     - role: prepare_run_monitor_graph
-      workload: delta_max_write_buffer_number_8
+      workload: delta_value_size_1M
+      load_backup: True
+
+    ################ Start YCSB_uniform_distribution delta test ################
+    - role: prepare_run_monitor_graph
+      workload: delta_YCSB_uniform_distribution_false
       load_backup: True

@@ -218,6 +218,10 @@ all:
             use_existing_db: True
             YCSB_uniform_distribution: True
             duration: 300 # Time in seconds for the random-ops tests to run. When 0 then num & reads determine the test duration
+            #Algorithm to use for WAL compression
+            wal_compression: none
+            #If non-negative, compression starts from this level. Levels with number < min_level_to_compress are not compressed. Otherwise, apply compression_type to all levels.
+            min_level_to_compress: -1
 
 
     # Db_bench variable options depending on workload
@@ -278,8 +282,10 @@ all:
       #max_background_flushes param
       delta_flushes_2:
         max_background_flushes: 2
+        max_write_buffer_number: 2
       delta_flushes_4:
         max_background_flushes: 4
+        max_write_buffer_number: 4
 ###############Background delta tests###############
       #compaction_style param
       delta_compaction_style_universal:
@@ -310,11 +316,26 @@ all:
       delta_YCSB_uniform_false:
         YCSB_uniform_distribution: False
 ###############Misc delta tests###############
-      delta_compression_snappy:
+      delta_wal_compression_on:
+        wal_compression: snappy
+      min_level_to_compress_1:
+        min_level_to_compress: 1
         compression_type: snappy
-      delta_compression_zlib:
-        compression_type: zlib
-      delta_compression_lz4:
-        compression_type: lz4
-      delta_compression_zstd:
-        compression_type: zstd
+      min_level_to_compress_2:
+        min_level_to_compress: 2
+        compression_type: snappy
+      min_level_to_compress_3:
+        min_level_to_compress: 3
+        compression_type: snappy
+      min_level_to_compress_4:
+        min_level_to_compress: 4
+        compression_type: snappy
+      min_level_to_compress_5:
+        min_level_to_compress: 5
+        compression_type: snappy
+      min_level_to_compress_6:
+        min_level_to_compress: 6
+        compression_type: snappy
+      min_level_to_compress_7:
+        min_level_to_compress: 7
+        compression_type: snappy

@@ -1,0 +1,50 @@
+- name: Run workloads that focus on memory specific options of db_bench. Maintaning a fixed set of options, in order to be able to compare the energy consequences of certain changes in the memory specific options.
+  hosts: localhost
+  connection: local
+  gather_facts: True
+  roles:
+    - set_vars_session
+
+    - cpu_governor_performance
+
+    #- delete_cur_db
+
+    #- role: prepare_run_monitor_graph
+    #  workload: fillrandom_100M
+
+    #- create_backup
+
+
+    ################ Start min_level delta test ################
+    - role: prepare_run_monitor_graph
+      workload: delta_min_level_to_compress_1
+      load_backup: True
+
+    - role: prepare_run_monitor_graph
+      workload: delta_min_level_to_compress_2
+      load_backup: True
+
+    - role: prepare_run_monitor_graph
+      workload: delta_min_level_to_compress_3
+      load_backup: True
+
+    - role: prepare_run_monitor_graph
+      workload: delta_min_level_to_compress_4
+      load_backup: True
+
+    - role: prepare_run_monitor_graph
+      workload: delta_min_level_to_compress_5
+      load_backup: True
+
+    - role: prepare_run_monitor_graph
+      workload: delta_min_level_to_compress_6
+      load_backup: True
+
+    - role: prepare_run_monitor_graph
+      workload: delta_min_level_to_compress_7
+      load_backup: True
+
+    ################ Start wal compression delta test ################
+    - role: prepare_run_monitor_graph
+      workload: delta_wal_compression_on
+      load_backup: True

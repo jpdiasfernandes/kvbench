@@ -1,0 +1,26 @@
+- name: Run workloads that focus on memory specific options of db_bench. Maintaning a fixed set of options, in order to be able to compare the energy consequences of certain changes in the memory specific options.
+  hosts: localhost
+  connection: local
+  gather_facts: True
+  roles:
+    - set_vars_session
+
+    - cpu_governor_performance
+
+    #- delete_cur_db
+
+    #- role: prepare_run_monitor_graph
+    #  workload: fillrandom_100M
+
+    #- create_backup
+
+
+    ################ Start sync delta test ################
+    - role: prepare_run_monitor_graph
+      workload: delta_sync_on
+      load_backup: True
+
+    ################ Start compaction style delta test ################
+    - role: prepare_run_monitor_graph
+      workload: delta_compaction_style_universal
+      load_backup: True
