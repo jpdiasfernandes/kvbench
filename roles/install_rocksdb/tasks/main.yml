@@ -7,6 +7,6 @@
 - name: Build rocksdb
   shell: |
     cmake -DWITH_SNAPPY=ON -DWITH_LZ4=ON -DWITH_ZSTD=ON -DWITH_ZLIB=ON -DWITH_BZ2=ON -DCMAKE_BUILD_TYPE=Release -DUSE_RTTI=true -B build -S .
-    cmake --build build -- -j 4
+    cmake --build build -- -j 8
   args:
     chdir: "{{ source_dir }}"

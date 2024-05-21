@@ -1,3 +1,4 @@
 dependencies:
   - role: install_sys_deps
   - role: install_cmake
+  - role: install_erm
