@@ -1,7 +1,7 @@
 - name: set repetitions if not defined
   set_fact:
     repetitions: 1
-  when: repetition is not defined
+  when: repetitions is not defined
 
 - name: Create roles lists base
   set_fact:

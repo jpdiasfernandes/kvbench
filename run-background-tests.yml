@@ -1,5 +1,7 @@
 - name: Run workloads that focus on memory specific options of db_bench. Maintaning a fixed set of options, in order to be able to compare the energy consequences of certain changes in the memory specific options.
   hosts: localhost
+  vars:
+    session_name: run-background-tests
   connection: local
   gather_facts: True
   roles:
@@ -19,8 +21,10 @@
     - role: prepare_run_monitor_graph
       workload: delta_sync_on
       load_backup: True
+      repetitions: 2
 
     ################ Start compaction style delta test ################
     - role: prepare_run_monitor_graph
       workload: delta_compaction_style_universal
       load_backup: True
+      repetitions: 2
