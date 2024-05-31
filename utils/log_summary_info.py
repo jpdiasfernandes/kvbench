@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# encoding: utf8
 
 from __future__ import (absolute_import, division, print_function)
 __metaclass__ = type
