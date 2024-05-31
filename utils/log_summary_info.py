@@ -208,6 +208,8 @@ def run_module():
 
     print(json.dumps(input_json, indent=2), file=output_fd)
 
+    module.exit_json(**result)
+
 def main():
     run_module()
 
