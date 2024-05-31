@@ -2,5 +2,6 @@
   log_summary_info:
     energy_file: "{{ energy_pid_file.stdout_lines[0] | trim }}"
     event_file: "{{ rocksdb_log_file }}"
+    throughput_file: "{{ bench_log }}"
     chdir: "{{ workload_results_dir }}"
     repo_url: "{{ workload_repo_url }}"
