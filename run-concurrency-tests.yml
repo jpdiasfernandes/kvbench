@@ -1,7 +1,7 @@
 - name: Run workloads that focus on concurrency specific options of db_bench. Maintaning a fixed set of options, in order to be able to compare the energy consequences of certain changes in the concurrency specific options.
   hosts: localhost
   vars:
-    session_name: run-concurrency-tests
+    session_name: concurrency
   connection: local
   gather_facts: True
   roles:

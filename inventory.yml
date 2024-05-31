@@ -291,10 +291,8 @@ all:
       #compaction_style param
       delta_compaction_style_universal:
         compaction_style: 1
-        duration: 30
       #sync param
       delta_sync_on:
-        duration: 30
         sync: True
 ###############Workload delta tests###############
       #key_size param
