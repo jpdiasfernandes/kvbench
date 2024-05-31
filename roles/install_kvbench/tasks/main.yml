@@ -9,10 +9,16 @@
     path: "~/.ansible/plugins/modules"
     state: directory
 
-- name: Copy utils modules to ansible path
+- name: Copy util plot_energy module to ansible path
   copy:
     src: "{{ kvbench_dir }}/utils/plot_energy.py"
     dest: "~/.ansible/plugins/modules/plot_energy.py"
+    remote_src: yes
+
+- name: Copy util log_summary_info module to ansible path
+  copy:
+    src: "{{ kvbench_dir }}/utils/log_summary_info.py"
+    dest: "~/.ansible/plugins/modules/log_summary_info.py"
     remote_src: yes
 
 - name: Copy utils scripts to utils path

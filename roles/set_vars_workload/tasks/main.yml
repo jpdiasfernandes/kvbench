@@ -41,6 +41,18 @@
   set_fact:
     workload_results_dir: "{{ session_results_dir }}/{{ workload }}"
 
+- name: Set datetime epoch
+  set_fact:
+    date_time_epoch: "{{ (hostvars[inventory_hostname]['ansible_date_time']['iso8601'] | to_datetime('%Y-%m-%dT%H:%M:%SZ')).timestamp()}}"
+
+- name: Set datetime in url
+  set_fact:
+    date_time_url: "{{ '%Y-%m-%dT%H%%3A4%M%%3A4%SZ' | strftime(date_time_epoch) }}"
+
+- name: set repo_url for this workload
+  set_fact:
+    workload_repo_url: "{{ repo_url_base }}/{{ session_name }}/{{ date_time_url }}/{{ workload }}"
+
 - name: Create directory for workload_results_dir if it does not exist
   file:
     path: "{{ workload_results_dir }}"

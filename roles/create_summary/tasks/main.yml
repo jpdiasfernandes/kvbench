@@ -1,0 +1,6 @@
+- name: Call script to create summary for this test
+  log_summary_info:
+    energy_file: "{{ energy_pid_file.stdout_lines[0] | trim }}"
+    event_file: "{{ rocksdb_log_file }}"
+    chdir: "{{ workload_results_dir }}"
+    repo_url: "{{ workload_repo_url }}"
