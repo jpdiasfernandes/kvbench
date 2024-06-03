@@ -49,6 +49,16 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import os
 import json
+import re
+
+def get_tid_from_col(col_string):
+    tid_col_regex = r'.*?Tid (\d+) Energy'
+    match_tid = re.match(tid_col_regex, col_string)
+    if match_tid != None:
+        return int(match_tid.group(1))
+
+    #If did could not match return None
+    return None
 
 def to_datetime(date_string):
     return pd.to_datetime(date_string, format="%d-%m %H:%M:%S")
@@ -210,7 +220,33 @@ def run_module():
             elif event_type == "flush":
                 plt.plot([dur_start], [y], "x", color="r")
 
+    plt.xlabel('Time (seconds)')
+    plt.ylabel("Energy (Joules)")
+    plt.legend()
+    plt.savefig(file_no_format + '-tids-energy-events.png')
 
+    # Create graph for accumulated energy of foreground threads
+
+    df_foreground = pd.DataFrame()
+    foreground_col_name = "foreground threads"
+
+    for time, metric in metrics.items():
+        for key, value in metric.items():
+            tid =  get_tid_from_col(key)
+            # Check this collumn is a tid and it is not a flush/compaction thread
+            if tid != None and tid not in event_tids:
+                dur = get_duration(to_datetime_year(time), first_date_time)
+                if dur not in df_foreground.index:
+                    df_foreground.at[dur, foreground_col_name] = float(value)
+                else:
+                    df_foreground.at[dur, foreground_col_name] += float(value)
+
+    plt.figure().set_figwidth(last_dur/20)
+    df_foreground.plot()
+    plt.title('Foreground threads accumulated energy')
+    plt.ylabel('J')
+    plt.xlabel('seconds')
+    plt.savefig(file_no_format + '-foreground-energy.png')
 
     #lines_events = events.readlines()
 
@@ -238,10 +274,6 @@ def run_module():
     #        elif event_type == "Flush":
     #            plt.plot([dur], [y], "s", color="r")
 
-    plt.xlabel('Time (seconds)')
-    plt.ylabel("Energy (Joules)")
-    plt.legend()
-    plt.savefig(file_no_format + '-tids-energy-events.png')
 
     module.exit_json(**result)
 
