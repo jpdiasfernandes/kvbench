@@ -47,7 +47,7 @@
 
 - name: Set datetime in url
   set_fact:
-    date_time_url: "{{ '%Y-%m-%dT%H%%3A4%M%%3A4%SZ' | strftime(date_time_epoch) }}"
+    date_time_url: "{{ '%Y-%m-%dT%H%%3A%M%%3A%SZ' | strftime(date_time_epoch) }}"
 
 - name: set repo_url for this workload
   set_fact:
