@@ -223,6 +223,9 @@ all:
             wal_compression: none
             #If non-negative, compression starts from this level. Levels with number < min_level_to_compress are not compressed. Otherwise, apply compression_type to all levels.
             min_level_to_compress: -1
+            #If non-empty and min_level_to_compress == -1, compression on these levels is activated
+            #Example: "0;1;6;7" means levels 0,1,6 and 7 are going to be compressed.
+            levels_to_compress: ""
 
 
     # Db_bench variable options depending on workload
@@ -319,24 +322,27 @@ all:
 ###############Misc delta tests###############
       delta_wal_compression_on:
         wal_compression: snappy
-      min_level_to_compress_1:
+      delta_min_level_to_compress_1:
         min_level_to_compress: 1
         compression_type: snappy
-      min_level_to_compress_2:
+      delta_min_level_to_compress_2:
         min_level_to_compress: 2
         compression_type: snappy
-      min_level_to_compress_3:
+      delta_min_level_to_compress_3:
         min_level_to_compress: 3
         compression_type: snappy
-      min_level_to_compress_4:
+      delta_min_level_to_compress_4:
         min_level_to_compress: 4
         compression_type: snappy
-      min_level_to_compress_5:
+      delta_min_level_to_compress_5:
         min_level_to_compress: 5
         compression_type: snappy
-      min_level_to_compress_6:
+      delta_min_level_to_compress_6:
         min_level_to_compress: 6
         compression_type: snappy
-      min_level_to_compress_7:
+      delta_min_level_to_compress_7:
         min_level_to_compress: 7
+        compression_type: snappy
+      delta_compress_0_1:
+        levels_to_compress: "0;1"
         compression_type: snappy

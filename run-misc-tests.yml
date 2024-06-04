@@ -58,3 +58,9 @@
       workload: delta_wal_compression_on
       load_backup: True
       repetitions: 2
+
+    ################ Start priority compression delta test ################
+    - role: prepare_run_monitor_graph
+      workload: delta_compress_0_1
+      load_backup: True
+      repetitions: 2
