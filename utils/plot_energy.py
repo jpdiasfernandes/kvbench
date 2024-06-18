@@ -187,6 +187,7 @@ def run_module():
     plt.figure().set_figwidth(last_dur/2)
 
     event_tids = []
+    compaction_tids = []
     for event in sub_events:
         tid = event["thread_id_system"]["start"]
         if tid not in event_tids:
@@ -205,6 +206,9 @@ def run_module():
         dur_end = get_duration(to_datetime_year(date_time_end), first_date_time)
         collumn_name = ' Tid ' + str(tid) + ' Energy'
 
+
+        if event_type == "compaction" and tid not in compaction_tids:
+            compaction_tids.append(tid)
 
         if dur_start in threads_df.index:
             y = threads_df.loc[dur_start, collumn_name]
@@ -228,7 +232,9 @@ def run_module():
     # Create graph for accumulated energy of foreground threads
 
     df_foreground = pd.DataFrame()
+    df_compaction = pd.DataFrame()
     foreground_col_name = "foreground threads"
+    compaction_col_name = "compaction threads"
 
     for time, metric in metrics.items():
         for key, value in metric.items():
@@ -240,6 +246,12 @@ def run_module():
                     df_foreground.at[dur, foreground_col_name] = float(value)
                 else:
                     df_foreground.at[dur, foreground_col_name] += float(value)
+            if tid != None and tid in compaction_tids:
+                dur = get_duration(to_datetime_year(time), first_date_time)
+                if dur not in df_compaction.index:
+                    df_compaction.at[dur, compaction_col_name] = float(value)
+                else:
+                    df_compaction.at[dur, compaction_col_name] += float(value)
 
     plt.figure().set_figwidth(last_dur/20)
     df_foreground.plot()
@@ -248,6 +260,12 @@ def run_module():
     plt.xlabel('seconds')
     plt.savefig(file_no_format + '-foreground-energy.png')
 
+    plt.figure().set_figwidth(last_dur/20)
+    df_compaction.plot()
+    plt.title('Compaction threads accumulated energy')
+    plt.ylabel('J')
+    plt.xlabel('seconds')
+    plt.savefig(file_no_format + '-compaction-energy.png')
     #lines_events = events.readlines()
 
     #for event in lines_events[1:]:

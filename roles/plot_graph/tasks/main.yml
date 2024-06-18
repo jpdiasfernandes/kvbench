@@ -32,7 +32,6 @@
   debug:
     msg: "{{ energy_pid_file.stdout_lines[0] | trim }}"
 
-
 - name: Plot energy graph
   plot_energy:
     energy_file: "{{ energy_pid_file.stdout_lines[0] | trim }}"
@@ -42,4 +41,3 @@
 
   register: out_plot_energy
   ignore_errors: True
-
