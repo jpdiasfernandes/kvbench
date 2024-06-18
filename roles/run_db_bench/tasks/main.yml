@@ -1,6 +1,6 @@
 - name: Create db dir if not exists
   file:
-    path: {{ db_dir }}
+    path: "{{ db_dir }}"
     state: directory
 
 # For now it will not be able to add aditional flags just to test the setup1 workload
