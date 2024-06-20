@@ -202,3 +202,21 @@
   set_fact:
     sys_energy_file: "{{workload_results_dir}}/sys-energy-{{workload}}-{{find_sys['matched']}}.csv"
   when: find_sys['matched'] != 0
+
+- name: Find the existing sys-hardware-workload files
+  find:
+    paths: "{{workload_results_dir}}"
+    file_type: file
+    use_regex: yes
+    patterns: "sys-hardware-{{workload}}(-[0-9]+)?\\.csv"
+  register: find_hardware
+
+- name: set sys-hardware-workload
+  set_fact:
+    sys_hardware_file: "{{workload_results_dir}}/sys-hardware-{{workload}}.csv"
+  when: find_hardware['matched'] == 0
+
+- name: set sys-hardware-workload when find_hardware.matched != 0
+  set_fact:
+    sys_hardware_file: "{{workload_results_dir}}/sys-hardware-{{workload}}-{{find_hardware['matched']}}.csv"
+  when: find_hardware['matched'] != 0

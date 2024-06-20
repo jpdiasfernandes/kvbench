@@ -10,7 +10,6 @@
   shell: |
     screen -X -S {{ energy_screen_name }} stuff "^C"
 
-#Rename sys.csv to sys_energy_file
 #Since software-defined-power does not yet implement a output file option
 
 - name: move sys.csv to sys_energy_file location
@@ -24,3 +23,9 @@
   args:
     creates: "{{rocksdb_log_file}}"
     removes: "{{workload_results_dir}}/all_events.log"
+
+- name: move hardware.csv to sys_hardware_file location
+  command: mv "{{workload_results_dir}}/hardware.csv" "{{sys_hardware_file}}"
+  args:
+    creates: "{{sys_hardware_file}}"
+    removes: "{{workload_results_dir}}/hardware.csv"
