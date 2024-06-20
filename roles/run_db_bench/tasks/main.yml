@@ -14,8 +14,6 @@
                              --threads={{ num_threads }} \
                              --db={{db_dir}} \
                              {{ db_bench_options_string }}
-  async: 604800
-  poll: 10
   args:
     chdir: "{{ workload_results_dir }}"
   become: yes
