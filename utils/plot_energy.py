@@ -184,16 +184,21 @@ def run_module():
 
     sub_events = event_json["open_event"]["sub_events"]
 
-    plt.figure().set_figwidth(last_dur/2)
+    plt.figure().set_figwidth(last_dur/4)
 
     event_tids = []
     compaction_tids = []
     for event in sub_events:
         tid = event["thread_id_system"]["start"]
+        split_name = event["name"].split("#")
+        event_type = split_name[0]
         if tid not in event_tids:
             event_tids.append(tid)
             name = ' Tid ' + str(tid) + ' Energy'
-            label = 'Tid ' + str(tid) + ' energy'
+            if event_type == "compaction":
+                label = 'Compaction ' + str(tid) + ' energy'
+            elif event_type == "flush":
+                label = 'Flush ' + str(tid) + ' energy'
             plt.plot(threads_df.index.tolist(), threads_df[name].tolist(), label=label, linestyle='dashed')
 
     for event in sub_events:
