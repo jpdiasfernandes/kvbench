@@ -9,12 +9,12 @@
 
     - cpu_governor_performance
 
-    - delete_cur_db
+    #- delete_cur_db
 
-    - role: prepare_run_monitor_graph
-      workload: fillrandom_200M
+    #- role: prepare_run_monitor_graph
+    #  workload: fillrandom_200M
 
-    - create_backup
+    #- create_backup
 
 
     ################ Start flush delta tests ################
