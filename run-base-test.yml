@@ -1,0 +1,15 @@
+- name: Run the base workload that is goind to serve as a comparing factor against the other workloads.
+  hosts: localhost
+  vars:
+    session_name: base
+  connection: local
+  gather_facts: True
+  roles:
+    - set_vars_session
+
+    - cpu_governor_performance
+
+    - role: prepare_run_monitor_graph
+      workload: base
+      load_backup: True
+      repetitions: 2
