@@ -225,7 +225,7 @@ all:
             max_total_wal_size: 0
             use_existing_db: True
             YCSB_uniform_distribution: True
-            duration: 720 # Time in seconds for the random-ops tests to run. When 0 then num & reads determine the test duration
+            duration: 10 # Time in seconds for the random-ops tests to run. When 0 then num & reads determine the test duration
             #Algorithm to use for WAL compression
             wal_compression: none
             #If non-negative, compression starts from this level. Levels with number < min_level_to_compress are not compressed. Otherwise, apply compression_type to all levels.
@@ -295,8 +295,6 @@ all:
       delta_compactions_16:
         max_background_compactions: 16
       #max_background_flushes param
-      delta_1T:
-        max_background_compactions: 4
       delta_flushes_2:
         max_background_flushes: 2
         max_write_buffer_number: 2
