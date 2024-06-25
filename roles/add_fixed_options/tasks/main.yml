@@ -5,13 +5,13 @@
 
 - name: Merge db_bench_options with phase db_bench options when session_options defined
   set_fact:
-    db_bench_options: "{{ db_bench_fixed_options | combine(session_options) | dict2items }}"
-  when: session_options is defined
+    db_bench_options: "{{ db_bench_fixed_options | combine(session_options[workload]) | dict2items }}"
+  when: session_options[workload] is defined
 
 - name: Only use db_bench_fixed_options
   set_fact:
     db_bench_options: "{{ db_bench_fixed_options | dict2items }}"
-  when: session_options is not defined
+  when: session_options[workload] is not defined
 
 - name: Init empty list
   set_fact:

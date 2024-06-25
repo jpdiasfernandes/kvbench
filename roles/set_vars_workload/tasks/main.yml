@@ -179,10 +179,8 @@
 
 - name: Get session map for variable db_bench options
   set_fact:
-    session_options: "{{ db_bench_session_options[workload] }}"
+    session_options: "{{ session_options | default({}) | combine({ workload : db_bench_session_options[workload]}) }}"
   when: db_bench_session_options[workload] is defined
-
-
 
 # Renaming variables (special case where there is a need to rename and not possible to decide output file name)
 - name: Find the existing sys-energy-workload files
