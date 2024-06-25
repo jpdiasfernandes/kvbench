@@ -27,7 +27,7 @@ all:
     energy_tool_server: "sdpmonserver"
     energy_tool_client: "/usr/local/lib/libsdpmonclient.so"
     ssh_local_git: /home/jpdiasfernandes/.ssh/id_ed25519.pub
-    repo_url_base: https://github.com/jpdiasfernandes/kvs-energy-bench/tree/main/rocksdb/alibaba/short_tests
+    repo_url_base: https://github.com/jpdiasfernandes/kvs-energy-bench/tree/main/rocksdb/alibaba/long_tests
 
     # Cmake version
     cmake_version: 3.22.2
@@ -80,7 +80,7 @@ all:
       num_operations: 200000000
       threads: 16
       bench_workload_name: ycsbwklda
-      cool_down_time: 5
+      cool_down_time: 90
 
     # Workload db_bench options
     workload_settings:
@@ -225,7 +225,7 @@ all:
             max_total_wal_size: 0
             use_existing_db: True
             YCSB_uniform_distribution: True
-            duration: 10 # Time in seconds for the random-ops tests to run. When 0 then num & reads determine the test duration
+            duration: 720 # Time in seconds for the random-ops tests to run. When 0 then num & reads determine the test duration
             #Algorithm to use for WAL compression
             wal_compression: none
             #If non-negative, compression starts from this level. Levels with number < min_level_to_compress are not compressed. Otherwise, apply compression_type to all levels.
