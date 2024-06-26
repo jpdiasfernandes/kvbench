@@ -23,65 +23,65 @@
       load_backup: True
       repetitions: 2
 
-    - role: prepare_run_monitor_graph
-      workload: delta_flushes_4
-      load_backup: True
-      repetitions: 2
+    #- role: prepare_run_monitor_graph
+    #  workload: delta_flushes_4
+    #  load_backup: True
+    #  repetitions: 2
 
-    ################ Start compaction delta tests ################
-    - role: prepare_run_monitor_graph
-      workload: delta_compactions_1
-      load_backup: True
-      repetitions: 2
+    ################# Start compaction delta tests ################
+    #- role: prepare_run_monitor_graph
+    #  workload: delta_compactions_1
+    #  load_backup: True
+    #  repetitions: 2
 
-    - role: prepare_run_monitor_graph
-      workload: delta_compactions_2
-      load_backup: True
-      repetitions: 2
+    #- role: prepare_run_monitor_graph
+    #  workload: delta_compactions_2
+    #  load_backup: True
+    #  repetitions: 2
 
-    - role: prepare_run_monitor_graph
-      workload: delta_compactions_8
-      load_backup: True
-      repetitions: 2
+    #- role: prepare_run_monitor_graph
+    #  workload: delta_compactions_8
+    #  load_backup: True
+    #  repetitions: 2
 
-    - role: prepare_run_monitor_graph
-      workload: delta_compactions_16
-      load_backup: True
-      repetitions: 2
+    #- role: prepare_run_monitor_graph
+    #  workload: delta_compactions_16
+    #  load_backup: True
+    #  repetitions: 2
 
     ################ Start foreground threads delta tests ################
 
-    - role: prepare_run_monitor_graph
-      workload: delta_1T
-      load_backup: True
-      repetitions: 2
+    #- role: prepare_run_monitor_graph
+    #  workload: delta_1T
+    #  load_backup: True
+    #  repetitions: 2
 
-    - role: prepare_run_monitor_graph
-      workload: delta_2T
-      load_backup: True
-      repetitions: 2
+    #- role: prepare_run_monitor_graph
+    #  workload: delta_2T
+    #  load_backup: True
+    #  repetitions: 2
 
-    - role: prepare_run_monitor_graph
-      workload: delta_4T
-      load_backup: True
-      repetitions: 2
+    #- role: prepare_run_monitor_graph
+    #  workload: delta_4T
+    #  load_backup: True
+    #  repetitions: 2
 
-    - role: prepare_run_monitor_graph
-      workload: delta_8T
-      load_backup: True
-      repetitions: 2
+    #- role: prepare_run_monitor_graph
+    #  workload: delta_8T
+    #  load_backup: True
+    #  repetitions: 2
 
-    - role: prepare_run_monitor_graph
-      workload: delta_32T
-      load_backup: True
-      repetitions: 2
+    #- role: prepare_run_monitor_graph
+    #  workload: delta_32T
+    #  load_backup: True
+    #  repetitions: 2
 
     - role: prepare_run_monitor_graph
       workload: delta_64T
       load_backup: True
       repetitions: 2
 
-    - role: prepare_run_monitor_graph
-      workload: delta_128T
-      load_backup: True
-      repetitions: 2
+    #- role: prepare_run_monitor_graph
+    #  workload: delta_128T
+    #  load_backup: True
+    #  repetitions: 2
