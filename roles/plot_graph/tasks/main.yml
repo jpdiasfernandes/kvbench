@@ -69,3 +69,4 @@
       - "energy-{{workload_repetition}}-tids-energy-events.png"
       - "energy-{{workload_repetition}}-tids-energy.png"
     output: "{{plots_merged_file}}"
+    chdir: "{{workload_results_dir}}"

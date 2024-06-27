@@ -26,6 +26,10 @@ options:
         description: The output path for the packed image
         required: false
         type: str
+    chdir:
+        description: The current working directory
+        required: false
+        type: str
 
 author:
     - José Pedro Fernandes (@jpdiasfernandes)
@@ -62,6 +66,7 @@ from ansible.module_utils.basic import AnsibleModule
 from ansible.module_utils.ph import phspprg
 from collections import namedtuple
 from PIL import Image
+import os
 
 
 def run_module():
@@ -97,6 +102,10 @@ def run_module():
         output = "packed_image.png"
     else:
         output = module.params['output']
+
+    if module.params['chdir'] != None:
+        os.chdir(module.params['chdir'])
+
 
     width, height = merge_images(images, max_width, output)
 
