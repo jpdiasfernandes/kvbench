@@ -164,6 +164,24 @@
     rocksdb_log_file: "{{workload_results_dir}}/rocksdb-{{workload}}-{{find_rocksdb_log['matched']}}.log"
   when: find_rocksdb_log['matched'] != 0
 
+- name: Get all plot merged files that have the same prefix
+  find:
+    paths: "{{workload_results_dir}}"
+    file_type: file
+    use_regex: yes
+    patterns: "plots_summary(-[0-9]+)?\\.png"
+  register: find_plots_merged
+
+- name: set plots_merged_file when find_plots_merged == 0
+  set_fact:
+    plots_merged_file: "{{workload_results_dir}}/plots_summary.png"
+  when: find_plots_merged['matched'] == 0
+
+- name: set plots_merged_file when find_plots_merged != 0
+  set_fact:
+    plots_merged_file: "{{workload_results_dir}}/plots_summary-{{find_plots_merged['matched']}}.png"
+  when: find_plots_merged['matched'] != 0
+
 # screen session name variables
 - name: Set dstat screen session name
   set_fact:

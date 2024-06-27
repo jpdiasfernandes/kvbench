@@ -41,3 +41,31 @@
 
   register: out_plot_energy
   ignore_errors: True
+
+- name: Get workload with repetition in first repetition
+  set_fact:
+    workload_repetition: "{{workload}}"
+  when: find_plots_merged['matched'] == 0
+
+- name: Get workload with repetition when repeating
+  set_fact:
+    workload_repetition: "{{workload}}-{{find_plots_merged}}"
+  when: find_plots_merged['matched'] != 0
+
+#This way of finding all the files of a repetition by
+#using regex is not standard. It will make refactoring difficult
+#also. Maybe make a folder for each repetition
+- name: Merge all the output files to a summary plot image
+  image_packing:
+    image_paths:
+      - bench-log-{{workload_repetition}}-throughput.png
+      - dstat-{{workload_repetition}}-cpu.png
+      - dstat-{{workload_repetition}}-disk.png
+      - dstat-{{workload_repetition}}-mem.png
+      - energy-{{workload_repetition}}-acc-energy.png
+      - energy-{{workload_repetition}}-compaction-energy.png
+      - energy-{{workload_repetition}}-foreground-energy.png
+      - energy-{{workload_repetition}}-pids-energy.png
+      - energy-{{workload_repetition}}-tids-energy-events.png
+      - energy-{{workload_repetition}}-tids-energy.png
+    output: "{{plots_merged_file}}"
