@@ -34,7 +34,7 @@
 - name: Copy util image_packing to ansible path
   copy:
     src: "{{ kvbench_dir }}/utils/image_packing.py"
-    dest: "~/.ansible/plugins/module_utils/image_packing.py"
+    dest: "~/.ansible/plugins/modules/image_packing.py"
     remote_src: yes
 
 - name: Copy utils scripts to utils path
