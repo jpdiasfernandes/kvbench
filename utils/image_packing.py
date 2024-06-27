@@ -74,7 +74,8 @@ def run_module():
     module_args = dict(
         image_paths=dict(type='list', required=True, elements='str'),
         max_width=dict(type='int', required=False),
-        output=dict(type='str', required=False)
+        output=dict(type='str', required=False),
+        chdir=dict(type='str', required=False)
     )
 
 
