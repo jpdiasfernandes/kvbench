@@ -237,7 +237,7 @@
     sys_hardware_file: "{{workload_results_dir}}/sys-hardware-{{workload}}-{{find_hardware['matched']}}.csv"
   when: find_hardware['matched'] != 0
 
-- name: Find the existing energy-report file:
+- name: Find the existing energy-report file
   find:
     paths: "{{workload_results_dir}}"
     file_type: file
