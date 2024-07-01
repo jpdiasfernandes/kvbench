@@ -31,10 +31,17 @@
     src: "{{ kvbench_dir }}/utils/log_summary_info.py"
     dest: "~/.ansible/plugins/modules/log_summary_info.py"
     remote_src: yes
+
 - name: Copy util image_packing to ansible path
   copy:
     src: "{{ kvbench_dir }}/utils/image_packing.py"
     dest: "~/.ansible/plugins/modules/image_packing.py"
+    remote_src: yes
+
+- name: Copy util generate_energy_report to ansible path
+  copy:
+    src: "{{ kvbench_dir }}/utils/generate_energy_report.py"
+    dest: "~/.ansible/plugins/modules/generate_energy_report.py"
     remote_src: yes
 
 - name: Copy utils scripts to utils path
