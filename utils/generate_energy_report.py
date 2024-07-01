@@ -327,17 +327,17 @@ def generate_report(event_file, energy_file):
 
     flush_info, compaction_info, thread_info = generate_event_energy_report(event_json, energy)
 
-    event_json["open_event"]["energy_report"] = {
-        "total_energy" : total_energy,
-        "compaction_report" : compaction_info,
-        "flush_report" : flush_info,
-        "thread_report" : thread_info
+    energy_report = {
+     "total_energy" : total_energy,
+     "compaction_report" : compaction_info,
+     "flush_report" : flush_info,
+     "thread_report" : thread_info
     }
 
     event_fd.close()
 
-    event_fd = open(event_file, "w")
-    json.dump(event_json, event_fd, indent=2)
+    event_fd = open("energy-report-" + event_file, "w")
+    json.dump(energy_report, event_fd, indent=2)
 
     event_fd.close()
 
