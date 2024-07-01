@@ -236,3 +236,21 @@
   set_fact:
     sys_hardware_file: "{{workload_results_dir}}/sys-hardware-{{workload}}-{{find_hardware['matched']}}.csv"
   when: find_hardware['matched'] != 0
+
+- name: Find the existing energy-report file:
+  find:
+    paths: "{{workload_results_dir}}"
+    file_type: file
+    use_regex: yes
+    patterns: "energy-report-{{workload}}(-[0-9]+)?\\.png"
+  register: find_report
+
+- name: Set energy-report file when find_report.matched == 0
+  set_fact:
+    energy_report_file: "{{workloads_results_dir}}/energy-report-{{workload}}.png"
+  when: find_report['matched'] == 0
+
+- name: Set energy-report file when find_report.matched != 0
+  set_fact:
+    energy_report_file: "{{workloads_results_dir}}/energy-report-{{workload}}-{{find_report['matched']}}.png"
+  when: find_report['matched'] != 0

@@ -52,6 +52,13 @@
     workload_repetition: "{{workload}}-{{find_plots_merged}}"
   when: find_plots_merged['matched'] != 0
 
+- name: Plot energy reports
+  generate_energy_report:
+    energy_file: "{{ energy_pid_file.stdout_lines[0] | trim }}"
+    event_file: "{{ rocksdb_log_file }}"
+    chdir: "{{ workload_results_dir }}"
+    output_prefix: "{{ energy_report_file }}"
+
 #This way of finding all the files of a repetition by
 #using regex is not standard. It will make refactoring difficult
 #also. Maybe make a folder for each repetition
@@ -68,5 +75,6 @@
       - "energy-{{workload_repetition}}-pids-energy.png"
       - "energy-{{workload_repetition}}-tids-energy-events.png"
       - "energy-{{workload_repetition}}-tids-energy.png"
+      - "energy-report-{{workload_repetition}}.png"
     output: "{{plots_merged_file}}"
     chdir: "{{workload_results_dir}}"
