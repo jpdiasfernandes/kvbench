@@ -85,9 +85,9 @@ def run_module():
         print(os.getcwd())
 
     if module.params['output_prefix'] == None:
-        filename = "energy_report.png"
+        filename = "energy_report"
     else:
-        filename = module.params['output_prefix'] + ".png"
+        filename = module.params['output_prefix']
 
     new_event_json = generate_report(module.params['event_file'], module.params['energy_file'])
 
