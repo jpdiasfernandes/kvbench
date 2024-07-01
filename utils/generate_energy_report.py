@@ -336,7 +336,7 @@ def generate_report(event_file, energy_file):
 
     event_fd.close()
 
-    event_fd = open("energy-report-" + event_file, "w")
+    event_fd = open("energy-report.log", "a")
     json.dump(energy_report, event_fd, indent=2)
 
     event_fd.close()
