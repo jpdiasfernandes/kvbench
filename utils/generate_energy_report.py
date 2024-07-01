@@ -292,7 +292,11 @@ def get_thread_consumption(interval, tid):
     event_energy = 0
 
     for time in times:
-        event_energy += tid[str(time)]
+        try:
+            event_energy += tid[str(time)]
+        except:
+            print("No energy value for " + str(time), file=sys.stderr)
+
 
     return event_energy
 
