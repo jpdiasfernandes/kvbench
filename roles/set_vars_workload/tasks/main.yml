@@ -247,10 +247,10 @@
 
 - name: Set energy-report file when find_report.matched == 0
   set_fact:
-    energy_report_file: "{{workloads_results_dir}}/energy-report-{{workload}}.png"
+    energy_report_file: "{{workload_results_dir}}/energy-report-{{workload}}.png"
   when: find_report['matched'] == 0
 
 - name: Set energy-report file when find_report.matched != 0
   set_fact:
-    energy_report_file: "{{workloads_results_dir}}/energy-report-{{workload}}-{{find_report['matched']}}.png"
+    energy_report_file: "{{workload_results_dir}}/energy-report-{{workload}}-{{find_report['matched']}}.png"
   when: find_report['matched'] != 0
