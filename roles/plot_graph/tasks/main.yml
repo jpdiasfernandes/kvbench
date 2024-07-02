@@ -49,7 +49,7 @@
 
 - name: Get workload with repetition when repeating
   set_fact:
-    workload_repetition: "{{workload}}-{{find_plots_merged}}"
+    workload_repetition: "{{workload}}-{{find_plots_merged['matched']}}"
   when: find_plots_merged['matched'] != 0
 
 - name: Plot energy reports
