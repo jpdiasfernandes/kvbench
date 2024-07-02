@@ -136,13 +136,13 @@ def plot_report(event_json, output):
     bars1 = axs[0].bar(x_labels_compactions, percentages_compaction, color='skyblue', edgecolor='black')
     axs[0].set_xlabel('Levels')
     axs[0].set_ylabel('Percentage (%)')
-    axs[0].set_title('Histogram of Levels (Percentage of Total Values)')
+    axs[0].set_title('Histogram of Levels (Percentage of Total Energy)')
 
     # Plotting the second histogram with the misc bar
     bars2 = axs[1].bar(events, percentages_events, color='lightcoral', edgecolor='black')
     axs[1].set_xlabel('Events')
     axs[1].set_ylabel('Percentage (%)')
-    axs[1].set_title('Histogram of Events (Percentage of Total Value)')
+    axs[1].set_title('Histogram of Events (Percentage of Total Energy)')
 
      # Ensure bars are in front of grid lines
     for bars in [bars1, bars2]:
