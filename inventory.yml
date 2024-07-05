@@ -146,7 +146,7 @@ all:
             #Enable dynamic adjustment of rate limit according to demand for background I/O
             rate_limiter_auto_tuned: False
             #If the level size is dynamic. (based on the last level size) or not
-            level_compaction_dynamic_level_bytes: True
+            level_compaction_dynamic_level_bytes: False
             #The maximum number of concurrent background compactions that can occur in parallel
             #Should be max(n_cores, disk_throughput/avg_thread_compaction_throughput)
             max_background_compactions: 4
