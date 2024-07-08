@@ -2,6 +2,7 @@
 from __future__ import (absolute_import, division, print_function)
 __metaclass__ = type
 
+stdout_lines = []
 DOCUMENTATION = r'''
 ---
 module: generate_energy_report
@@ -69,7 +70,8 @@ def run_module():
 
     # seed the result dict in the object
     result = dict(
-        changed=True
+        changed=True,
+        stdout_lines=[]
     )
 
     module = AnsibleModule(
@@ -92,12 +94,13 @@ def run_module():
     new_event_json = generate_report(module.params['event_file'], module.params['energy_file'])
 
     plot_report(new_event_json, filename)
+    result["stdout_lines"] = stdout_lines
     module.exit_json(**result)
 
 Interval = namedtuple("Interval", ["start", "end"])
 
 def plot_report(event_json, output):
-    energy_report = event_json["open_event"]["energy_report"]
+    energy_report = event_json["open_event"]["report"]
     compaction_info = energy_report["compaction_report"]
     flush_info = energy_report["flush_report"]
     total_energy = energy_report["total_energy"]
@@ -155,7 +158,7 @@ def plot_report(event_json, output):
 
     #plt.show()
 
-def generate_event_energy_report(event_json, energy):
+def generate_event_report(event_json, energy):
     sub_events = event_json["open_event"]["sub_events"]
     compaction_info = {
         "total_energy" : 0,
@@ -168,9 +171,19 @@ def generate_event_energy_report(event_json, energy):
         "num" : 0
     }
 
+    trivial_info = {
+        "levels_num" : {}
+    }
+
+    duration_info = {
+        "levels_duration" : {},
+        "levels_avg_duration" : {}
+    }
+
     thread_info = {}
     for idx, event in enumerate(sub_events):
         event_energy = max(0, get_event_consumption(event, energy))
+        duration = max(0, get_event_duration(event))
 
         event_json["open_event"]["sub_events"][idx]["energy"] = event_energy
         tid = str(event["thread_id_system"]["start"])
@@ -181,7 +194,14 @@ def generate_event_energy_report(event_json, energy):
             thread_info[tid] = {
             }
 
-        if event_type == "compaction":
+        if event_type == "trivial":
+            if "context" in event:
+                level = str((event["context"]["level_info"]["from"], event["context"]["level_info"]["to"]))
+                if level not in trivial_info["levels_num"]:
+                    trivial_info["levels_num"][level] = 0
+
+                trivial_info["levels_num"][level] += 1
+        elif event_type == "compaction":
             compaction_info["total_energy"] += event_energy
             # If older version of log and context was not available
             if "context" in event:
@@ -189,18 +209,23 @@ def generate_event_energy_report(event_json, energy):
                 if level not in compaction_info["levels_energy"]:
                     compaction_info["levels_energy"][level] = 0
                     compaction_info["levels_num"][level] = 0
+                    duration_info["levels_duration"][level] = 0
+                    duration_info["levels_avg_duration"][level] = 0
 
                 compaction_info["levels_energy"][level] += event_energy
                 compaction_info["levels_num"][level] += 1
+                duration_info["levels_duration"][level] += duration
 
             if "compaction" not in thread_info[tid]:
                 thread_info[tid]["compaction"] = {
                         "total_energy" : 0,
-                        "num" : 0
+                        "num" : 0,
+                        "duration": 0
                     }
 
             thread_info[tid]["compaction"]["total_energy"] += event_energy
             thread_info[tid]["compaction"]["num"] += 1
+            thread_info[tid]["compaction"]["duration"] += duration
         elif event_type == "flush":
             flush_info["total_energy"] += event_energy
             flush_info["num"] += 1
@@ -208,21 +233,36 @@ def generate_event_energy_report(event_json, energy):
             if "flush" not in thread_info[tid]:
                 thread_info[tid]["flush"] = {
                     "total_energy" : 0,
-                    "num" : 0
+                    "num" : 0,
+                    "duration": 0
                 }
 
             thread_info[tid]["flush"]["total_energy"] += event_energy
             thread_info[tid]["flush"]["num"] += 1
+            thread_info[tid]["flush"]["duration"] += duration
 
-        for level in compaction_info["levels_energy"].keys():
-            avg = compaction_info["levels_energy"][level] /compaction_info["levels_num"][level]
-            compaction_info["avg_per_compaction"][level] = round(avg, 4)
 
-        if flush_info["num"] != 0:
-            avg = flush_info["total_energy"] / flush_info["num"]
-            flush_info["avg"] = round(avg, 4)
 
-    return flush_info, compaction_info, thread_info
+    if flush_info["num"] != 0:
+        avg = flush_info["total_energy"] / flush_info["num"]
+        flush_info["avg"] = round(avg, 4)
+
+    for level in compaction_info["levels_energy"].keys():
+        avg = compaction_info["levels_energy"][level] /compaction_info["levels_num"][level]
+        compaction_info["avg_per_compaction"][level] = round(avg, 4)
+
+        duration_info["levels_duration"][level] = duration_info["levels_duration"][level] / 1000000
+        avg_duration = duration_info["levels_duration"][level] / compaction_info["levels_num"][level]
+        duration_info["levels_avg_duration"][level] = round(avg_duration, 4)
+
+    report = {
+        "compaction_report" : compaction_info,
+        "flush_report" : flush_info,
+        "thread_report" : thread_info,
+        "trivial_move_report" : trivial_info,
+        "duration_report": duration_info
+    }
+    return report
 
 def add_energy_values(energy, header, line, ts):
     tid_col_regex = r' Tid (\d+) Energy'
@@ -311,12 +351,21 @@ def get_interval(start, end):
 
     return Interval(start_copy, end_copy)
 
+def get_event_duration(event_json):
+    datetime_start = datetime.fromisoformat(event_json["date_time"]["start"])
+    datetime_end = datetime.fromisoformat(event_json["date_time"]["end"])
+
+    stdout_lines.append(f"Event of tid: {event_json['thread_id_system']['start']} [{datetime_start}, {datetime_end}] with duration {(datetime_end - datetime_start).microseconds}")
+
+    return (datetime_end - datetime_start).microseconds
+
 def get_event_consumption(event_json, energy_info):
     datetime_start = datetime.fromisoformat(event_json["date_time"]["start"])
     datetime_end = datetime.fromisoformat(event_json["date_time"]["end"])
     tid = event_json["thread_id_system"]["start"]
     interval = get_interval(datetime_start, datetime_end)
     event_consumption = get_thread_consumption(interval, energy_info[tid])
+    stdout_lines.append(f"Eneryg of event of tid: {event_json['thread_id_system']['start']} [{datetime_start}, {datetime_end}] with energy {event_consumption}")
     return round(event_consumption, 4)
 
 def generate_report(event_file, energy_file):
@@ -325,19 +374,15 @@ def generate_report(event_file, energy_file):
 
     energy, total_energy = parse_energy_file(energy_file)
 
-    flush_info, compaction_info, thread_info = generate_event_energy_report(event_json, energy)
+    info = generate_event_report(event_json, energy)
 
-    event_json["open_event"]["energy_report"] = {
-        "total_energy" : total_energy,
-        "compaction_report" : compaction_info,
-        "flush_report" : flush_info,
-        "thread_report" : thread_info
-    }
+    event_json["open_event"]["report"] = info
+    event_json["open_event"]["report"]["total_energy"] = total_energy
 
     event_fd.close()
 
     event_fd = open("energy_report.log", "a")
-    json.dump(event_json["open_event"]["energy_report"], event_fd, indent=2)
+    json.dump(event_json["open_event"]["report"], event_fd, indent=2)
 
     event_fd.close()
 
