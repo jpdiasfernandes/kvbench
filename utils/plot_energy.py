@@ -184,7 +184,7 @@ def run_module():
 
     sub_events = event_json["open_event"]["sub_events"]
 
-    plt.figure().set_figwidth(last_dur/4)
+    plt.figure().set_figwidth(last_dur/15)
 
     event_tids = []
     compaction_tids = []
