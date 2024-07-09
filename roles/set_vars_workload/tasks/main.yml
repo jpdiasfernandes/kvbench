@@ -237,6 +237,24 @@
     sys_hardware_file: "{{workload_results_dir}}/sys-hardware-{{workload}}-{{find_hardware['matched']}}.csv"
   when: find_hardware['matched'] != 0
 
+- name: Find the existing db-log files
+  find:
+    paths: "{{workload_results_dir}}"
+    file_type: file
+    use_regex: yes
+    patterns: "db-log-{{workload}}(-[0-9]+)?\\.log"
+  register: find_db_log
+
+- name: Set db-log file when find_db_log.matched == 0
+  set_fact:
+    db_log_file: "{{workload_results_dir}}/db-log-{{workload}}.log"
+  when: find_db_log['matched'] == 0
+
+- name: Set db-log file when find_db_log.matched != 0
+  set_fact:
+    db_log_file: "{{workload_results_dir}}/db-log-{{workload}}-{{find_db_log['matched']}}.log"
+  when: find_db_log['matched'] != 0
+
 - name: Find the existing energy-report file
   find:
     paths: "{{workload_results_dir}}"

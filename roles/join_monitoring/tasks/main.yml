@@ -29,3 +29,8 @@
   args:
     creates: "{{sys_hardware_file}}"
     removes: "{{workload_results_dir}}/hardware.csv"
+
+- name: cp db_dir/LOG to db_log_file location
+  command: cp "{{db_dir}}/LOG" "{{db_log_file}}"
+  args:
+    creates: "{{db_log_file}}"
