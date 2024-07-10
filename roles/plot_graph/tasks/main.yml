@@ -58,6 +58,7 @@
     event_file: "{{ rocksdb_log_file }}"
     chdir: "{{ workload_results_dir }}"
     output_prefix: "{{ energy_report_file }}"
+  ignore_errors: true
 
 #This way of finding all the files of a repetition by
 #using regex is not standard. It will make refactoring difficult
@@ -78,3 +79,4 @@
       - "{{workload_results_dir}}/energy-report-{{workload_repetition}}.png"
     output: "{{plots_merged_file}}"
     chdir: "{{workload_results_dir}}"
+  ignore_errors: true
