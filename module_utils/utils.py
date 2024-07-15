@@ -12,10 +12,9 @@ import sys
 Interval = namedtuple("Interval", ["start", "end"])
 
 class TimeSerie:
-    def __init__(self, freq):
+    def __init__(self):
         self.series = {}
         self.total_energy = 0
-        self.freq = freq
 
     def add_value(self, ts, energy):
         self.series[str(ts)] = energy
@@ -63,15 +62,14 @@ class TimeSerie:
 class ThreadTimeSeries:
     """Class that holds the time series for different thread ids"""
 
-    def __init__(self, freq, energy_file):
+    def __init__(self, energy_file):
         self.total_energy = 0
-        self.freq = freq
         self.timeseries = {}
         self.parse_energy_file(energy_file)
 
     def init_tid(self, tid):
         if tid not in self.timeseries:
-            self.timeseries[tid] = TimeSerie(self.freq)
+            self.timeseries[tid] = TimeSerie()
 
     def add_energy_values(self, header, line, ts):
         tid_col_regex = r' Tid (\d+) Energy'
