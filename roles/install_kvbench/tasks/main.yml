@@ -44,6 +44,12 @@
     dest: "~/.ansible/plugins/modules/generate_energy_report.py"
     remote_src: yes
 
+- name: Copy module util utils to ansible path
+  copy:
+    src: "{{ kvbench_dir }}/module_utils/utils.py"
+    dest: "~/.ansible/plugins/module_utils/utils.py"
+    remote_src: yes
+
 - name: Copy utils scripts to utils path
   copy:
     src: "{{ kvbench_dir }}/utils/"

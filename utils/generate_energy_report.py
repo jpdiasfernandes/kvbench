@@ -2,6 +2,7 @@
 from __future__ import (absolute_import, division, print_function)
 __metaclass__ = type
 
+from time import sleep
 stdout_lines = []
 DOCUMENTATION = r'''
 ---
@@ -58,6 +59,10 @@ import re
 import json
 import os
 import matplotlib.pyplot as plt
+
+def hash_ts_ms(ts, millis):
+    new_micro = ts.microsecond - (ts.microsecond % (millis * 1000))
+    return ts.replace(microsecond=new_micro)
 
 def run_module():
     # define available arguments/parameters a user can pass to the module
@@ -264,7 +269,7 @@ def generate_event_report(event_json, energy):
     }
     return report
 
-def add_energy_values(energy, header, line, ts):
+def add_energy_values(energy, header, line, ts, frequency):
     tid_col_regex = r' Tid (\d+) Energy'
     line_energy = 0
     for i in range(1, len(header) -1):
@@ -275,12 +280,13 @@ def add_energy_values(energy, header, line, ts):
             if tid not in energy:
                 energy[tid] = {}
                 energy[tid]["total_energy"] = 0
+            ts = hash_time(ts, frequency)
             energy[tid][str(ts)] = consumed
             line_energy += consumed
 
     return line_energy
 
-def parse_energy_file(path):
+def parse_energy_file(path, frequency):
     # Organized as tid -> { time -> value }
     fd = open(path, "r")
     energy = {}
@@ -294,7 +300,7 @@ def parse_energy_file(path):
         splitted_line = line.split(';')
         ts_str = splitted_line[0]
         ts = datetime.fromisoformat(ts_str)
-        total_energy += add_energy_values(energy, splitted_header, splitted_line, ts)
+        total_energy += add_energy_values(energy, splitted_header, splitted_line, ts, frequency)
 
         # read header
         header = fd.readline()
@@ -305,11 +311,28 @@ def parse_energy_file(path):
     return energy, total_energy
 
 
-def round_seconds(obj):
-    if obj.microsecond >= 500_000:
-        obj += dt.timedelta(seconds=1)
-    return obj.replace(microsecond=0)
+def micro_from_dt(ts):
+    minutes = (ts.hour * 60) + ts.minute
+    seconds = (minutes * 60) + ts.second
+    micro = (seconds * 1000 * 1000) + ts.microsecond
+    return micro
 
+def micro_from_td(td):
+    seconds = (td.days * 24 * 3600) + td.seconds
+    micro = (seconds * 1000 * 1000) + td.microseconds
+    return micro
+
+def round_micro(ts, micro):
+    micro_ts = micro_from_dt(ts)
+    if (micro_ts%(micro)) >= (micro/2):
+        ts += dt.timedelta(microseconds= micro)
+    ts -= dt.timedelta(microseconds=(micro_ts%micro))
+    return ts
+
+def hash_time(ts, timedelta):
+    if timedelta.days == 0:
+        ts = round_micro(ts, micro_from_td(timedelta))
+    return ts
 
 def get_available_times(interval, tid):
     res = []
@@ -340,14 +363,47 @@ def get_thread_consumption(interval, tid):
 
     return event_energy
 
-def get_interval(start, end):
+def match_tid_hash_time(event_time, tid, freq_td):
+    hashed_event_time = hash_time(event_time, freq_td)
+    if str(hashed_event_time) in tid.keys():
+        return hashed_event_time
+    else:
+        #case where a stepover occured assume next value
+        for str_ts in sorted(tid.keys()):
+            ts_tid = datetime.fromisoformat(str_ts)
+            if ts_tid >= hashed_event_time:
+                return ts_tid
+    return None
+
+def get_next_time(ts, time_dict, number_steps):
+    for str_ts in sorted(time_dict.keys()):
+        ts_dict = datetime.fromisoformat(str_ts)
+        if ts_dict >= ts:
+            number_steps -= 1
+        if number_steps == 0:
+            return ts_dict
+
+    return None
+
+def get_range(start, end, tid, freq_td):
+    tid_start_hash = match_tid_hash_time(start, tid, freq_td)
+    tid_end_hash = match_tid_hash_time(end, tid, freq_td)
+    if tid_start_hash and tid_end_hash:
+        if start < tid_start_hash:
+            ts_start = get_next_time(tid_start_hash, tid, 2)
+        else:
+            ts_start = get_next_time(tid_start_hash, tid, 1)
+
+        if
+
     start_copy = start
-    start_copy += dt.timedelta(seconds=1)
-    start_copy = start_copy.replace(microsecond=0)
+
+    start_copy += dt.timedelta(microseconds=(millis * 1000))
+    start_copy = hash_ts_ms(start_copy, millis)
 
     end_copy = end
-    end_copy += dt.timedelta(seconds=1)
-    end_copy = end_copy.replace(microsecond=0)
+    end_copy += dt.timedelta(microseconds=(millis * 1000))
+    end_copy = hash_ts_ms(end_copy, millis)
 
     return Interval(start_copy, end_copy)
 
@@ -368,11 +424,11 @@ def get_event_consumption(event_json, energy_info):
     stdout_lines.append(f"Eneryg of event of tid: {event_json['thread_id_system']['start']} [{datetime_start}, {datetime_end}] with energy {event_consumption}")
     return round(event_consumption, 4)
 
-def generate_report(event_file, energy_file):
+def generate_report(event_file, energy_file, frequency):
     event_fd = open(event_file, "r")
     event_json = json.load(event_fd)
 
-    energy, total_energy = parse_energy_file(energy_file)
+    energy, total_energy = parse_energy_file(energy_file, frequency)
 
     info = generate_event_report(event_json, energy)
 
@@ -388,5 +444,32 @@ def generate_report(event_file, energy_file):
 
     return event_json
 
+from collections import OrderedDict
 if __name__ == "__main__":
+    ts_old = datetime.now()
+    dict = {
+        "2024-07-11 12:06:19.977492" : 14,
+        "2024-07-11 12:06:20.240000" : 14,
+        "2024-07-11 12:06:20.120000" : 14,
+        "2024-07-11 12:06:20.360000" : 14
+    }
+
+    dict_hashed = {}
+
+    freq_td = dt.timedelta(milliseconds=100)
+    for key,value in dict.items():
+        ts = datetime.fromisoformat(key)
+        dict_hashed[str(hash_time(ts, freq_td))] = value
+
+    ts = datetime.fromisoformat("2024-07-11 12:06:20.250")
+
+    print(dict_hashed)
+    print(match_tid_hash_time(ts, dict_hashed, freq_td))
+
+    for i in range(1, 1000):
+        sleep(0.1)
+        ts = datetime.now()
+        ts_hashed = hash_time(ts, freq_td)
+
+        print("########################")
     run_module()
