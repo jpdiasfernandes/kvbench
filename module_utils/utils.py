@@ -8,17 +8,56 @@ from typing import Type
 import matplotlib.pyplot as plt
 import json
 import sys
+import statistics
+
 
 Interval = namedtuple("Interval", ["start", "end"])
+
+class HashUtils:
+    def micro_from_dt(self, ts):
+        minutes = (ts.hour * 60) + ts.minute
+        seconds = (minutes * 60) + ts.second
+        micro = (seconds * 1000 * 1000) + ts.microsecond
+        return micro
+
+    def micro_from_td(self, td):
+        seconds = (td.days * 24 * 3600) + td.seconds
+        micro = (seconds * 1000 * 1000) + td.microseconds
+        return micro
+
+    def round_or_trunc(self, ts, micro):
+        micro_ts = self.micro_from_dt(ts)
+        if (micro_ts%(micro)) >= (micro/2):
+            return "round"
+        else:
+            return "trunc"
+
+    def round_micro(self, ts, micro):
+        micro_ts = self.micro_from_dt(ts)
+        if (micro_ts%(micro)) >= (micro/2):
+            ts += dt.timedelta(microseconds= micro)
+        ts -= dt.timedelta(microseconds=(micro_ts%micro))
+        return ts
+
+    def hash_time(self, ts, timedelta):
+        if timedelta.days == 0:
+            return self.round_micro(ts, self.micro_from_td(timedelta))
+        return ts
+
+class DataPoint:
+    def __init__(self, energy, cpu_usage):
+        self.energy = energy
+        self.cpu_usage = cpu_usage
 
 class TimeSerie:
     def __init__(self):
         self.series = {}
         self.total_energy = 0
+        self.hash_utils = HashUtils()
 
-    def add_value(self, ts, energy):
-        self.series[str(ts)] = energy
-        self.total_energy += energy
+    def add_value(self, ts, data_point):
+        self.series[str(ts)] = data_point
+        self.total_energy += data_point.energy
 
     def get_next_time(self, ts, number_steps):
         for str_ts in sorted(self.series.keys()):
@@ -46,6 +85,29 @@ class TimeSerie:
         return None
 
 
+    def get_thread_cpu_usage(self, start, end):
+        #Discards the first block and last block
+        interval = self.get_energy_range(start, end)
+        cpu_usage = 0
+        num_blocks = 0
+
+        if interval:
+            for str_ts in sorted(self.series.keys()):
+                ts = datetime.fromisoformat(str_ts)
+                if ts >= interval.start and ts <= interval.end:
+                    num_blocks += 1
+                    if num_blocks != 0:
+                        cpu_usage = (((num_blocks - 1)*cpu_usage) + self.series[str_ts].cpu_usage)/num_blocks
+                    else:
+                        cpu_usage = self.series[str_ts].cpu_usage
+
+        return cpu_usage
+
+
+
+
+
+
     def get_thread_energy(self, start, end):
         #Discards the first block and last block
         interval = self.get_energy_range(start, end)
@@ -54,7 +116,7 @@ class TimeSerie:
             for str_ts in sorted(self.series.keys()):
                 ts = datetime.fromisoformat(str_ts)
                 if ts >= interval.start and ts <= interval.end:
-                    energy += self.series[str_ts]
+                    energy += self.series[str_ts].energy
 
         return energy
 
@@ -65,13 +127,14 @@ class ThreadTimeSeries:
     def __init__(self, energy_file):
         self.total_energy = 0
         self.timeseries = {}
+        self.hash_utils = HashUtils()
         self.parse_energy_file(energy_file)
 
     def init_tid(self, tid):
         if tid not in self.timeseries:
             self.timeseries[tid] = TimeSerie()
 
-    def add_energy_values(self, header, line, ts):
+    def add_values(self, header, line, ts):
         tid_col_regex = r' Tid (\d+) Energy'
         line_energy = 0
         for i in range(1, len(header) -1):
@@ -79,18 +142,25 @@ class ThreadTimeSeries:
             if res_match != None:
                 tid = int(res_match.group(1))
                 consumed = float(line[i])
-                self.add_value(tid, ts, consumed)
+                # HARDCODED! on the current logs the sys usage relative to the tid is always
+                # after the tid energy values
+                cpu = float(line[i + 1])
+                self.add_value(tid, ts, DataPoint(consumed, cpu))
                 line_energy += consumed
 
         return line_energy
 
-    def add_value(self, tid, ts, energy):
+    def add_value(self, tid, ts, data_point):
         self.init_tid(tid)
-        self.timeseries[tid].add_value(ts, energy)
+        self.timeseries[tid].add_value(ts, data_point)
 
     def get_thread_energy(self, start, end, tid):
         self.init_tid(tid)
         return self.timeseries[tid].get_thread_energy(start, end)
+
+    def get_thread_cpu_usage(self, start, end, tid):
+        self.init_tid(tid)
+        return self.timeseries[tid].get_thread_cpu_usage(start, end)
 
     def parse_energy_file(self, energy_file):
         fd = open(energy_file, "r")
@@ -103,7 +173,7 @@ class ThreadTimeSeries:
             splitted_line = line.split(';')
             ts_str = splitted_line[0]
             ts = datetime.fromisoformat(ts_str)
-            self.total_energy += self.add_energy_values(splitted_header, splitted_line, ts)
+            self.total_energy += self.add_values(splitted_header, splitted_line, ts)
 
             # read header
             header = fd.readline()
@@ -113,22 +183,23 @@ class ThreadTimeSeries:
 
 
 class Event:
-    def __init__(self, tid, start_ts, end_ts, energy, event_type, context):
+    def __init__(self, tid, start_ts, end_ts, energy, cpu, event_type, context):
         self.tid = tid
         self.energy = energy
+        self.cpu_usage = cpu
         self.event_type = event_type
         self.context = context
         self.start_ts = start_ts
         self.end_ts = end_ts
 
     @classmethod
-    def from_event_json(cls, energy, event_json):
+    def from_event_json(cls, energy, cpu, event_json):
         tid = event_json["thread_id_system"]["start"]
         event_type = event_json["name"].split("#")[0]
         context = event_json["context"]
         start_ts = datetime.fromisoformat(event_json["date_time"]["start"])
         end_ts = datetime.fromisoformat(event_json["date_time"]["end"])
-        return cls(tid, start_ts, end_ts, energy, event_type, context)
+        return cls(tid, start_ts, end_ts, energy, cpu, event_type, context)
 
     def get_duration(self):
         return (self.end_ts - self.start_ts)/dt.timedelta(microseconds=1)
@@ -137,6 +208,7 @@ class Event:
         res = {}
         res["thread_id_system"] = self.tid
         res["energy"] = self.energy
+        res["cpu_usage"] = self.cpu_usage
         res["event_type"] = self.event_type
         res["context"] = self.context
         res["start"] = str(self.start_ts)
@@ -146,7 +218,7 @@ class Event:
 
 class Report:
     def __init__(self, energy_file, events_json):
-        self.tid_info = ThreadTimeSeries(dt.timedelta(milliseconds=100), energy_file)
+        self.tid_info = ThreadTimeSeries(energy_file)
         events_fd = open(events_json, "r")
         self.events_json = json.load(events_fd)
         events_fd.close()
@@ -159,13 +231,41 @@ class Report:
 
         fd.close()
 
+    def plot_compaction_level_energy_histogram(self, level, output):
+        list_energy = [x.energy for x in self.events if x.context != None and x.context['level_info']['from'] == level]
+
+        plt.clf()
+        plt.hist(list_energy, bins=45, color='skyblue', edgecolor='black')
+
+        plt.xlabel('Energy values for compaction from level:' + str(level) + " to:" + str(level + 1))
+        plt.ylabel('Frequency')
+        plt.title('Histrogram depicting energy values for compactions')
+        plt.savefig(output)
+    def plot_compaction_level_duration_histogram(self, level, output):
+        list_duration = [x.get_duration()/1000000 for x in self.events if x.context != None and x.context['level_info']['from'] == level and x.get_duration() > 0]
+        plt.clf()
+        plt.hist(list_duration, bins=45, color='skyblue', edgecolor='black')
+
+        plt.xlabel('Duration values for compaction from level:' + str(level) + " to:" + str(level + 1))
+        plt.ylabel('Frequency')
+        plt.title('Histrogram depicting duration values for compactions')
+        plt.savefig(output)
+
+
     def parse_events_json(self):
         sub_events = self.events_json["open_event"]["sub_events"]
         events = []
         for event in sub_events:
             energy = self.get_event_json_energy(event)
-            events.append(Event.from_event_json(energy, event))
+            cpu = self.get_event_json_cpu(event)
+            events.append(Event.from_event_json(energy, cpu, event))
         return events
+
+    def get_event_json_cpu(self, event_json):
+        tid = event_json["thread_id_system"]["start"]
+        start = datetime.fromisoformat(event_json["date_time"]["start"])
+        end = datetime.fromisoformat(event_json["date_time"]["end"])
+        return self.tid_info.get_thread_cpu_usage(start, end, tid)
 
     def get_event_json_energy(self, event_json):
         tid = event_json["thread_id_system"]["start"]
@@ -174,60 +274,66 @@ class Report:
         return self.tid_info.get_thread_energy(start, end, tid)
 
 
+    def init_compaction_level_info(self, level, report):
+        if level not in report["compaction_info"]["levels_energy"]:
+            report["compaction_info"]["levels_energy"][level] = 0
+            report["compaction_info"]["levels_num"][level] = 0
+            report["compaction_info"]["levels_avg_power"][level] = 0
+            report["compaction_info"]["events"][level] = []
+            report["duration_info"]["levels_duration"][level] = 0
+            report["duration_info"]["levels_avg_duration"][level] = 0
+
+    def add_compaction_info_to_report(self, report, event):
+        level = str((event.context["level_info"]["from"], event.context["level_info"]["to"]))
+        self.init_compaction_level_info(level, report)
+        report["compaction_info"]["total_energy"] += event.energy
+        report["compaction_info"]["levels_energy"][level] += event.energy
+        report["compaction_info"]["levels_num"][level] += 1
+        report["compaction_info"]["events"][level].append(event.to_json())
+        report["duration_info"]["levels_duration"][level] += event.get_duration()
+
+    def init_trivial_level_info(self, level, report):
+        if level not in report["trivial_info"]["levels_num"]:
+            report["trivial_info"]["levels_num"][level] = 0
+
+    def add_trivial_info_to_report(self, report, event):
+        level = str((event.context["level_info"]["from"], event.context["level_info"]["to"]))
+        self.init_trivial_level_info(level, report)
+        report["trivial_info"]["levels_num"][level] += 1
+
+    def init_thread_info(self, tid, event_type, report):
+        if tid not in report["thread_info"]:
+            report["thread_info"][tid] = {}
+
+        if event_type not in report["thread_info"][tid]:
+            report["thread_info"][tid][event_type] = {
+                "total_energy": 0,
+                "num": 0,
+                "duration": 0
+            }
+
+    def add_thread_info(self, report, event):
+        self.init_thread_info(event.tid, event.event_type, report)
+        report["thread_info"][event.tid][event.event_type]["total_energy"] += event.energy
+        report["thread_info"][event.tid][event.event_type]["num"] += 1
+        report["thread_info"][event.tid][event.event_type]["duration"] += event.get_duration()
+
+    def add_flush_info_to_report(self, report, event):
+        report["flush_info"]["total_energy"] += event.energy
+        report["flush_info"]["num"] += 1
+
     def add_event_to_report(self, event, report):
         event_json = event.to_json()
         report["events"].append(event_json)
-        tid = event.tid
 
-
-        if event.tid not in report["thread_info"]:
-            report["thread_info"][event.tid] = {}
 
         if event.event_type == "trivial":
-            if event.context != None:
-                level = str((event.context["level_info"]["from"], event.context["level_info"]["to"]))
-                if level not in report["trivial_info"]["levels_num"]:
-                    report["trivial_info"]["levels_num"][level] = 0
-
-                report["trivial_info"]["levels_num"][level] += 1
+            self.add_trivial_info_to_report(report, event)
         elif event.event_type == "compaction":
-            report["compaction_info"]["total_energy"] += event.energy
-            level = str((event.context["level_info"]["from"], event.context["level_info"]["to"]))
-            if level not in report["compaction_info"]["levels_energy"]:
-                report["compaction_info"]["levels_energy"][level] = 0
-                report["compaction_info"]["levels_num"][level] = 0
-                report["compaction_info"]["levels_avg_power"][level] = 0
-                report["duration_info"]["levels_duration"][level] = 0
-                report["duration_info"]["levels_avg_duration"][level] = 0
-            report["compaction_info"]["levels_energy"][level] += event.energy
-            report["compaction_info"]["levels_num"][level] += 1
-            report["duration_info"]["levels_duration"][level] += event.get_duration()
-            if "compaction" not in report["thread_info"][tid]:
-                report["thread_info"][tid]["compaction"] = {
-                    "total_energy" : 0,
-                    "num": 0,
-                    "duration" : 0
-                }
-
-            report["thread_info"][tid]["compaction"]["total_energy"] += event.energy
-            report["thread_info"][tid]["compaction"]["num"] += 1
-            report["thread_info"][tid]["compaction"]["duration"] += event.get_duration()
+            self.add_compaction_info_to_report(report, event)
         elif event.event_type == "flush":
-            report["flush_info"]["total_energy"] += event.energy
-            report["flush_info"]["num"] += 1
-
-            if "flush" not in report["thread_info"][tid]:
-                report["thread_info"][tid]["flush"] = {
-                    "total_energy" : 0,
-                    "num" : 0,
-                    "duration": 0
-                }
-
-            report["thread_info"][tid]["flush"]["total_energy"] += event.energy
-            report["thread_info"][tid]["flush"]["num"] += 1
-            report["thread_info"][tid]["flush"]["duration"] += event.get_duration()
-
-
+            self.add_flush_info_to_report(report, event)
+        self.add_thread_info(report, event)
 
 
     def create_averages(self, report):
@@ -246,10 +352,16 @@ class Report:
             avg_power = report["compaction_info"]["levels_energy"][level] / report["duration_info"]["levels_duration"][level]
             report["compaction_info"]["levels_avg_power"][level] = avg_power
 
+            event_energy_level = [x["energy"] for x in report["compaction_info"]["events"][level]]
+            median_energy = statistics.median(event_energy_level)
+            report["compaction_info"]["levels_median_energy"][level] = median_energy
+
+            event_cpu_usage_level = [x["cpu_usage"] for x in report["compaction_info"]["events"][level]]
+            mean_cpu_usage = statistics.mean(event_cpu_usage_level)
+            report["compaction_info"]["avg_usage"][level] = round(mean_cpu_usage, 4)
 
 
-
-    def generate_json_report(self):
+    def init_report(self):
         report = {}
         report["events"] = []
         report["total_energy"] = self.tid_info.total_energy
@@ -258,7 +370,10 @@ class Report:
             "levels_energy": {},
             "levels_num": {},
             "avg_per_compaction": {},
-            "levels_avg_power" : {}
+            "avg_usage": {},
+            "levels_median_energy": {},
+            "levels_avg_power" : {},
+            "events": {}
         }
         report["flush_info"] = {
             "total_energy": 0,
@@ -273,6 +388,10 @@ class Report:
         }
         report["thread_info"] = {}
 
+        return report
+
+    def generate_json_report(self):
+        report = self.init_report()
 
         for event in self.events:
             self.add_event_to_report(event, report)

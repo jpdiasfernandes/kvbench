@@ -101,6 +101,13 @@ def run_module():
 
     report.dump("energy_report.log")
     report.plot(filename)
+    report.plot_compaction_level_energy_histogram(3, "level_3_compaction_energy")
+    report.plot_compaction_level_energy_histogram(2, "level_2_compaction_energy")
+    report.plot_compaction_level_energy_histogram(1, "level_1_compaction_energy")
+    report.plot_compaction_level_duration_histogram(3, "level_3_compaction_duration")
+    report.plot_compaction_level_duration_histogram(2, "level_2_compaction_duration")
+    report.plot_compaction_level_duration_histogram(1, "level_1_compaction_duration")
+
     result["stdout_lines"] = stdout_lines
     module.exit_json(**result)
 
