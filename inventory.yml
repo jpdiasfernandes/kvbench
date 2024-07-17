@@ -123,6 +123,21 @@ all:
         threads: 64
       delta_128T:
         threads: 128
+      delta_1T_zipf:
+        threads: 1
+      delta_2T_zipf:
+        threads: 2
+      delta_4T_zipf:
+        threads: 4
+      delta_8T_zipf:
+        threads: 8
+      delta_32T_zipf:
+        threads: 32
+      delta_64T_zipf:
+        threads: 64
+      delta_128T_zipf:
+        threads: 128
+
 ###############Workload delta tests###############
       #bench_workload_name param
       delta_B:
@@ -226,7 +241,7 @@ all:
             max_total_wal_size: 0
             use_existing_db: True
             YCSB_uniform_distribution: True
-            duration: 3600 # Time in seconds for the random-ops tests to run. When 0 then num & reads determine the test duration
+            duration: 720  # Time in seconds for the random-ops tests to run. When 0 then num & reads determine the test duration
             #Algorithm to use for WAL compression
             wal_compression: none
             #If non-negative, compression starts from this level. Levels with number < min_level_to_compress are not compressed. Otherwise, apply compression_type to all levels.
@@ -295,6 +310,33 @@ all:
         max_background_compactions: 8
       delta_compactions_16:
         max_background_compactions: 16
+      delta_compactions_1_zipf:
+        max_background_compactions: 1
+        YCSB_uniform_distribution: False
+      delta_compactions_2_zipf:
+        max_background_compactions: 2
+        YCSB_uniform_distribution: False
+      delta_compactions_8_zipf:
+        max_background_compactions: 8
+        YCSB_uniform_distribution: False
+      delta_compactions_16_zipf:
+        max_background_compactions: 16
+        YCSB_uniform_distribution: False
+      delta_1T_zipf:
+        YCSB_uniform_distribution: False
+      delta_2T_zipf:
+        YCSB_uniform_distribution: False
+      delta_4T_zipf:
+        YCSB_uniform_distribution: False
+      delta_8T_zipf:
+        YCSB_uniform_distribution: False
+      delta_32T_zipf:
+        YCSB_uniform_distribution: False
+      delta_64T_zipf:
+        YCSB_uniform_distribution: False
+      delta_128T_zipf:
+        YCSB_uniform_distribution: False
+
       #max_background_flushes param
       delta_flushes_2:
         max_background_flushes: 2
@@ -302,6 +344,15 @@ all:
       delta_flushes_4:
         max_background_flushes: 4
         max_write_buffer_number: 4
+      delta_flushes_2_zipf:
+        max_background_flushes: 2
+        max_write_buffer_number: 2
+        YCSB_uniform_distribution: False
+      delta_flushes_4_zipf:
+        max_background_flushes: 4
+        max_write_buffer_number: 4
+        YCSB_uniform_distribution: False
+
 ###############Background delta tests###############
       #compaction_style param
       delta_compaction_style_universal:

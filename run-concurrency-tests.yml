@@ -14,12 +14,8 @@
     #- role: prepare_run_monitor_graph
     #  workload: fillrandom_200M
 
-    - create_backup
+    #- create_backup
 
-    - role: prepare_run_monitor_graph
-      workload: delta_128T
-      load_backup: True
-      repetitions: 2
 
     ################ Start flush delta tests ################
     - role: prepare_run_monitor_graph
@@ -29,6 +25,16 @@
 
     - role: prepare_run_monitor_graph
       workload: delta_flushes_4
+      load_backup: True
+      repetitions: 2
+
+    - role: prepare_run_monitor_graph
+      workload: delta_flushes_2_zipf
+      load_backup: True
+      repetitions: 2
+
+    - role: prepare_run_monitor_graph
+      workload: delta_flushes_4_zipf
       load_backup: True
       repetitions: 2
 
@@ -50,6 +56,26 @@
 
     - role: prepare_run_monitor_graph
       workload: delta_compactions_16
+      load_backup: True
+      repetitions: 2
+
+    - role: prepare_run_monitor_graph
+      workload: delta_compactions_1_zipf
+      load_backup: True
+      repetitions: 2
+
+    - role: prepare_run_monitor_graph
+      workload: delta_compactions_2_zipf
+      load_backup: True
+      repetitions: 2
+
+    - role: prepare_run_monitor_graph
+      workload: delta_compactions_8_zipf
+      load_backup: True
+      repetitions: 2
+
+    - role: prepare_run_monitor_graph
+      workload: delta_compactions_16_zipf
       load_backup: True
       repetitions: 2
 
@@ -85,3 +111,42 @@
       load_backup: True
       repetitions: 2
 
+    - role: prepare_run_monitor_graph
+      workload: delta_128T
+      load_backup: True
+      repetitions: 2
+
+    - role: prepare_run_monitor_graph
+      workload: delta_1T_zipf
+      load_backup: True
+      repetitions: 2
+
+    - role: prepare_run_monitor_graph
+      workload: delta_2T_zipf
+      load_backup: True
+      repetitions: 2
+
+    - role: prepare_run_monitor_graph
+      workload: delta_4T_zipf
+      load_backup: True
+      repetitions: 2
+
+    - role: prepare_run_monitor_graph
+      workload: delta_8T_zipf
+      load_backup: True
+      repetitions: 2
+
+    - role: prepare_run_monitor_graph
+      workload: delta_32T_zipf
+      load_backup: True
+      repetitions: 2
+
+    - role: prepare_run_monitor_graph
+      workload: delta_64T_zipf
+      load_backup: True
+      repetitions: 2
+
+    - role: prepare_run_monitor_graph
+      workload: delta_128T_zipf
+      load_backup: True
+      repetitions: 2
