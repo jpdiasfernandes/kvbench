@@ -79,7 +79,7 @@ all:
     workload_fixed_settings:
       num_operations: 200000000
       threads: 16
-      bench_workload_name: ycsbwkldc
+      bench_workload_name: ycsbwklda
       cool_down_time: 90
 
     # Workload db_bench options
@@ -274,14 +274,36 @@ all:
       #  duration: 300
 ###############Memory delta tests#################
       #cache_size param
+      delta_cache_512MB:
+        cache_size: 536870912
+      delta_cache_1G:
+        cache_size: 1073741824
+      delta_cache_2G:
+        cache_size: 2147483648
+      delta_cache_4G:
+        cache_size: 4294967296
       delta_cache_8G:
         cache_size: 8589934592
       delta_cache_16G:
         cache_size: 17179869184
-      delta_cache_32G:
-        cache_size: 34359738368
-      delta_cache_64G:
-        cache_size: 68719476736
+      delta_cache_512MB_zipf:
+        cache_size: 536870912
+        YCSB_uniform_distribution: False
+      delta_cache_1G_zipf:
+        cache_size: 1073741824
+        YCSB_uniform_distribution: False
+      delta_cache_2G_zipf:
+        cache_size: 2147483648
+        YCSB_uniform_distribution: False
+      delta_cache_4G_zipf:
+        cache_size: 4294967296
+        YCSB_uniform_distribution: False
+      delta_cache_8G_zipf:
+        cache_size: 8589934592
+        YCSB_uniform_distribution: False
+      delta_cache_16G_zipf:
+        cache_size: 17179869184
+        YCSB_uniform_distribution: False
       #cache_index_and_filter_blocks
       delta_cache_index_filter_true:
         cache_index_and_filter_blocks: True
@@ -294,6 +316,24 @@ all:
         write_buffer_size: 536870912
       delta_write_buffer_size_1G:
         write_buffer_size:  1073741824
+      delta_write_buffer_size_2G:
+        write_buffer_size:  2147483648
+      delta_write_buffer_size_64M_zipf:
+        write_buffer_size:  67108864
+        YCSB_uniform_distribution: False
+      delta_write_buffer_size_256M_zipf:
+        write_buffer_size: 268435456
+        YCSB_uniform_distribution: False
+      delta_write_buffer_size_512M_zipf:
+        write_buffer_size: 536870912
+        YCSB_uniform_distribution: False
+      delta_write_buffer_size_1G_zipf:
+        write_buffer_size:  1073741824
+        YCSB_uniform_distribution: False
+      delta_write_buffer_size_2G_zipf:
+        write_buffer_size:  2147483648
+        YCSB_uniform_distribution: False
+
       #max_write_buffer_number
       delta_max_write_buffer_number_1:
         max_write_buffer_number: 1
@@ -301,6 +341,15 @@ all:
         max_write_buffer_number: 4
       delta_max_write_buffer_number_8:
         max_write_buffer_number: 8
+      delta_max_write_buffer_number_1_zipf:
+        max_write_buffer_number: 1
+        YCSB_uniform_distribution: False
+      delta_max_write_buffer_number_4_zipf:
+        max_write_buffer_number: 4
+        YCSB_uniform_distribution: False
+      delta_max_write_buffer_number_8_zipf:
+        max_write_buffer_number: 8
+        YCSB_uniform_distribution: False
       #max_background_compactions param
       delta_compactions_1:
         max_background_compactions: 1
