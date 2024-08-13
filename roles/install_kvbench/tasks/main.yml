@@ -28,7 +28,7 @@
 
 - name: copy module utils to modules utils ansible path
   copy:
-    src: "{{ kvbench_dir }}/modules_utils/"
-    dest: "~/.ansible/plugins/modules_utils/"
+    src: "{{ kvbench_dir }}/module_utils/"
+    dest: "~/.ansible/plugins/module_utils/"
     remote_src: yes
 
