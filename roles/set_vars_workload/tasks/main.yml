@@ -255,6 +255,9 @@
     db_log_file: "{{workload_results_dir}}/db-log-{{workload}}-{{find_db_log['matched']}}.log"
   when: find_db_log['matched'] != 0
 
+  #The energy_report script generates various files with the same energy_report_file prefix
+  #We want to know how many repetitions we have so only find one specific file from the
+  #various files created
 - name: Find the existing energy-report file
   find:
     paths: "{{workload_results_dir}}"
@@ -265,10 +268,30 @@
 
 - name: Set energy-report file when find_report.matched == 0
   set_fact:
-    energy_report_file: "{{workload_results_dir}}/energy-report-{{workload}}.png"
+    energy_report_file: "{{workload_results_dir}}/energy-report-{{workload}}"
   when: find_report['matched'] == 0
 
 - name: Set energy-report file when find_report.matched != 0
   set_fact:
-    energy_report_file: "{{workload_results_dir}}/energy-report-{{workload}}-{{find_report['matched']}}.png"
+    energy_report_file: "{{workload_results_dir}}/energy-report-{{workload}}-{{find_report['matched']}}"
   when: find_report['matched'] != 0
+
+
+
+- name: Find existing event_size_info file:
+  find:
+    paths: "{{workload_results_dir}}"
+    file_type: file
+    use_regex: yes
+    patterns: "event-size-info-{{workload}}(-[0-9]+)?\\.log"
+  register: find_event_size
+
+- name: Set event_size_info file when find_event_size.matched == 0
+  set_fact:
+    event_size_file: "{{workload_results_dir}}/event-size-info-{{workload}}"
+  when: find_event_size['matched'] == 0
+
+- name: Set event_size_info file when find_event_size.matched != 0
+  set_fact:
+    event_size_file: "{{workload_results_dir}}/event-size-info-{{workload}}-{{find_event_size['matched']}}"
+  when: find_event_size['matched'] != 0

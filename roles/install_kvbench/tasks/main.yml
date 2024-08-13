@@ -9,49 +9,26 @@
     path: "~/.ansible/plugins/module_utils"
     state: directory
 
-- name: Copy module util ph to ansible path
-  copy:
-    src: "{{ kvbench_dir }}/module_utils/ph.py"
-    dest: "~/.ansible/plugins/module_utils/ph.py"
-    remote_src: yes
-
 - name: Ensure ~/.ansible/plugins/modules exists
   file:
     path: "~/.ansible/plugins/modules"
     state: directory
-
-- name: Copy util plot_energy module to ansible path
-  copy:
-    src: "{{ kvbench_dir }}/utils/plot_energy.py"
-    dest: "~/.ansible/plugins/modules/plot_energy.py"
-    remote_src: yes
-
-- name: Copy util log_summary_info module to ansible path
-  copy:
-    src: "{{ kvbench_dir }}/utils/log_summary_info.py"
-    dest: "~/.ansible/plugins/modules/log_summary_info.py"
-    remote_src: yes
-
-- name: Copy util image_packing to ansible path
-  copy:
-    src: "{{ kvbench_dir }}/utils/image_packing.py"
-    dest: "~/.ansible/plugins/modules/image_packing.py"
-    remote_src: yes
-
-- name: Copy util generate_energy_report to ansible path
-  copy:
-    src: "{{ kvbench_dir }}/utils/generate_energy_report.py"
-    dest: "~/.ansible/plugins/modules/generate_energy_report.py"
-    remote_src: yes
-
-- name: Copy module util utils to ansible path
-  copy:
-    src: "{{ kvbench_dir }}/module_utils/utils.py"
-    dest: "~/.ansible/plugins/module_utils/utils.py"
-    remote_src: yes
 
 - name: Copy utils scripts to utils path
   copy:
     src: "{{ kvbench_dir }}/utils/"
     dest: "{{ utils_dir }}/"
     remote_src: yes
+
+- name: copy module scripts to modules ansible path
+  copy:
+    src: "{{ kvbench_dir }}/modules/"
+    dest: "~/.ansible/plugins/modules/"
+    remote_src: yes
+
+- name: copy module utils to modules utils ansible path
+  copy:
+    src: "{{ kvbench_dir }}/modules_utils/"
+    dest: "~/.ansible/plugins/modules_utils/"
+    remote_src: yes
+

@@ -31,7 +31,7 @@ options:
         description: A path to the current working directory
         required: false
         type: str
-    output_prefix
+    output
         description: A prefix for the output file name
         required: false
         type: str
@@ -70,8 +70,9 @@ def run_module():
     module_args = dict(
         energy_file=dict(type='str', required=True),
         event_file=dict(type='str', Required=True),
+        event_size_file=dict(type='str', Required=True),
         chdir=dict(type='str', required=False),
-        output_prefix=dict(type='str', required=False)
+        output=dict(type='str', required=False)
     )
 
     # seed the result dict in the object
@@ -92,15 +93,15 @@ def run_module():
         os.chdir(module.params['chdir'])
         print(os.getcwd())
 
-    if module.params['output_prefix'] == None:
+    if module.params['output'] == None:
         filename = "energy_report"
     else:
-        filename = module.params['output_prefix']
+        filename = module.params['output']
 
-    report = Report(module.params['energy_file'], module.params['event_file'])
+    report = Report(module.params['energy_file'], module.params['event_file'], module.params['event_size_file'])
 
-    report.dump("energy_report.log")
-    report.plot(filename)
+    report.dump(filename + ".log")
+    report.plot(filename + ".png")
     report.plot_compaction_level_energy_histogram(3, "level_3_compaction_energy")
     report.plot_compaction_level_energy_histogram(2, "level_2_compaction_energy")
     report.plot_compaction_level_energy_histogram(1, "level_1_compaction_energy")

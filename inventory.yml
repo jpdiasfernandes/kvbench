@@ -63,6 +63,7 @@ all:
               - at
               - curl
               - libcurl4-openssl-dev
+              - python3-ply
 
 
     # Session name change whenever
