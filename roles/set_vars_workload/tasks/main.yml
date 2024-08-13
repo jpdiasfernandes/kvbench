@@ -278,7 +278,7 @@
 
 
 
-- name: Find existing event_size_info file:
+- name: Find existing event_size_info file
   find:
     paths: "{{workload_results_dir}}"
     file_type: file
