@@ -19,13 +19,12 @@
       load_backup: True
       repetitions: 1
 
-    - role: prepare_run_monitor_graph
-      workload: base
-      load_backup: True
-      repetitions: 1
+    #- role: prepare_run_monitor_graph
+    #  workload: base
+    #  load_backup: True
+    #  repetitions: 1
 
-    - role: prepare_run_monitor_graph
-      workload: delta_128T
-      load_backup: True
-      repetitions: 1
-
+    #- role: prepare_run_monitor_graph
+    #  workload: delta_128T
+    #  load_backup: True
+    #  repetitions: 1
