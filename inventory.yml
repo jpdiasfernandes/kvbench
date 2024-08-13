@@ -81,7 +81,7 @@ all:
       num_operations: 200000000
       threads: 16
       bench_workload_name: ycsbwklda
-      cool_down_time: 90
+      cool_down_time: 5
 
     # Workload db_bench options
     workload_settings:

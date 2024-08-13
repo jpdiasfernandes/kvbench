@@ -16,7 +16,7 @@
 
     - role: prepare_run_monitor_graph
       workload: delta_8T
-      load_backup: True
+      load_backup: False
       repetitions: 1
 
     #- role: prepare_run_monitor_graph
