@@ -1,6 +1,7 @@
 - name: Run workloads that focus on memory specific options of db_bench. Maintaning a fixed set of options, in order to be able to compare the energy consequences of certain changes in the memory specific options.
   hosts: localhost
   vars:
+    session_name: memory
   connection: local
   gather_facts: True
   roles:
