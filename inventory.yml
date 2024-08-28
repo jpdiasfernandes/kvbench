@@ -85,6 +85,28 @@ all:
 
     # Workload db_bench options
     workload_settings:
+      delta_base_50_50_zipf:
+        bench_workload_name: ycsbwklda
+      delta_base_50_50:
+        bench_workload_name: ycsbwklda
+      delta_base_25_75_zipf:
+        bench_workload_name: ycsbwkldh
+      delta_base_25_75:
+        bench_workload_name: ycsbwkldh
+      delta_base_75_25_zipf:
+        bench_workload_name: ycsbwkldg
+      delta_base_75_25:
+        bench_workload_name: ycsbwkldg
+      delta_base_100_0_zipf:
+        bench_workload_name: ycsbwkldc
+      delta_base_100_0:
+        bench_workload_name: ycsbwkldc
+      delta_base_0_100_zipf:
+        bench_workload_name: ycsbfill
+      delta_base_0_100:
+        bench_workload_name: ycsbfill
+
+
       ycsbfill_5M:
         threads: 1
         bench_workload_name: ycsbfill
@@ -402,6 +424,19 @@ all:
         max_background_flushes: 4
         max_write_buffer_number: 4
         YCSB_uniform_distribution: False
+      delta_base_50_50_zipf:
+        YCSB_uniform_distribution: False
+      delta_base_25_75_zipf:
+        YCSB_uniform_distribution: False
+      delta_base_75_25_zipf:
+        YCSB_uniform_distribution: False
+      delta_base_100_0_zipf:
+        YCSB_uniform_distribution: False
+      delta_base_0_100_zipf:
+        YCSB_uniform_distribution: False
+
+
+
 
 ###############Background delta tests###############
       #compaction_style param
