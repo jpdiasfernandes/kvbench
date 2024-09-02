@@ -80,7 +80,7 @@ all:
     workload_fixed_settings:
       num_operations: 200000000
       threads: 16
-      bench_workload_name: ycsbwkldc
+      bench_workload_name: ycsbwkldi
       cool_down_time: 80
 
     # Workload db_bench options
@@ -105,8 +105,6 @@ all:
         bench_workload_name: ycsbfill
       delta_base_0_100:
         bench_workload_name: ycsbfill
-
-
       ycsbfill_5M:
         threads: 1
         bench_workload_name: ycsbfill
@@ -440,11 +438,57 @@ all:
 
 ###############Background delta tests###############
       #compaction_style param
-      delta_compaction_style_universal:
+      delta_compaction-style_universal:
         compaction_style: 1
+      delta_compaction-style_universal_zipf:
+        compaction_style: 1
+        YCSB_uniform_distribution: False
       #sync param
-      delta_sync_on:
+      delta_sync_1:
         sync: True
+        use_fsync: True
+      delta_sync_1_zipf:
+        sync: True
+        use_fsync: True
+        YCSB_uniform_distribution: False
+      delta_sync_10:
+        sync: True
+        use_fsync: True
+        fsync_period: 10
+      delta_sync_10_zipf:
+        sync: True
+        use_fsync: True
+        fsync_period: 10
+        YCSB_uniform_distribution: False
+      delta_sync_100:
+        sync: True
+        use_fsync: True
+        fsync_period: 100
+      delta_sync_100_zipf:
+        sync: True
+        use_fsync: True
+        fsync_period: 100
+        YCSB_uniform_distribution: False
+      delta_sync_1000:
+        sync: True
+        use_fsync: True
+        fsync_period: 1000
+      delta_sync_1000_zipf:
+        sync: True
+        use_fsync: True
+        fsync_period: 1000
+        YCSB_uniform_distribution: False
+      delta_sync_10000:
+        sync: True
+        use_fsync: True
+        fsync_period: 10000
+      delta_sync_10000_zipf:
+        sync: True
+        use_fsync: True
+        fsync_period: 10000
+        YCSB_uniform_distribution: False
+
+
 ###############Workload delta tests###############
       #key_size param
       delta_key_size_64:

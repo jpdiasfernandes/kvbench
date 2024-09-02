@@ -1,4 +1,4 @@
-- name: Run workloads that focus on memory specific options of db_bench. Maintaning a fixed set of options, in order to be able to compare the energy consequences of certain changes in the memory specific options.
+- name: Run workloads that focus on background specific options of db_bench. Maintaning a fixed set of options, in order to be able to compare the energy consequences of certain changes in the background specific options.
   hosts: localhost
   vars:
     session_name: background
@@ -12,19 +12,70 @@
     #- delete_cur_db
 
     #- role: prepare_run_monitor_graph
-    #  workload: fillrandom_100M
+    #  workload: fillrandom_200M
 
     #- create_backup
 
 
-    ################ Start sync delta test ################
-    - role: prepare_run_monitor_graph
-      workload: delta_sync_on
-      load_backup: True
-      repetitions: 2
-
     ################ Start compaction style delta test ################
     - role: prepare_run_monitor_graph
-      workload: delta_compaction_style_universal
+      workload: delta_compaction-style_universal
       load_backup: True
-      repetitions: 2
+      repetitions: 3
+
+    - role: prepare_run_monitor_graph
+      workload: delta_compaction-style_universal_zipf
+      load_backup: True
+      repetitions: 3
+
+
+    ################ Start sync delta test ################
+    - role: prepare_run_monitor_graph
+      workload: delta_sync_1
+      load_backup: True
+      repetitions: 3
+
+    - role: prepare_run_monitor_graph
+      workload: delta_sync_1_zipf
+      load_backup: True
+      repetitions: 3
+
+    - role: prepare_run_monitor_graph
+      workload: delta_sync_10
+      load_backup: True
+      repetitions: 3
+
+    - role: prepare_run_monitor_graph
+      workload: delta_sync_10_zipf
+      load_backup: True
+      repetitions: 3
+
+    - role: prepare_run_monitor_graph
+      workload: delta_sync_100
+      load_backup: True
+      repetitions: 3
+
+    - role: prepare_run_monitor_graph
+      workload: delta_sync_100_zipf
+      load_backup: True
+      repetitions: 3
+
+    - role: prepare_run_monitor_graph
+      workload: delta_sync_1000
+      load_backup: True
+      repetitions: 3
+
+    - role: prepare_run_monitor_graph
+      workload: delta_sync_1000_zipf
+      load_backup: True
+      repetitions: 3
+
+    - role: prepare_run_monitor_graph
+      workload: delta_sync_10000
+      load_backup: True
+      repetitions: 3
+
+    - role: prepare_run_monitor_graph
+      workload: delta_sync_10000_zipf
+      load_backup: True
+      repetitions: 3
