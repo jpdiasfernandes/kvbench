@@ -19,9 +19,9 @@
 
     ################ Start compaction style delta test ################
      - role: prepare_run_monitor_graph
-      workload: base
-      load_backup: True
-      repetitions: 3
+       workload: base
+       load_backup: True
+       repetitions: 3
 
     - role: prepare_run_monitor_graph
       workload: delta_compaction-style_universal
