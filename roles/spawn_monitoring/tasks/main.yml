@@ -22,6 +22,6 @@
 
 - name: Spawn energy logger
   shell: |
-    screen -S {{ energy_screen_name }} -d -m sudo {{energy_tool_server}}
+    screen -S {{ energy_screen_name }} -d -m sudo {{energy_tool_server}} {{energy_tool_config}}
   args:
     chdir: "{{ workload_results_dir }}"

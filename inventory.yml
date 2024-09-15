@@ -26,6 +26,7 @@ all:
     energy_tool_bin: "{{ energy_tool_dir }}/build"
     energy_tool_server: "sdpmonserver"
     energy_tool_client: "/usr/local/lib/libsdpmonclient.so"
+    energy_tool_config: "{{kvbench_dir}}/configs/spower.conf"
     ssh_local_git: /home/jpdiasfernandes/.ssh/id_ed25519.pub
     repo_url_base: https://github.com/jpdiasfernandes/kvs-energy-bench/tree/main/rocksdb/alibaba/long_tests
 
