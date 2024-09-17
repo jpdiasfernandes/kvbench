@@ -81,7 +81,7 @@ all:
     workload_fixed_settings:
       num_operations: 200000000
       threads: 16
-      bench_workload_name: ycsbwkldh
+      bench_workload_name: ycsbwkldi
       cool_down_time: 80
 
     # Workload db_bench options
@@ -444,6 +444,8 @@ all:
       delta_compaction-style_universal_zipf:
         compaction_style: 1
         YCSB_uniform_distribution: False
+      delta_compaction-style_base_zipf:
+        YCSB_uniform_distribution: False
       #sync param
       delta_sync_1:
         sync: True
@@ -488,7 +490,8 @@ all:
         use_fsync: True
         fsync_period: 10000
         YCSB_uniform_distribution: False
-
+      delta_sync_base_zipf:
+        YCSB_uniform_distribution: False
 
 ###############Workload delta tests###############
       #key_size param

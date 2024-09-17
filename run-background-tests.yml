@@ -19,9 +19,15 @@
 
     ################ Start compaction style delta test ################
     - role: prepare_run_monitor_graph
-      workload: base
+      workload: delta_compaction-style_base
       load_backup: True
       repetitions: 3
+
+    - role: prepare_run_monitor_graph
+      workload: delta_compaction-style_base_zipf
+      load_backup: True
+      repetitions: 3
+
 
     - role: prepare_run_monitor_graph
       workload: delta_compaction-style_universal
@@ -36,7 +42,12 @@
 
     ################ Start sync delta test ################
     - role: prepare_run_monitor_graph
-      workload: base
+      workload: delta_sync_base
+      load_backup: True
+      repetitions: 3
+
+    - role: prepare_run_monitor_graph
+      workload: delta_sync_base_zipf
       load_backup: True
       repetitions: 3
 
