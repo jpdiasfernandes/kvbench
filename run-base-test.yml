@@ -12,49 +12,59 @@
     - role: prepare_run_monitor_graph
       workload: delta_base_0_100
       load_backup: True
-      repetitions: 2
+      repetitions: 3
 
     - role: prepare_run_monitor_graph
       workload: delta_base_0_100_zipf
       load_backup: True
-      repetitions: 2
+      repetitions: 3
 
     - role: prepare_run_monitor_graph
       workload: delta_base_25_75
       load_backup: True
-      repetitions: 2
+      repetitions: 3
 
     - role: prepare_run_monitor_graph
       workload: delta_base_25_75_zipf
       load_backup: True
-      repetitions: 2
+      repetitions: 3
 
     - role: prepare_run_monitor_graph
       workload: delta_base_50_50
       load_backup: True
-      repetitions: 2
+      repetitions: 3
 
     - role: prepare_run_monitor_graph
       workload: delta_base_50_50_zipf
       load_backup: True
-      repetitions: 2
+      repetitions: 3
+
+    - role: prepare_run_monitor_graph
+      workload: delta_base_66_33
+      load_backup: True
+      repetitions: 3
+
+    - role: prepare_run_monitor_graph
+      workload: delta_base_66_33_zipf
+      load_backup: True
+      repetitions: 3
 
     - role: prepare_run_monitor_graph
       workload: delta_base_75_25
       load_backup: True
-      repetitions: 2
+      repetitions: 3
 
     - role: prepare_run_monitor_graph
       workload: delta_base_75_25_zipf
       load_backup: True
-      repetitions: 2
+      repetitions: 3
 
     - role: prepare_run_monitor_graph
       workload: delta_base_100_0
       load_backup: True
-      repetitions: 2
+      repetitions: 3
 
     - role: prepare_run_monitor_graph
       workload: delta_base_100_0_zipf
       load_backup: True
-      repetitions: 2
+      repetitions: 3
