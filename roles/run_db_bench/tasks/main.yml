@@ -1,3 +1,27 @@
+- name: Get cgroup version
+  shell: |
+    [ $(stat -fc %T /sys/fs/cgroup/) = "cgroup2fs" ] && echo "unified" || ( [ -e /sys/fs/cgroup/unified/ ] && echo "hybrid" || echo "legacy")
+  register: cgroup_version_out
+
+- name: Fail if cgroup version is not unified
+  fail:
+    msg: Unified cgroup v2 not detected. Do not accept another version. Only tested this version throughly.
+  when: cgroup_version_out.stdout_lines[0] != 'unified'
+
+- name: Register available controllers
+  shell: cat /sys/fs/cgroup/cgroup.controllers
+  register: available_controllers_out
+
+- name: Fail if cpuset Controller not available
+  fail:
+    msg: Cpuset controller not available. Not safe to run benchmark without limiting allowed cpus.
+  when: available_controllers_out.stdout.find('cpuset') == -1
+
+- name: Fail if memory Controller not available
+  fail:
+    msg: Memory controller not available. Not safe to run benchmark without limiting memory.
+  when: available_controllers_out.stdout.find('memory') == -1
+
 - name: Create db dir if not exists
   file:
     path: "{{ db_dir }}"

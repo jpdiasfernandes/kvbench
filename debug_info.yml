@@ -2,6 +2,7 @@
 
 - name: Print helpful for debugging
   hosts: localhost
+  gather_facts: true
   roles:
     - print_vars
   vars:
@@ -183,3 +184,70 @@
       debug:
         msg: "Not expecting this to get here. Either an error shows or it skips this task."
       when: db_bench_fixed_options['test']['var'] is defined
+
+    - name: Set datetime epoch
+      set_fact:
+        date_time_epoch: "{{ (hostvars[inventory_hostname]['ansible_date_time']['iso8601'] | to_datetime('%Y-%m-%dT%H:%M:%SZ')).timestamp()}}"
+    - name: Debug date_time_epoch
+      debug:
+        msg: "Date_time_epoch {{ date_time_epoch }}"
+
+    - name: Check datetime
+      debug:
+        msg: "Datetime strftime {{ '%Y-%m-%dT%H%%3A4%M%%3A4%SZ' | strftime(date_time_epoch) }}"
+
+    - name: Populate a map with an entry
+      set_fact:
+        map_test: "{{ map_test | default({}) | combine({'workload': 'options_string'}) }}"
+
+
+    - name: Populate a map with an entry
+      set_fact:
+        map_test: "{{ map_test | default({}) | combine({'workload1': 'options_string1'}) }}"
+
+    - name: Debug map_test
+      debug:
+        msg: "Map test with an entry: {{ map_test }}"
+
+
+    - name: Debug map_test entry workload
+      debug:
+        msg: "Map test entry worklaod with value: {{ map_test['workload'] }}"
+
+    - name: Get cgroup version
+      shell: |
+        [ $(stat -fc %T /sys/fs/cgroup/) = "cgroup2fs" ] && echo "unified" || ( [ -e /sys/fs/cgroup/unified/ ] && echo "hybrid" || echo "legacy")
+      register: cgroup_version_out
+
+    - name: Debug cgroup and release
+      debug:
+        msg: "{{cgroup_version_out.stdout_lines[0]}} in distribution {{ansible_distribution}} {{ansible_distribution_release}}"
+
+
+    - name: Register available controllers
+      shell: cat /sys/fs/cgroup/cgroup.controllers
+      register: available_controllers_out
+
+    - name: Debug fail message if cgroup version is not unified
+      debug:
+        msg: Unified cgroup v2 not detected. Do not accept another version. Only tested this version throughly.
+      when: cgroup_version_out.stdout_lines[0] == 'unified'
+
+    - name: Register available controllers
+      shell: cat /sys/fs/cgroup/cgroup.controllers
+      register: available_controllers_out
+
+    - name: Debug fail message if cpuset Controller available
+      debug:
+        msg: Cpuset controller not available. Not safe to run benchmark without limiting allowed cpus.
+      when: available_controllers_out.stdout.find('cpuset') != -1
+
+    - name: Fail if memory Controller available
+      fail:
+        msg: Memory controller not available. Not safe to run benchmark without limiting memory.
+      when: available_controllers_out.stdout.find('memory') != -1
+
+
+
+
+        #'%Y-%m-%dT%H%%3A4%M%%3A4%SZ'
