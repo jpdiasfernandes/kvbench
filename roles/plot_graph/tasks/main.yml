@@ -73,20 +73,20 @@
 #This way of finding all the files of a repetition by
 #using regex is not standard. It will make refactoring difficult
 #also. Maybe make a folder for each repetition
-- name: Merge all the output files to a summary plot image
-  image_packing:
-    image_paths:
-      - "{{workload_results_dir}}/bench-log-{{workload_repetition}}-throughput.png"
-      - "{{workload_results_dir}}/dstat-{{workload_repetition}}-cpu.png"
-      - "{{workload_results_dir}}/dstat-{{workload_repetition}}-disk.png"
-      - "{{workload_results_dir}}/dstat-{{workload_repetition}}-mem.png"
-      - "{{workload_results_dir}}/energy-{{workload_repetition}}-acc-energy.png"
-      - "{{workload_results_dir}}/energy-{{workload_repetition}}-compaction-energy.png"
-      - "{{workload_results_dir}}/energy-{{workload_repetition}}-foreground-energy.png"
-      - "{{workload_results_dir}}/energy-{{workload_repetition}}-pids-energy.png"
-      - "{{workload_results_dir}}/energy-{{workload_repetition}}-tids-energy-events.png"
-      - "{{workload_results_dir}}/energy-{{workload_repetition}}-tids-energy.png"
-      - "{{workload_results_dir}}/energy-report-{{workload_repetition}}.png"
-    output: "{{plots_merged_file}}"
-    chdir: "{{workload_results_dir}}"
-  ignore_errors: true
+#- name: Merge all the output files to a summary plot image
+#  image_packing:
+#    image_paths:
+#      - "{{workload_results_dir}}/bench-log-{{workload_repetition}}-throughput.png"
+#      - "{{workload_results_dir}}/dstat-{{workload_repetition}}-cpu.png"
+#      - "{{workload_results_dir}}/dstat-{{workload_repetition}}-disk.png"
+#      - "{{workload_results_dir}}/dstat-{{workload_repetition}}-mem.png"
+#      - "{{workload_results_dir}}/energy-{{workload_repetition}}-acc-energy.png"
+#      - "{{workload_results_dir}}/energy-{{workload_repetition}}-compaction-energy.png"
+#      - "{{workload_results_dir}}/energy-{{workload_repetition}}-foreground-energy.png"
+#      - "{{workload_results_dir}}/energy-{{workload_repetition}}-pids-energy.png"
+#      - "{{workload_results_dir}}/energy-{{workload_repetition}}-tids-energy-events.png"
+#      - "{{workload_results_dir}}/energy-{{workload_repetition}}-tids-energy.png"
+#      - "{{workload_results_dir}}/energy-report-{{workload_repetition}}.png"
+#    output: "{{plots_merged_file}}"
+#    chdir: "{{workload_results_dir}}"
+#  ignore_errors: true
