@@ -26,7 +26,7 @@ all:
     energy_tool_bin: "{{ energy_tool_dir }}/build"
     energy_tool_server: "sdpmonserver"
     energy_tool_client: "/usr/local/lib/libsdpmonclient.so"
-    energy_tool_config: "{{kvbench_dir}}/configs/spower.conf"
+    energy_tool_config: "{{kvbench_dir}}/configs/sdpower.conf"
     ssh_local_git: /home/jpdiasfernandes/.ssh/id_ed25519.pub
     repo_url_base: https://github.com/jpdiasfernandes/kvs-energy-bench/tree/main/rocksdb/alibaba/long_tests
 
@@ -74,7 +74,7 @@ all:
     session_name: run-memory-tests
 
     # Systems hardware limitations
-    memory_limit: 32G
+    memory_limit: 16G
     numa_node_set: 0
     allowed_cpus: 0,2,4,6,8,10,12,14,16,18,20,22,24,26,28,30,32,34,36,38,40,42,44,46
 
