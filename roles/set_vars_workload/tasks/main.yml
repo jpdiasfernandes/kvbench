@@ -263,7 +263,7 @@
     paths: "{{workload_results_dir}}"
     file_type: file
     use_regex: yes
-    patterns: "energy-report-{{workload}}(-[0-9]+)?\\.png"
+    patterns: "energy-report-{{workload}}(-[0-9]+)?\\.log"
   register: find_report
 
 - name: Set energy-report file when find_report.matched == 0
