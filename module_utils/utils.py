@@ -4,10 +4,8 @@ from collections import namedtuple
 from datetime import datetime
 import datetime as dt
 import re
-from typing import Type
 import matplotlib.pyplot as plt
 import json
-import sys
 import statistics
 
 
@@ -178,7 +176,7 @@ class ThreadTimeSeries:
 
 
 class Event:
-    def __init__(self, tid, start_ts, end_ts, energy, cpu, event_type, context, job_id, file_num, inputs_size_info):
+    def __init__(self, tid, start_ts, end_ts, energy, cpu, event_type, context, job_id):
         self.tid = tid
         self.energy = energy
         self.cpu_cycles = cpu
@@ -187,35 +185,17 @@ class Event:
         self.start_ts = start_ts
         self.end_ts = end_ts
         self.job_id = job_id
-        self.file_num = file_num
-        self.inputs_size_info = inputs_size_info
 
     @classmethod
-    def from_event_json(cls, energy, cpu, event_json, event_size_info):
+    def from_event_json(cls, energy, cpu, event_json):
         tid = event_json["thread_id_system"]["start"]
         event_type = event_json["name"].split("#")[0]
         context = event_json["context"]
         start_ts = datetime.fromisoformat(event_json["date_time"]["start"])
         end_ts = datetime.fromisoformat(event_json["date_time"]["end"])
-        if event_json["context"] != None and event_json["context"]["job_id"] != None:
-            job_id = event_json["context"]["job_id"]
-        else:
-            job_id = -1
+        job_id = event_json["context"]["job_id"]
 
-        if event_size_info != None and "quantity" in event_size_info.keys():
-            if "quantity" in event_size_info.keys():
-                file_num = event_size_info["quantity"]
-            else:
-                file_num = None
-            if "inputs" in event_size_info.keys(): # Case where the log did not contain the end of some compactions
-                inputs_size_info = event_size_info["inputs"]
-            else:
-                inputs_size_info = None
-        else:
-            file_num = None
-            inputs_size_info = None
-
-        return cls(tid, start_ts, end_ts, energy, cpu, event_type, context, job_id, file_num, inputs_size_info)
+        return cls(tid, start_ts, end_ts, energy, cpu, event_type, context, job_id)
 
     def get_duration(self):
         return (self.end_ts - self.start_ts)/dt.timedelta(microseconds=1)
@@ -230,19 +210,50 @@ class Event:
         res["start"] = str(self.start_ts)
         res["end"] = str(self.end_ts)
         res["job_id"] = self.job_id
-        # Sometimes the parser logs the beggining of the compaction but not the summary
-        if self.inputs_size_info != None:
-            res["file_num"] = self.file_num
-            res["inputs_size_info"] = self.inputs_size_info
+        return res
+
+class EventCompaction(Event):
+    def __init__(self, tid, start_ts, end_ts, energy, cpu, event_type, context, job_id, file_num, inputs_size_info):
+        super().__init__(tid, start_ts, end_ts, energy, cpu, event_type, context, job_id)
+        self.file_num = file_num
+        self.inputs_size_info = inputs_size_info
+    @classmethod
+    def from_event_json(cls, energy, cpu, event_json):
+        base = super(EventCompaction, cls).from_event_json(energy, cpu, event_json)
+        file_num = event_json["context"]["quantity"]
+        inputs_size_info = event_json["context"]["input"]
+        return cls(base.tid, base.start_ts, base.end_ts, base.energy, base.cpu_cycles, base.event_type, base.context, base.job_id, file_num, inputs_size_info)
+
+    def to_json(self):
+        res = super().to_json()
+        res["file_num"] = self.file_num
+        res["inputs_size_info"] = self.inputs_size_info
+        return res
+
+class EventFlush(Event):
+    def __init__(self, tid, start_ts, end_ts, energy, cpu, event_type, context, job_id, num_memtables, total_size):
+        super().__init__(tid, start_ts, end_ts, energy, cpu, event_type, context, job_id)
+        self.num_memtables = num_memtables
+        self.total_size = total_size
+
+    @classmethod
+    def from_event_json(cls, energy, cpu, event_json):
+        base = super().from_event_json(energy, cpu, event_json)
+        num_memtables = event_json["context"]["num_memtables"]
+        total_size = event_json["context"]["total_data_size"]
+        return cls(base.tid, base.start_ts, base.end_ts, base.energy, base.cpu_cycles, base.event_type, base.context, base.job_id, num_memtables, total_size)
+
+    def to_json(self):
+        res = super().to_json()
+        res["num_memtables"] = self.num_memtables
+        res["total_size"] = self.total_size
         return res
 
 class Report:
-    def __init__(self, energy_file, events_json, events_size_info_json):
+    def __init__(self, energy_file, events_json):
         self.tid_info = ThreadTimeSeries(energy_file)
         events_fd = open(events_json, "r")
-        events_size_info_fd = open(events_size_info_json, "r")
         self.events_json = json.load(events_fd)
-        self.events_size_info_json = json.load(events_size_info_fd)
         events_fd.close()
         self.events = self.parse_events_json()
         self.report = self.generate_json_report()
@@ -274,23 +285,19 @@ class Report:
         plt.savefig(output)
 
 
-    def get_event_size_info(self, job_id):
-        if str(job_id) in self.events_size_info_json.keys():
-            return self.events_size_info_json[str(job_id)]
-        return None
-
     def parse_events_json(self):
         sub_events = self.events_json["open_event"]["sub_events"]
         events = []
         for event in sub_events:
             energy = self.get_event_json_energy(event)
             cpu = self.get_event_json_cpu(event)
-            if event["context"] != None and "job_id" in event["context"].keys():
-                event_size_info = self.get_event_size_info(event["context"]["job_id"])
-                events.append(Event.from_event_json(energy, cpu, event, event_size_info))
-            else: #Case when flush did not have job_id
-                events.append(Event.from_event_json(energy, cpu, event, None))
-
+            event_type = event["name"].split("#")[0]
+            if event_type == "flush":
+                events.append(EventFlush.from_event_json(energy, cpu, event))
+            elif event_type == "compaction":
+                events.append(EventCompaction.from_event_json(energy, cpu, event))
+            elif event_type == "trivial":
+                events.append(Event.from_event_json(energy, cpu, event))
 
         return events
 

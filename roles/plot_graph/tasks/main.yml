@@ -53,19 +53,10 @@
   when: find_plots_merged['matched'] != 0
 
 
-- name: Parse the Compaction size info from LOG
-  parse_compaction_size_info:
-    log_file: "{{db_log_file}}"
-    output: "{{event_size_file}}"
-    chdir: "{{workload_results_dir}}"
-
-
-
 - name: Plot energy reports
   generate_energy_report:
     energy_file: "{{ energy_pid_file.stdout_lines[0] | trim }}"
     event_file: "{{ rocksdb_log_file }}"
-    event_size_file: "{{event_size_file}}.log"
     chdir: "{{ workload_results_dir }}"
     output: "{{ energy_report_file }}"
   ignore_errors: true

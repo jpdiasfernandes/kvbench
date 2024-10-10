@@ -70,7 +70,6 @@ def run_module():
     module_args = dict(
         energy_file=dict(type='str', required=True),
         event_file=dict(type='str', Required=True),
-        event_size_file=dict(type='str', Required=True),
         chdir=dict(type='str', required=False),
         output=dict(type='str', required=False)
     )
@@ -98,7 +97,7 @@ def run_module():
     else:
         filename = module.params['output']
 
-    report = Report(module.params['energy_file'], module.params['event_file'], module.params['event_size_file'])
+    report = Report(module.params['energy_file'], module.params['event_file'])
 
     report.dump(filename + ".log")
     report.plot(filename + ".png")
