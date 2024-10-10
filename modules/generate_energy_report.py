@@ -99,14 +99,14 @@ def run_module():
 
     report = Report(module.params['energy_file'], module.params['event_file'])
 
-    report.dump(filename + ".log")
-    report.plot(filename + ".png")
-    report.plot_compaction_level_energy_histogram(3, "level_3_compaction_energy")
-    report.plot_compaction_level_energy_histogram(2, "level_2_compaction_energy")
-    report.plot_compaction_level_energy_histogram(1, "level_1_compaction_energy")
-    report.plot_compaction_level_duration_histogram(3, "level_3_compaction_duration")
-    report.plot_compaction_level_duration_histogram(2, "level_2_compaction_duration")
-    report.plot_compaction_level_duration_histogram(1, "level_1_compaction_duration")
+    report.dump_json(filename + ".log")
+    #report.plot(filename + ".png")
+    #report.plot_compaction_level_energy_histogram(3, "level_3_compaction_energy")
+    #report.plot_compaction_level_energy_histogram(2, "level_2_compaction_energy")
+    #report.plot_compaction_level_energy_histogram(1, "level_1_compaction_energy")
+    #report.plot_compaction_level_duration_histogram(3, "level_3_compaction_duration")
+    #report.plot_compaction_level_duration_histogram(2, "level_2_compaction_duration")
+    #report.plot_compaction_level_duration_histogram(1, "level_1_compaction_duration")
 
     result["stdout_lines"] = stdout_lines
     module.exit_json(**result)
