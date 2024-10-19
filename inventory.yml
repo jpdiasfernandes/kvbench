@@ -110,6 +110,19 @@ all:
         bench_workload_name: ycsbwkldi
       delta_base_0_100:
         bench_workload_name: ycsbwkldi
+      delta_base_b:
+        bench_workload_name: ycsbwkldb
+      delta_base_b_zipf:
+        bench_workload_name: ycsbwkldb
+      delta_base_e:
+        bench_workload_name: ycsbwklde
+      delta_base_e_zipf:
+        bench_workload_name: ycsbwklde
+      delta_base_d:
+        bench_workload_name: ycsbwkldd
+      delta_base_d_zipf:
+        bench_workload_name: ycsbwkldd
+
       ycsbfill_5M:
         threads: 1
         bench_workload_name: ycsbfill
@@ -445,6 +458,13 @@ all:
         YCSB_uniform_distribution: False
       delta_base_0_100_zipf:
         YCSB_uniform_distribution: False
+      delta_base_b_zipf:
+        YCSB_uniform_distribution: False
+      delta_base_d_zipf:
+        YCSB_uniform_distribution: False
+      delta_base_e_zipf:
+        YCSB_uniform_distribution: False
+
 
 
 
