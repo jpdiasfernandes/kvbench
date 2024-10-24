@@ -6,7 +6,7 @@ DOCUMENTATION = r'''
 ---
 module: parse_compaction_size_info.py
 
-short_description: Parses the rocksdb LOG file in search of compactions input files information
+short_description: Parses the event log and extracts
 
 version_added: "1.0.0"
 
@@ -49,7 +49,7 @@ import json
 def run_module():
     # define available arguments/parameters a user can pass to the module
     module_args = dict(
-        log_file=dict(type='str', required=True),
+        event_file=dict(type='str', required=True),
         chdir=dict(type='str', required=False),
         output=dict(type='str', required=False)
     )

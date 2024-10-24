@@ -31,8 +31,9 @@ workload['time'] = pd.to_datetime(workload['time'], format="%d-%m %H:%M:%S")
 workload['usage'] = workload.apply(lambda row: row['total usage:usr'] + row['total usage:sys'], axis=1)
 
 workload_cpu = workload[["usage"]]
-workload_disk = workload[["dsk/total:read","dsk/total:writ"]]
-workload_mem = workload[["used","cach"]]
+workload_disk = workload[["dsk/total:writ"]]
+workload_mem = workload[["used"]]
+workload_page = workload[["cach"]]
 
 
 # Remove .csv
@@ -47,5 +48,8 @@ plt.title('Execution phase Disk ops')
 plt.savefig(file_no_format + "-disk.png")
 workload_mem.plot()
 plt.ylabel('KBytes')
-plt.title('Execution phase Memory usage')
+plt.title('Execution phase used Memory')
 plt.savefig(file_no_format + "-mem.png")
+plt.ylabel('KBytes')
+plt.title('Execution phase used page cache')
+plt.savefig(file_no_format + "-pagecache.png")
