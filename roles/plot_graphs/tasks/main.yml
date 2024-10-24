@@ -1,0 +1,57 @@
+ - name: Run plots and ensure the cleanup is done
+   block:
+     - name: Create hollow fs
+       hollow_fs:
+         base_dir: "{{plot_directory}}"
+         out_base_dir: /tmp/hollow
+
+     - name: create tmp remote directory if not exist
+       file:
+         path: /tmp/hollow
+         state: directory
+
+     - name: rsync to remote
+       ansible.posix.synchronize:
+         src: /tmp/hollow/
+         dest: /tmp/hollow
+         copy_links: True
+
+     - name: find all report files
+       find:
+         path: /tmp/hollow
+         recurse: yes
+       register: out_find
+
+     - name: Debug /tmp/hollow report files
+       debug:
+         msg: "{{out_find}}"
+
+     - name: Plot graphs
+       plot_energy:
+         report_file: "{{ item['path'] }}"
+         output_prefix: graph
+         chdir: "{{item['path'] | dirname}}"
+       loop: "{{out_find['files']}}"
+
+     # Only want the log to create the graphs
+     - name: Remove duplicate logs
+       file:
+         path: "{{ item['path'] }}"
+         state: absent
+       loop: "{{out_find['files']}}"
+
+     - name: Rsync the results to local
+       ansible.posix.synchronize:
+         src: /tmp/hollow/
+         dest: "{{plot_directory}}"
+         mode: pull
+
+
+   always:
+     - name: remove local temporary hollow fs
+       local_action: file path=/tmp/hollow state=absent
+
+     - name: remove remote temporary hollow fs
+       file:
+         path: /tmp/hollow
+         state: absent
