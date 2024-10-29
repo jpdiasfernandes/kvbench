@@ -1,5 +1,3 @@
-#!/usr/bin/env python3
-
 from __future__ import (absolute_import, division, print_function)
 __metaclass__ = type
 
@@ -122,6 +120,7 @@ def run_module():
     plotter.compaction_energy(file_no_format + "-compaction-energy.pdf")
     plotter.flush_energy(file_no_format + "-flush-energy.pdf")
     plotter.compaction_events_energy(file_no_format + "-compaction-events-energy.pdf", height=20, width=25)
+    plotter.compaction_level_report(file_no_format + "-compaction_level_info.pdf")
 
     module.exit_json(**result)
 

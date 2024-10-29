@@ -6,9 +6,10 @@ import re
 from collections import namedtuple
 import numpy as np
 from matplotlib.axes import Axes
-import json
+from functools import reduce
 
 from ansible.module_utils.plot_utils import Plot
+#from plot_utils import Plot
 Interval = namedtuple("Interval", ["start", "end"])
 
 def get_duration(date_time: dt.datetime, first_date_time: dt.datetime):
@@ -84,6 +85,18 @@ class Report:
         fd = open(output, "a")
         json.dump(self.to_json(), fd)
         fd.close()
+
+    def group_compactions_by_level(self):
+        levels = {}
+        event: Event
+        for event in self.events:
+            if event.event_type == "compaction":
+                to_level = event.context["level_info"]["to"]
+                if to_level not in levels:
+                    levels[to_level] = []
+                levels[to_level].append(event)
+
+        return levels
 
 class DataPoint:
     def __init__(self, energy, cpu_cycles):
@@ -412,19 +425,22 @@ class ReportPlotter:
 
         return tids_set
 
-    def __init__(self, report: Report, power_min_ylim = 0, power_max_ylim = 200):
+    def __init__(self, report: Report, power_min_ylim = 0, power_max_ylim = 200, acc_energy_max_ylim = 40000, acc_energy_min_ylim = 0):
         self.report = report
         self.compaction_tids, self.flush_tids = self.__find_event_threads(report)
         self.tids = self.__get_tids(report.tid_info)
         self.foreground_tids = self.tids - (self.compaction_tids | self.flush_tids)
         self.power_min_ylim = power_min_ylim
         self.power_max_ylim = power_max_ylim
+        self.acc_energy_max_ylim = acc_energy_max_ylim
+        self.acc_energy_min_ylim = acc_energy_min_ylim
+        self.cache_group_by_level = None
 
     def __hash_datetime(self, datetime: dt.datetime):
         res_time = datetime.replace(microsecond=0)
         return res_time
 
-    def __generic_power_xy(self, set_tid: set[int]):
+    def __generic_power_xy(self, set_tid):
         timeseries = {}
         def __add_timeserie(datetime: dt.datetime, value):
             if datetime not in timeseries.keys():
@@ -441,12 +457,20 @@ class ReportPlotter:
         duration = []
         energy = []
 
-        first_ts = list(timeseries.keys())[0]
-        for ts, acc_energy in timeseries.items():
-            duration.append(get_duration(ts, first_ts))
-            energy.append(acc_energy)
+
+        timeseries_list = list(timeseries.keys())
+        if len(timeseries_list) > 0:
+            first_ts = timeseries_list[0]
+            for ts, acc_energy in timeseries.items():
+                duration.append(get_duration(ts, first_ts))
+                energy.append(acc_energy)
 
         return duration, energy
+
+    def __group_by_level(self):
+        if self.cache_group_by_level == None:
+            self.cache_group_by_level = self.report.group_compactions_by_level()
+        return self.cache_group_by_level
 
     def __generic_power_plot(self, set_tid: set[int]):
         duration, energy = self.__generic_power_xy(set_tid)
@@ -548,5 +572,148 @@ class ReportPlotter:
         plot.fig.set_figwidth(width)
         plot.save_fig(out_name)
 
-    def compaction_plot_report(self, levels):
-        pass
+    def __generate_total_compaction_energy(self, plot: Plot, row=0, col=0):
+        grouped_by_level = self.__group_by_level()
+        compaction_level_energy = {level: reduce(lambda acc_energy, event: acc_energy + event.energy, list_events, 0) for level, list_events in grouped_by_level.items()}
+        x = []
+        height = []
+        for level, energy in sorted(compaction_level_energy.items()):
+            x.append(str(level))
+            height.append(energy)
+
+        plot.plot_bar(x,  height, hatch='///', bar_colors='none', row=row, col=col)
+        plot.set_ylim(self.acc_energy_min_ylim, self.acc_energy_max_ylim, row, col)
+        plot.set_labels("Compactions to output level", "Total Consumed Energy (J)", row, col)
+    def __generate_total_compaction_duration(self, plot: Plot, row=0, col=0):
+        grouped_by_level = self.__group_by_level()
+        compaction_level_duration = {}
+        for level, list_events in grouped_by_level.items():
+            acc_duration = 0
+            for event in list_events:
+                acc_duration += (event.end_ts - event.start_ts).total_seconds()
+            compaction_level_duration[level] = acc_duration
+
+        x = []
+        height = []
+        for level, duration in sorted(compaction_level_duration.items()):
+            x.append(str(level))
+            height.append(duration)
+
+
+        plot.plot_bar(x, height, hatch='**', bar_colors='none', row=row, col=col)
+        plot.set_ylim(0, 720 * 4, row, col)
+        plot.set_labels("Compactions to output level", "Total Duration Elapsed (seconds)", row, col)
+
+    def __generate_total_compaction_size(self, plot: Plot, row=0, col=0):
+        def get_size_from_inputs(input):
+            acc_size = 0
+            for input_level in input:
+                for _, size_bytes in input_level.items():
+                    acc_size += size_bytes
+            return acc_size
+
+        grouped_by_level = self.__group_by_level()
+        compaction_level_size = {}
+        for level, list_events in grouped_by_level.items():
+            acc_size = 0
+            for event in list_events:
+                acc_size += get_size_from_inputs(event.context["input"])
+            compaction_level_size[level] = acc_size
+
+        x = []
+        height = []
+        for level, size in sorted(compaction_level_size.items()):
+            x.append(str(level))
+            size_gb = size / 1024 / 1024 / 1024
+            height.append(size_gb)
+
+        plot.plot_bar(x, height, hatch='++', bar_colors='none', row=row, col=col)
+        plot.set_ylim(0, 150, row, col)
+        plot.set_labels("Compactions to output level", "Total Accumulated File Size Compacted (GiB)", row, col)
+
+    def __generate_avg_compaction_size(self, plot: Plot, row=0, col=0):
+        def get_size_from_inputs(input):
+            acc_size = 0
+            for input_level in input:
+                for _, size_bytes in input_level.items():
+                    acc_size += size_bytes
+            return acc_size
+
+        grouped_by_level = self.__group_by_level()
+        compaction_level_size = {}
+        for level, list_events in grouped_by_level.items():
+            acc_size = 0
+            acc_number = 0
+            for event in list_events:
+                acc_number += 1
+                acc_size += get_size_from_inputs(event.context["input"])
+            compaction_level_size[level] = acc_size / acc_number
+
+        x = []
+        height = []
+        for level, size in sorted(compaction_level_size.items()):
+            x.append(str(level))
+            size_gb = size / 1024 / 1024 / 1024
+            height.append(size_gb)
+
+        plot.plot_bar(x, height, hatch='++', bar_colors='none', row=row, col=col)
+        plot.set_ylim(0, 2, row, col)
+        plot.set_labels("Compactions to output level", "Average Accumulated File Size Compacted (GiB)", row, col)
+
+    def __generate_avg_compaction_power(self, plot: Plot, row=0, col=0):
+        grouped_by_level = self.__group_by_level()
+        compaction_level_power = {}
+        for level, list_events in grouped_by_level.items():
+            acc_duration = 0
+            acc_energy = 0
+            for event in list_events:
+                acc_duration += (event.end_ts - event.start_ts).total_seconds()
+                acc_energy += event.energy
+            compaction_level_power[level] = acc_energy / acc_duration
+
+        x = []
+        height = []
+        for level, power in sorted(compaction_level_power.items()):
+            x.append(str(level))
+            height.append(power)
+
+
+        plot.plot_bar(x, height, hatch='oo', bar_colors='none', row=row, col=col)
+        plot.set_ylim(0, 70, row, col)
+        plot.set_labels("Compactions to output level", "Compaction Power", row, col)
+
+
+    def __generate_cpu_busy_frequency(self, plot: Plot, row=0, col=0):
+        grouped_by_level = self.__group_by_level()
+        compaction_level_usage = {}
+        for level, list_events in grouped_by_level.items():
+            acc_cycles = 0
+            acc_duration = 0
+            for event in list_events:
+                acc_duration += (event.end_ts - event.start_ts).total_seconds()
+                acc_cycles += event.cpu_cycles
+            compaction_level_usage[level] = acc_cycles / acc_duration
+
+        x = []
+        height = []
+        for level, freq in sorted(compaction_level_usage.items()):
+            x.append(str(level))
+            height.append(freq / 10 ** 9)
+
+        plot.plot_bar(x, height, hatch='..', bar_colors='none', row=row, col=col)
+        #plot.set_ylim(self.power_min_ylim, self.power_max_ylim, row, col)
+        plot.set_labels("Compactions to output level", "Cpu Busy Frequency (GHz)", row, col)
+
+
+    def compaction_level_report(self, out_name, width=10, height=10):
+        plot = Plot(2,3)
+        self.__generate_total_compaction_energy(plot, 0, 0)
+        self.__generate_total_compaction_duration(plot, 1, 0)
+        self.__generate_total_compaction_size(plot, 0, 1)
+        self.__generate_avg_compaction_power(plot, 1, 1)
+        self.__generate_avg_compaction_size(plot, 0, 2)
+        self.__generate_cpu_busy_frequency(plot, 1, 2)
+        plot.fig.set_figheight(height)
+        plot.fig.set_figwidth(width)
+        plot.fig.tight_layout()
+        plot.save_fig(out_name)

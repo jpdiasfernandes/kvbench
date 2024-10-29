@@ -155,6 +155,10 @@ class Plot:
         axis = self.__get_axis(row, col)
         axis.plot(x,y, color=color)
 
+    def plot_bar(self, x, y, width=0.8, bar_labels='', bar_colors=None, hatch='', edgecolor='black', row = 0, col = 0):
+        axis: Axes = self.__get_axis(row, col)
+        axis.bar(x, y, label=bar_labels, color=bar_colors, hatch=hatch, edgecolor=edgecolor)
+
     def defaults_timeline_stack(self, first_ts: dt.datetime, separator_style='--', separator_color='black', line_width=1.5, timeline_height=5, padding=0.03, row = 0, col = 0):
         axis: Axes = self.__get_axis(row, col)
         if (row, col) not in self.timeline_manager.keys():
