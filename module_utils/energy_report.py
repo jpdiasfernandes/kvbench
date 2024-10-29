@@ -472,7 +472,7 @@ class ReportPlotter:
             self.cache_group_by_level = self.report.group_compactions_by_level()
         return self.cache_group_by_level
 
-    def __generic_power_plot(self, set_tid: set[int]):
+    def __generic_power_plot(self, set_tid):
         duration, energy = self.__generic_power_xy(set_tid)
         res_plot = Plot()
         res_plot.plot_line(duration, energy)
@@ -584,6 +584,22 @@ class ReportPlotter:
         plot.plot_bar(x,  height, hatch='///', bar_colors='none', row=row, col=col)
         plot.set_ylim(self.acc_energy_min_ylim, self.acc_energy_max_ylim, row, col)
         plot.set_labels("Compactions to output level", "Total Consumed Energy (J)", row, col)
+
+    def __generate_total_compaction_number(self, plot, row=0, col=0):
+        grouped_by_level = self.__group_by_level()
+        compaction_level_number = {}
+        for level, list_events in grouped_by_level.items():
+            compaction_level_number[level] = len(list_events)
+
+        x = []
+        height = []
+        for level, compactions in sorted(compaction_level_number.items()):
+            x.append(str(level))
+            height.append(height)
+
+        plot.plot_bar(x, height, hatch='OO', bar_colors='none', row=row, col=col)
+        plot.set_labels("Compactions to output level", "Total Number of Compactions", row, col)
+
     def __generate_total_compaction_duration(self, plot: Plot, row=0, col=0):
         grouped_by_level = self.__group_by_level()
         compaction_level_duration = {}
@@ -660,6 +676,32 @@ class ReportPlotter:
         plot.set_ylim(0, 2, row, col)
         plot.set_labels("Compactions to output level", "Average Accumulated File Size Compacted (GiB)", row, col)
 
+    def __generate_avg_compaction_files(self, plot, row=0, col=0):
+        def get_files_from_inputs(input):
+            no_inputs = 0
+            for input_level in input:
+                list_fd = list(input_level.keys())
+                no_inputs += len(list_fd)
+            return no_inputs
+        grouped_by_level = self.__group_by_level()
+        compaction_level_files = {}
+        for level, list_events in grouped_by_level.items():
+            acc_files = 0
+            acc_number = 0
+            for event in list_events:
+                acc_number += 1
+                acc_files += get_files_from_inputs(event.context["input"])
+            compaction_level_files[level] = acc_files / acc_number
+        x = []
+        height = []
+        for level, files in sorted(compaction_level_files.items()):
+            x.append(str(level))
+            height.append(files)
+
+        plot.plot_bar(x, height, hatch='\\', bar_colors='none', row=row, col=col)
+        plot.set_ylim(0,10)
+        plot.set_labels("Compactions to output level", "Average Files Involved", row, col)
+
     def __generate_avg_compaction_power(self, plot: Plot, row=0, col=0):
         grouped_by_level = self.__group_by_level()
         compaction_level_power = {}
@@ -705,14 +747,16 @@ class ReportPlotter:
         plot.set_labels("Compactions to output level", "Cpu Busy Frequency (GHz)", row, col)
 
 
-    def compaction_level_report(self, out_name, width=10, height=10):
-        plot = Plot(2,3)
+    def compaction_level_report(self, out_name, width=10, height=30):
+        plot = Plot(2,4)
         self.__generate_total_compaction_energy(plot, 0, 0)
-        self.__generate_total_compaction_duration(plot, 1, 0)
         self.__generate_total_compaction_size(plot, 0, 1)
-        self.__generate_avg_compaction_power(plot, 1, 1)
         self.__generate_avg_compaction_size(plot, 0, 2)
-        self.__generate_cpu_busy_frequency(plot, 1, 2)
+        self.__generate_avg_compaction_files(plot, 0, 3)
+        self.__generate_total_compaction_duration(plot, 1, 0)
+        self.__generate_total_compaction_number(plot, 1, 1)
+        self.__generate_avg_compaction_power(plot, 1, 2)
+        self.__generate_cpu_busy_frequency(plot, 1, 3)
         plot.fig.set_figheight(height)
         plot.fig.set_figwidth(width)
         plot.fig.tight_layout()
