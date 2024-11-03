@@ -9,92 +9,97 @@
 
     - cpu_governor_performance
 
-    #- role: prepare_run_monitor_graph
-    #  workload: delta_base_b
-    #  load_backup: True
-    #  repetitions: 3
+    - role: prepare_run_monitor_graph
+      workload: fillrandom_100M
 
-    #- role: prepare_run_monitor_graph
-    #  workload: delta_base_b_zipf
-    #  load_backup: True
-    #  repetitions: 3
+    - create_backup
 
-    #- role: prepare_run_monitor_graph
-    #  workload: delta_base_d
-    #  load_backup: True
-    #  repetitions: 3
+    - role: prepare_run_monitor_graph
+      workload: delta_base_b
+      load_backup: True
+      repetitions: 3
 
-    #- role: prepare_run_monitor_graph
-    #  workload: delta_base_d_zipf
-    #  load_backup: True
-    #  repetitions: 3
+    - role: prepare_run_monitor_graph
+      workload: delta_base_b_zipf
+      load_backup: True
+      repetitions: 3
 
-    #- role: prepare_run_monitor_graph
-    #  workload: delta_base_e
-    #  load_backup: True
-    #  repetitions: 3
+    - role: prepare_run_monitor_graph
+      workload: delta_base_d
+      load_backup: True
+      repetitions: 3
 
-    #- role: prepare_run_monitor_graph
-    #  workload: delta_base_e_zipf
-    #  load_backup: True
-    #  repetitions: 3
+    - role: prepare_run_monitor_graph
+      workload: delta_base_d_zipf
+      load_backup: True
+      repetitions: 3
+
+    - role: prepare_run_monitor_graph
+      workload: delta_base_e
+      load_backup: True
+      repetitions: 3
+
+    - role: prepare_run_monitor_graph
+      workload: delta_base_e_zipf
+      load_backup: True
+      repetitions: 3
 
     - role: prepare_run_monitor_graph
       workload: delta_base_0_100
       load_backup: True
-      repetitions: 1
+      repetitions: 3
 
     - role: prepare_run_monitor_graph
       workload: delta_base_0_100_zipf
       load_backup: True
-      repetitions: 1
+      repetitions: 3
 
-    #- role: prepare_run_monitor_graph
-    #  workload: delta_base_25_75
-    #  load_backup: True
-    #  repetitions: 3
+    - role: prepare_run_monitor_graph
+      workload: delta_base_25_75
+      load_backup: True
+      repetitions: 3
 
-    #- role: prepare_run_monitor_graph
-    #  workload: delta_base_25_75_zipf
-    #  load_backup: True
-    #  repetitions: 3
+    - role: prepare_run_monitor_graph
+      workload: delta_base_25_75_zipf
+      load_backup: True
+      repetitions: 3
 
-    #- role: prepare_run_monitor_graph
-    #  workload: delta_base_50_50
-    #  load_backup: True
-    #  repetitions: 3
+    - role: prepare_run_monitor_graph
+      workload: delta_base_50_50
+      load_backup: True
+      repetitions: 3
 
-    #- role: prepare_run_monitor_graph
-    #  workload: delta_base_50_50_zipf
-    #  load_backup: True
-    #  repetitions: 3
+    - role: prepare_run_monitor_graph
+      workload: delta_base_50_50_zipf
+      load_backup: True
+      repetitions: 3
 
-    #- role: prepare_run_monitor_graph
-    #  workload: delta_base_66_33
-    #  load_backup: True
-    #  repetitions: 3
+    - role: prepare_run_monitor_graph
+      workload: delta_base_66_33
+      load_backup: True
+      repetitions: 3
 
-    #- role: prepare_run_monitor_graph
-    #  workload: delta_base_66_33_zipf
-    #  load_backup: True
-    #  repetitions: 3
+    - role: prepare_run_monitor_graph
+      workload: delta_base_66_33_zipf
+      load_backup: True
+      repetitions: 3
 
-    #- role: prepare_run_monitor_graph
-    #  workload: delta_base_75_25
-    #  load_backup: True
-    #  repetitions: 3
+    - role: prepare_run_monitor_graph
+      workload: delta_base_75_25
+      load_backup: True
+      repetitions: 3
 
-    #- role: prepare_run_monitor_graph
-    #  workload: delta_base_75_25_zipf
-    #  load_backup: True
-    #  repetitions: 3
+    - role: prepare_run_monitor_graph
+      workload: delta_base_75_25_zipf
+      load_backup: True
+      repetitions: 3
 
-    #- role: prepare_run_monitor_graph
-    #  workload: delta_base_100_0
-    #  load_backup: True
-    #  repetitions: 3
+    - role: prepare_run_monitor_graph
+      workload: delta_base_100_0
+      load_backup: True
+      repetitions: 3
 
-    #- role: prepare_run_monitor_graph
-    #  workload: delta_base_100_0_zipf
-    #  load_backup: True
-    #  repetitions: 3
+    - role: prepare_run_monitor_graph
+      workload: delta_base_100_0_zipf
+      load_backup: True
+      repetitions: 3
