@@ -1,7 +1,8 @@
 - name: Run the base workload that is goind to serve as a comparing factor against the other workloads.
   hosts: cloud148
   vars:
-    plot_directory: ../misc/memory/2024-10-15T17:25:46Z
+    plot_directory: ../misc/memory/2024-10-10T21:16:44Z
+    ansible_python_interpreter: auto
   gather_facts: True
   roles:
     - plot_graphs
