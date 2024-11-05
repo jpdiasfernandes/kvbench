@@ -51,8 +51,8 @@ def iteration_io_stats(pid):
     tids = find_tids(pid)
     iteration_stats = {}
     for tid in tids:
-        tid_io_stats = read_io_stats(tid)
-        iteration_stats[tid] = tid_io_stats
+        if tid_io_stats := read_io_stats(tid) != None:
+            iteration_stats[tid] = tid_io_stats
 
     return iteration_stats
 
