@@ -51,7 +51,7 @@
 
 - name: Set workload repetition fact
   set_fact:
-    workload_repetition: find_workload_repetition['matched']
+    workload_repetition: "{{find_workload_repetition['matched']}}"
 
 - name: Set workload results dir for repetition
   set_fact:
