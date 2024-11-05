@@ -108,7 +108,6 @@ class TimeLineStack:
         axis.set_ylim(bottom_y, self.cur_ylimit)
         for timeline in self.stack:
             timeline.plot(axis)
-        fig.tight_layout()
 
 class Plot:
     def __init__(self, rows: int = 1, cols: int = 1):

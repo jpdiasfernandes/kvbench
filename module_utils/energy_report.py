@@ -97,6 +97,20 @@ class Report:
                 levels[to_level].append(event)
 
         return levels
+    def group_compactions_by_tid_and_level(self):
+        tids_and_level = {}
+        event: Event
+        for event in self.events:
+            if event.event_type == "compaction":
+                tid = event.tid
+                to_level = event.context["level_info"]["to"]
+                if tid not in tids_and_level:
+                    tids_and_level[tid] = {}
+                if to_level not in tids_and_level[tid]:
+                    tids_and_level[tid][to_level] = []
+                tids_and_level[tid][to_level].append(event)
+
+        return tids_and_level
 
 class DataPoint:
     def __init__(self, energy, cpu_cycles):
@@ -435,6 +449,7 @@ class ReportPlotter:
         self.acc_energy_max_ylim = acc_energy_max_ylim
         self.acc_energy_min_ylim = acc_energy_min_ylim
         self.cache_group_by_level = None
+        self.cache_group_by_tid_and_level = None
 
     def __hash_datetime(self, datetime: dt.datetime):
         res_time = datetime.replace(microsecond=0)
@@ -471,6 +486,10 @@ class ReportPlotter:
         if self.cache_group_by_level == None:
             self.cache_group_by_level = self.report.group_compactions_by_level()
         return self.cache_group_by_level
+    def __group_by_tid_and_level(self):
+        if self.cache_group_by_tid_and_level == None:
+            self.cache_group_by_tid_and_level = self.report.group_compactions_by_tid_and_level()
+        return self.cache_group_by_tid_and_level
 
     def __generic_power_plot(self, set_tid):
         duration, energy = self.__generic_power_xy(set_tid)
@@ -503,6 +522,20 @@ class ReportPlotter:
         plot.set_title("Thread " + str(tid) + " average power between [x, x+1[ seconds")
         plot.save_fig(out_name)
 
+
+    def compaction_events_timeline(self, plot, row, col, tid, first_ts, timeline_height=15, timeline_padding=1):
+        grouped_by_tid_and_level = self.__group_by_tid_and_level()
+        if tid in grouped_by_tid_and_level:
+            tid_grouped_by_level = grouped_by_tid_and_level[tid]
+            for level in sorted(tid_grouped_by_level.keys()):
+                level_str = "Level " + str(level)
+                timeline_id = plot.push_timeline(first_ts, level_str, '--', 'black', 1.5, timeline_height, timeline_padding, row=row, col=col)
+                for event in tid_grouped_by_level[level]:
+                    start_ts = event.start_ts
+                    end_ts = event.end_ts
+                    plot.add_event_to_timeline(timeline_id, start_ts, end_ts, row=row, col=col, hatch='///')
+            plot.add_timeline_legend('///', 'Compaction', 'none', row=row, col=col)
+            plot.plot_timeline_stack(row=row, col=col)
 
     def compaction_events_energy(self, out_name, width=6.4, height=4.8):
         no_compaction_tids = len(self.compaction_tids)
@@ -582,8 +615,8 @@ class ReportPlotter:
             height.append(energy)
 
         plot.plot_bar(x,  height, hatch='///', bar_colors='none', row=row, col=col)
-        plot.set_ylim(self.acc_energy_min_ylim, self.acc_energy_max_ylim, row, col)
-        plot.set_labels("Compactions to output level", "Total Consumed Energy (J)", row, col)
+        plot.set_ylim(self.acc_energy_min_ylim, self.acc_energy_max_ylim, row=row, col=col)
+        plot.set_labels("Compactions to output level", "Total Consumed Energy (J)", row=row, col=col)
 
     def __generate_total_compaction_number(self, plot, row=0, col=0):
         grouped_by_level = self.__group_by_level()
@@ -595,7 +628,7 @@ class ReportPlotter:
         height = []
         for level, compactions in sorted(compaction_level_number.items()):
             x.append(str(level))
-            height.append(height)
+            height.append(compactions)
 
         plot.plot_bar(x, height, hatch='OO', bar_colors='none', row=row, col=col)
         plot.set_labels("Compactions to output level", "Total Number of Compactions", row, col)
@@ -644,7 +677,7 @@ class ReportPlotter:
             height.append(size_gb)
 
         plot.plot_bar(x, height, hatch='++', bar_colors='none', row=row, col=col)
-        plot.set_ylim(0, 150, row, col)
+        plot.set_ylim(0, 250, row, col)
         plot.set_labels("Compactions to output level", "Total Accumulated File Size Compacted (GiB)", row, col)
 
     def __generate_avg_compaction_size(self, plot: Plot, row=0, col=0):
@@ -698,8 +731,8 @@ class ReportPlotter:
             x.append(str(level))
             height.append(files)
 
-        plot.plot_bar(x, height, hatch='\\', bar_colors='none', row=row, col=col)
-        plot.set_ylim(0,10)
+        plot.plot_bar(x, height, hatch='\\\\', bar_colors='none', row=row, col=col)
+        plot.set_ylim(0,20, row=row, col=col)
         plot.set_labels("Compactions to output level", "Average Files Involved", row, col)
 
     def __generate_avg_compaction_power(self, plot: Plot, row=0, col=0):
@@ -747,7 +780,7 @@ class ReportPlotter:
         plot.set_labels("Compactions to output level", "Cpu Busy Frequency (GHz)", row, col)
 
 
-    def compaction_level_report(self, out_name, width=10, height=30):
+    def compaction_level_report(self, out_name, width=20, height=10):
         plot = Plot(2,4)
         self.__generate_total_compaction_energy(plot, 0, 0)
         self.__generate_total_compaction_size(plot, 0, 1)
@@ -761,3 +794,55 @@ class ReportPlotter:
         plot.fig.set_figwidth(width)
         plot.fig.tight_layout()
         plot.save_fig(out_name)
+
+class DiskPlotter:
+    def __init__(self, log_path):
+        log_fd = open(log_path, "r")
+        self.tids_io_info = json.load(log_fd)
+    def plot_compaction_io_info(self, report_plotter: ReportPlotter, period, out_name):
+        compaction_tids = report_plotter.compaction_tids
+        plot = Plot(len(compaction_tids) * 2, 1)
+        for i, tid in enumerate(compaction_tids):
+            first_tid_ts = report_plotter.report.tid_info.get_first_ts(tid)
+            self.plot_throughput_io_info(plot, 2*i, 0, tid, period, first_ts=first_tid_ts, metric='write_bytes')
+            self.plot_throughput_io_info(plot, 2*i + 1, 0, tid, period, first_ts=first_tid_ts, metric='read_bytes')
+            report_plotter.compaction_events_timeline(plot, 2*i, 0, tid, first_tid_ts, timeline_height=200)
+            report_plotter.compaction_events_timeline(plot, 2*i + 1, 0, tid, first_tid_ts, timeline_height=40)
+            plot.set_title("Disk IO Throughput With Compaction Timeline : Tid " + str(tid), 2*i, 0)
+        plot.fig.set_figwidth(30)
+        plot.fig.set_figheight(10*len(compaction_tids))
+        plot.fig.savefig(out_name)
+
+
+    def plot_throughput_io_info(self, plot: Plot, row, col, tid, period, unit="Mib", first_ts=None, metric='write_bytes'):
+        legend_mapping = {
+            'write_bytes' : 'Write',
+            'read_bytes' : 'Read'
+        }
+        str_tid = str(tid)
+        if str_tid in self.tids_io_info.keys():
+            tid_io_info = self.tids_io_info[str_tid]
+            if len(tid_io_info.keys()) > 0:
+                x = []
+                height = []
+                sorted_ts = sorted(tid_io_info.keys())
+                if first_ts == None:
+                    first_ts = datetime.fromisoformat(sorted_ts[0])
+                for str_ts in sorted_ts:
+                    ts = datetime.fromisoformat(str_ts)
+                    duration = (ts - first_ts).total_seconds()
+                    x.append(duration)
+                    bytes = tid_io_info[str_ts][metric]
+                    factor = 1
+                    if unit == "Kib":
+                        factor = 1024
+                    elif unit == "Mib":
+                        factor = 1024 * 1024
+                    elif unit == "Gib":
+                        factor = 1024 * 1024 * 1024
+
+                    values = bytes / factor
+                    per_sec = values / period
+                    height.append(per_sec)
+                plot.plot_line(x, height, row=row, col=col)
+                plot.set_labels("Duration (seconds)", "Disk " + legend_mapping[metric] + " throughput (" + unit + "/s)", row=row, col=col)
