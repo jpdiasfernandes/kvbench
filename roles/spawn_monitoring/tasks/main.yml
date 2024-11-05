@@ -7,18 +7,9 @@
   shell: |
     screen -S {{ temp_screen_name }} -d -m python3 {{utils_dir}}/temp_logger.py {{ temp_output_file }}
 
-
-#- name: Ensure service is created
-#  copy:
-#   src: monitor-server.service
-#   dest: /etc/systemd/system/monitor-server.service
-#  become: true
-#
-#- name: Spaen energy logger
-#  systemd_service:
-#    state: started
-#    name: monitor-server.service
-#  become: true
+- name: Spawn fine grained io logger process
+  shell : |
+    screen -S {{ io_screen_name }} -d -m python3 {{utils_dir}}/finerIO.py --pid_name {{io_monitor_pid_name}} --sample_period {{io_monitor_sample_period}} --out_path {{io_output_file}} --wait_pid_period 0.1
 
 - name: Spawn energy logger
   shell: |

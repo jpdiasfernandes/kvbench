@@ -20,7 +20,7 @@ all:
     build_dir: "{{ source_dir }}/build"
     results_dir: "{{ main_dir }}/setup_results"
     utils_dir: "{{ main_dir }}/scripts"
-    db_dir: "{{ main_dir }}/mnt-nvme/db/rocksdb"
+    db_dir: "{{ main_dir }}/mnt-tmpfs/db/rocksdb"
     db_backup_dir: "{{main_dir}}/mnt-nvme/db_backup/rocksdb"
     energy_tool_dir: "{{app_dir}}/software-defined-power"
     energy_tool_bin: "{{ energy_tool_dir }}/build"
@@ -28,7 +28,7 @@ all:
     energy_tool_client: "/usr/local/lib/libsdpmonclient.so"
     energy_tool_config: "{{kvbench_dir}}/configs/sdpower.conf"
     ssh_local_git: /home/jpdiasfernandes/.ssh/id_ed25519.pub
-    repo_url_base: https://github.com/jpdiasfernandes/kvs-energy-bench/tree/main/rocksdb/alibaba/long_tests
+    #repo_url_base: https://github.com/jpdiasfernandes/kvs-energy-bench/tree/main/rocksdb/alibaba/long_tests
 
     # Cmake version
     cmake_version: 3.22.2
@@ -73,6 +73,8 @@ all:
     # the command line to run-remote playbool
     session_name: run-memory-tests
 
+    io_monitor_sample_period: 0.1
+    io_monitor_pid_name: db_bench
     # Systems hardware limitations
     memory_limit: 16G
     numa_node_set: 0

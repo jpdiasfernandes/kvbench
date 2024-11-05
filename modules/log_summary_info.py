@@ -35,11 +35,6 @@ options:
         description: The output prefix to replace, otherwise assume a prefix of summary_info
         required: false
         type: str
-    repo_url:
-        description: The repo url where the results for this workload are going to be stored
-        required: true
-        type: str
-
 author:
     - José Pedro Fernandes (@jpdiasfernandes)
 '''
@@ -52,7 +47,6 @@ EXAMPLES = r'''
         event_file: rocksdb.log
         throughput_file: rocksdb-bench.log
         chdir: /home/user/tool_results
-        repo_url: www.github.com/repo/dir/subdir/workload
 '''
 
 RETURN = r'''
@@ -76,8 +70,7 @@ def run_module():
         event_file=dict(type='str', required=True),
         throughput_file=dict(type='str', required=True),
         chdir=dict(type='str', required=False),
-        output_prefix=dict(type='str', required=False),
-        repo_url=dict(type='str', required=True)
+        output_prefix=dict(type='str', required=False)
     )
 
     # seed the result dict in the object
@@ -115,14 +108,12 @@ def run_module():
     energy_fd = open(module.params['energy_file'])
     event_fd = open(module.params['event_file'])
     throughput_fd = open(module.params['throughput_file'])
-    repo_url = module.params['repo_url']
 
     try:
         summary_fd = open(out_prefix + ".json", "r")
         input_json = json.load(summary_fd)
     except:
         input_json = {
-            "repo": repo_url,
             "tests": []
         }
 

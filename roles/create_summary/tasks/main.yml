@@ -4,4 +4,3 @@
     event_file: "{{ rocksdb_log_file }}"
     throughput_file: "{{ bench_log }}"
     chdir: "{{ workload_results_dir }}"
-    repo_url: "{{ workload_repo_url }}"

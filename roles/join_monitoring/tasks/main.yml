@@ -6,6 +6,10 @@
   shell: |
     screen -X -S {{ temp_screen_name }} stuff "^C"
 
+- name: Join io process
+  shell: |
+    screen -X -S {{ io_screen_name }} stuff "^C"
+
 - name: Join energy process
   shell: |
     screen -X -S {{ energy_screen_name }} stuff "^C"

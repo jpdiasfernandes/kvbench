@@ -15,7 +15,6 @@
   set_fact:
     cool_down_time: "{{workload_fixed_settings['cool_down_time']}}"
 
-
 # Set workload session settings
 - name: set num_threads to workload threads
   set_fact:
@@ -37,150 +36,55 @@
     cool_down_time: "{{workload_settings[workload]['cool_down_time']}}"
   when: workload_settings[workload]['cool_down_time'] is defined
 
-- name: set workload_results_dir
-  set_fact:
-    workload_results_dir: "{{ session_results_dir }}/{{ workload }}"
-
-- name: Set datetime epoch
-  set_fact:
-    date_time_epoch: "{{ (hostvars[inventory_hostname]['ansible_date_time']['iso8601'] | to_datetime('%Y-%m-%dT%H:%M:%SZ')).timestamp()}}"
-
-- name: Set datetime in url
-  set_fact:
-    date_time_url: "{{ '%Y-%m-%dT%H%%3A%M%%3A%SZ' | strftime(date_time_epoch) }}"
-
-- name: set repo_url for this workload
-  set_fact:
-    workload_repo_url: "{{ repo_url_base }}/{{ session_name }}/{{ date_time_url }}/{{ workload }}"
-
-- name: Create directory for workload_results_dir if it does not exist
+- name: Create workload results dir if it does not exist
   file:
-    path: "{{ workload_results_dir }}"
+    path: "{{ session_results_dir }}/{{ workload }}"
     state: directory
 
-- name: get stat from dstat_output_file for this workload
-  stat:
-    path: "{{ workload_results_dir }}/dstat-{{workload}}.csv"
-  register: dstat_file_status
-
-
-# Workloads output files
-- name: Get all dstat files that have the prefix of the same workload
+- name: Find current workload repetition
   find:
-    paths: "{{workload_results_dir}}"
-    file_type: file
+    paths: "{{ session_results_dir }}/{{ workload }}"
+    file_type: directory
     use_regex: yes
-    patterns: "dstat-{{workload}}(-[0-9]+)?\\.csv"
-  register: find_dstat
+    patterns: "repetition-[0-9]+"
+  register: find_workload_repetition
 
-- name: Debug find dstat result
-  debug:
-    msg: "{{find_dstat}}"
-
-- name: set dstat_output_file when find_dstat.matched == 0
+- name: Set workload repetition fact
   set_fact:
-    dstat_output_file: "{{workload_results_dir}}/dstat-{{workload}}.csv"
-  when: find_dstat['matched'] == 0
+    workload_repetition: find_workload_repetition['matched']
 
-- name: set dstat_output_file when find_dstat.matched != 0
+- name: Set workload results dir for repetition
   set_fact:
-    dstat_output_file: "{{workload_results_dir}}/dstat-{{workload}}-{{find_dstat['matched']}}.csv"
-  when: find_dstat['matched'] != 0
+    workload_results_dir: "{{ session_results_dir }}/{{ workload }}/repetition-{{workload_repetition}}"
 
-- name: Get all temperature log files that have the prefix of the same workload
-  find:
-    paths: "{{workload_results_dir}}"
-    file_type: file
-    use_regex: yes
-    patterns: "temp-{{workload}}(-[0-9]+)?\\.csv"
-  register: find_temp
+- name: Create workload repetition results dir
+  file:
+    path: "{{workload_results_dir}}"
+    state: directory
 
-- name: set temp_output_file when find_temp.matched == 0
+- name: set dstat_output_file
   set_fact:
-    temp_output_file: "{{workload_results_dir}}/temp-{{workload}}.csv"
-  when: find_temp['matched'] == 0
+    dstat_output_file: "{{workload_results_dir}}/dstat.csv"
 
-- name: set temp_output_file when find_temp.matched != 0
+- name: set temp_output_file
   set_fact:
-    temp_output_file: "{{workload_results_dir}}/temp-{{workload}}-{{find_temp['matched']}}.csv"
-  when: find_temp['matched'] != 0
+    temp_output_file: "{{workload_results_dir}}/temp.csv"
 
-- name: Get all energy log files that have the prefix of the same workload
-  find:
-    paths: "{{workload_results_dir}}"
-    file_type: file
-    use_regex: yes
-    patterns: "sys-energy-{{workload}}(-[0-9]+)?\\.csv"
-  register: find_energy
-
-- name: set energy_output_file when find_energy.matched == 0
+- name: set io_output_file
   set_fact:
-    energy_output_file: "{{workload_results_dir}}/energy-{{workload}}"
-  when: find_energy['matched'] == 0
+    io_output_file: "{{workload_results_dir}}/io.json"
 
-- name: set energy_output_file when find_energy.matched != 0
+- name: set energy_output_file
   set_fact:
-    energy_output_file: "{{workload_results_dir}}/energy-{{workload}}-{{find_energy['matched']}}"
-  when: find_energy['matched'] != 0
+    energy_output_file: "{{workload_results_dir}}/energy"
 
-- name: Get all db-bench-log files that have the prefix of the same workload
-  find:
-    paths: "{{workload_results_dir}}"
-    file_type: file
-    use_regex: yes
-    patterns: "bench-log-{{workload}}(-[0-9]+)?\\.log"
-  register: find_bench
-
-- name: Debug find bench result
-  debug:
-    msg: "{{find_bench}}"
-
-- name: set bench_log when find_bench.matched == 0
+- name: set bench_log
   set_fact:
-    bench_log: "{{workload_results_dir}}/bench-log-{{workload}}.log"
-  when: find_bench['matched'] == 0
+    bench_log: "{{workload_results_dir}}/bench-log.log"
 
-- name: set bench_log when find_bench.matched != 0
+- name: set rocksdb_log_file
   set_fact:
-    bench_log: "{{workload_results_dir}}/bench-log-{{workload}}-{{find_bench['matched']}}.log"
-  when: find_bench['matched'] != 0
-
-
-- name: Get all rocksdb log files that have the same prefix
-  find:
-    paths: "{{workload_results_dir}}"
-    file_type: file
-    use_regex: yes
-    patterns: "rocksdb-{{workload}}(-[0-9]+)?\\.log"
-  register: find_rocksdb_log
-
-- name: set rocksdb_log_file when find_rocksdb_log == 0
-  set_fact:
-    rocksdb_log_file: "{{workload_results_dir}}/rocksdb-{{workload}}.log"
-  when: find_rocksdb_log['matched'] == 0
-
-- name: set rocksdb_log_file when find_rocksdb_log != 0
-  set_fact:
-    rocksdb_log_file: "{{workload_results_dir}}/rocksdb-{{workload}}-{{find_rocksdb_log['matched']}}.log"
-  when: find_rocksdb_log['matched'] != 0
-
-- name: Get all plot merged files that have the same prefix
-  find:
-    paths: "{{workload_results_dir}}"
-    file_type: file
-    use_regex: yes
-    patterns: "plots_summary(-[0-9]+)?\\.png"
-  register: find_plots_merged
-
-- name: set plots_merged_file when find_plots_merged == 0
-  set_fact:
-    plots_merged_file: "{{workload_results_dir}}/plots_summary.png"
-  when: find_plots_merged['matched'] == 0
-
-- name: set plots_merged_file when find_plots_merged != 0
-  set_fact:
-    plots_merged_file: "{{workload_results_dir}}/plots_summary-{{find_plots_merged['matched']}}.png"
-  when: find_plots_merged['matched'] != 0
+    rocksdb_log_file: "{{workload_results_dir}}/rocksdb.log"
 
 # screen session name variables
 - name: Set dstat screen session name
@@ -191,107 +95,38 @@
   set_fact:
     temp_screen_name:  "temp-{{ session_name }}-{{hostvars[inventory_hostname]['ansible_date_time']['iso8601']}}"
 
+- name: Set IO screen session name
+  set_fact:
+    io_screen_name: "io-{{ session_name }}-{{hostvars[inventory_hostname]['ansible_date_time']['iso8601']}}"
+
 - name: Set energy screen session name
   set_fact:
     energy_screen_name:  "energy-{{ session_name }}-{{hostvars[inventory_hostname]['ansible_date_time']['iso8601']}}"
 
+#There was a problem when combining two consecutive different workloads.
+#Now we demultiplex by workload. If the deltas of the second workload were different, the previous version would maintain the deltas of the previous
+#Now we multiplex and demultiplex by workload.
 - name: Get session map for variable db_bench options
   set_fact:
     session_options: "{{ session_options | default({}) | combine({ workload : db_bench_session_options[workload]}) }}"
   when: db_bench_session_options[workload] is defined
 
 # Renaming variables (special case where there is a need to rename and not possible to decide output file name)
-- name: Find the existing sys-energy-workload files
-  find:
-    paths: "{{workload_results_dir}}"
-    file_type: file
-    use_regex: yes
-    patterns: "sys-energy-{{workload}}(-[0-9]+)?\\.csv"
-  register: find_sys
-
 - name: set sys-energy-workload
   set_fact:
-    sys_energy_file: "{{workload_results_dir}}/sys-energy-{{workload}}.csv"
-  when: find_sys['matched'] == 0
-
-- name: set sys-energy-workload when find_energy.matched != 0
-  set_fact:
-    sys_energy_file: "{{workload_results_dir}}/sys-energy-{{workload}}-{{find_sys['matched']}}.csv"
-  when: find_sys['matched'] != 0
-
-- name: Find the existing sys-hardware-workload files
-  find:
-    paths: "{{workload_results_dir}}"
-    file_type: file
-    use_regex: yes
-    patterns: "sys-hardware-{{workload}}(-[0-9]+)?\\.csv"
-  register: find_hardware
+    sys_energy_file: "{{workload_results_dir}}/sys-energy.csv"
 
 - name: set sys-hardware-workload
   set_fact:
-    sys_hardware_file: "{{workload_results_dir}}/sys-hardware-{{workload}}.csv"
-  when: find_hardware['matched'] == 0
+    sys_hardware_file: "{{workload_results_dir}}/sys-hardware.csv"
 
-- name: set sys-hardware-workload when find_hardware.matched != 0
+- name: Set db-log file
   set_fact:
-    sys_hardware_file: "{{workload_results_dir}}/sys-hardware-{{workload}}-{{find_hardware['matched']}}.csv"
-  when: find_hardware['matched'] != 0
-
-- name: Find the existing db-log files
-  find:
-    paths: "{{workload_results_dir}}"
-    file_type: file
-    use_regex: yes
-    patterns: "db-log-{{workload}}(-[0-9]+)?\\.log"
-  register: find_db_log
-
-- name: Set db-log file when find_db_log.matched == 0
-  set_fact:
-    db_log_file: "{{workload_results_dir}}/db-log-{{workload}}.log"
-  when: find_db_log['matched'] == 0
-
-- name: Set db-log file when find_db_log.matched != 0
-  set_fact:
-    db_log_file: "{{workload_results_dir}}/db-log-{{workload}}-{{find_db_log['matched']}}.log"
-  when: find_db_log['matched'] != 0
+    db_log_file: "{{workload_results_dir}}/db-log.log"
 
   #The energy_report script generates various files with the same energy_report_file prefix
   #We want to know how many repetitions we have so only find one specific file from the
   #various files created
-- name: Find the existing energy-report file
-  find:
-    paths: "{{workload_results_dir}}"
-    file_type: file
-    use_regex: yes
-    patterns: "energy-report-{{workload}}(-[0-9]+)?\\.log"
-  register: find_report
-
-- name: Set energy-report file when find_report.matched == 0
+- name: Set energy-report file
   set_fact:
-    energy_report_file: "{{workload_results_dir}}/energy-report-{{workload}}"
-  when: find_report['matched'] == 0
-
-- name: Set energy-report file when find_report.matched != 0
-  set_fact:
-    energy_report_file: "{{workload_results_dir}}/energy-report-{{workload}}-{{find_report['matched']}}"
-  when: find_report['matched'] != 0
-
-
-
-- name: Find existing event_size_info file
-  find:
-    paths: "{{workload_results_dir}}"
-    file_type: file
-    use_regex: yes
-    patterns: "event-size-info-{{workload}}(-[0-9]+)?\\.log"
-  register: find_event_size
-
-- name: Set event_size_info file when find_event_size.matched == 0
-  set_fact:
-    event_size_file: "{{workload_results_dir}}/event-size-info-{{workload}}"
-  when: find_event_size['matched'] == 0
-
-- name: Set event_size_info file when find_event_size.matched != 0
-  set_fact:
-    event_size_file: "{{workload_results_dir}}/event-size-info-{{workload}}-{{find_event_size['matched']}}"
-  when: find_event_size['matched'] != 0
+    energy_report_file: "{{workload_results_dir}}/energy-report"
