@@ -12,9 +12,9 @@
     - role: prepare_run_monitor_graph
       workload: delta_base_0_100
       load_backup: False
-      repetitions: 1
+      repetitions: 5
 
     - role: prepare_run_monitor_graph
       workload: delta_base_0_100_zipf
-      load_backup: False
+      load_backup: 3
       repetitions: 1
