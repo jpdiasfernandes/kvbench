@@ -6,9 +6,12 @@
   shell: |
     screen -X -S {{ temp_screen_name }} stuff "^C"
 
+#Most likely the process would have exited on its own. Just try to
+#join, if it fails it already exited.
 - name: Join io process
   shell: |
     screen -X -S {{ io_screen_name }} stuff "^C"
+  ignore_errors: True
 
 - name: Join energy process
   shell: |
