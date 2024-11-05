@@ -1,3 +1,8 @@
+- name: Delete directory for db
+  file:
+    path: "{{ db_dir }}"
+    state: absent
+
 - name: Create directory for db if it does not exist
   file:
     path: "{{ db_dir }}"
