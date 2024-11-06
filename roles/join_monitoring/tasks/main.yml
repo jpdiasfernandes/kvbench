@@ -27,7 +27,7 @@
 
 - name: move pid-num.csv to pid-energy.csv
   shell: |
-    mv {{workload}}/pid-*.csv {{pid_energy_file}}
+    mv {{{workload_results_dir}}/pid-*.csv {{pid_energy_file}}
   args:
     creates: "{{pid_energy_file}}"
 
