@@ -1,7 +1,7 @@
 - name: Run the base workload that is goind to serve as a comparing factor against the other workloads.
   hosts: localhost
   vars:
-    session_name: base_nvme_100M
+    session_name: base_ram_100M
   connection: local
   gather_facts: True
   roles:
@@ -9,11 +9,10 @@
 
     - cpu_governor_performance
 
+    #- role: prepare_run_monitor_graph
+    #  workload: fillrandom_100M
 
-    - role: prepare_run_monitor_graph
-      workload: fillrandom_100M
-
-    - create_backup
+    #- create_backup
 
     - role: prepare_run_monitor_graph
       workload: delta_base_b
