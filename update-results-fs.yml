@@ -1,0 +1,7 @@
+- name: Restructure results filesystem structure
+  hosts: localhost
+  gather_facts: false
+  tasks:
+    - name: Print new files
+      update_results_fs:
+        base_dir: "/home/jpdiasfernandes/.tmp"
