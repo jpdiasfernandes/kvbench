@@ -31,8 +31,8 @@ workload['time'] = pd.to_datetime(workload['time'], format="%d-%m %H:%M:%S")
 workload['usage'] = workload.apply(lambda row: row['total usage:usr'] + row['total usage:sys'], axis=1)
 
 workload_cpu = workload[["usage"]]
-workload_disk = workload[["dsk/total:writ"]]
-workload_mem = workload[["used"]]
+workload_disk = workload[["dsk/total:writ", "dsk/total:read"]]
+workload_mem = workload[["used", "cach"]]
 workload_page = workload[["cach"]]
 
 

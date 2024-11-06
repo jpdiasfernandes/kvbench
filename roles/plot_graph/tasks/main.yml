@@ -20,20 +20,9 @@
   shell: |
     python3 {{utils_dir}}/plot_temp.py {{temp_output_file}}
 
-- name: Find process name
-  shell: |
-     ls -t pid-*.csv | head -1
-  args:
-    chdir: "{{ workload_results_dir }}"
-  register: energy_pid_file
-
-- name: Debug last pid measurement
-  debug:
-    msg: "{{ energy_pid_file.stdout_lines[0] | trim }}"
-
 - name: Plot energy reports
   generate_energy_report:
-    energy_file: "{{ energy_pid_file.stdout_lines[0] | trim }}"
+    energy_file: "{{ pid_energy_file }}"
     event_file: "{{ rocksdb_log_file }}"
     chdir: "{{ workload_results_dir }}"
     output: "{{ energy_report_file }}"

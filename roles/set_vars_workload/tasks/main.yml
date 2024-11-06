@@ -116,6 +116,10 @@
   set_fact:
     sys_energy_file: "{{workload_results_dir}}/sys-energy.csv"
 
+- name: set pid-energy-workload
+  set_fact:
+    pid_energy_file: "{{workload_results_dir}}/pid-energy.csv"
+
 - name: set sys-hardware-workload
   set_fact:
     sys_hardware_file: "{{workload_results_dir}}/sys-hardware.csv"
