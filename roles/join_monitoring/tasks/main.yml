@@ -26,7 +26,8 @@
     removes: "{{workload_results_dir}}/sys.csv"
 
 - name: move pid-num.csv to pid-energy.csv
-  command: mv "{{workload_results_dir}}/pid-*.csv" "{{pid_energy_file}}"
+  shell: |
+    mv {{workload}}/pid-*.csv {{pid_energy_file}}
   args:
     creates: "{{pid_energy_file}}"
 
