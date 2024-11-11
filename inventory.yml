@@ -21,7 +21,7 @@ all:
     build_dir: "{{ source_dir }}/build"
     results_dir: "{{ main_dir }}/setup_results"
     utils_dir: "{{ main_dir }}/scripts"
-    db_dir: "{{ main_dir }}/backup-rocksdb-aug/db/rocksdb"
+    db_dir: "{{ main_dir }}/mnt-tmpfs/db/rocksdb"
     db_backup_dir: "{{main_dir}}/backup-rocksdb-aug/db_backup_100M/rocksdb"
     energy_tool_dir: "{{app_dir}}/software-defined-power"
     energy_tool_bin: "{{ energy_tool_dir }}/build"
