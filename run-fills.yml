@@ -1,0 +1,19 @@
+- name: Run fillrandom and create backup
+  hosts: localhost
+  connection: local
+  gather_facts: True
+  roles:
+    - set_vars_session
+
+    - cpu_governor_performance
+
+    - role: prepare_run_monitor_graph
+      workload: fillrandom_80M
+
+    #- role: prepare_run_monitor_graph
+    #  workload: fillrandom_100M
+
+    #- role: prepare_run_monitor_graph
+    #  workload: fillrandom_200M
+
+    - create_backup

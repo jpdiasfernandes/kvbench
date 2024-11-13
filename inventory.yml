@@ -22,7 +22,7 @@ all:
     results_dir: "{{ main_dir }}/setup_results"
     utils_dir: "{{ main_dir }}/scripts"
     db_dir: "{{ main_dir }}/mnt-tmpfs/db/rocksdb"
-    db_backup_dir: "{{main_dir}}/mnt-nvme/db_backup/rocksdb"
+    db_backup_dir: "{{main_dir}}/backup-rocksdb-aug/db_backup_80M/rocksdb"
     energy_tool_dir: "{{app_dir}}/software-defined-power"
     energy_tool_bin: "{{ energy_tool_dir }}/build"
     energy_tool_server: "sdpmonserver"
@@ -129,6 +129,11 @@ all:
       ycsbfill_5M:
         threads: 1
         bench_workload_name: ycsbfill
+        cool_down_time: 15
+      fillrandom_80M:
+        num_operations: 80000000
+        threads: 1
+        bench_workload_name: fillrandom
         cool_down_time: 15
       fillrandom_100M:
         num_operations: 100000000
@@ -295,6 +300,10 @@ all:
 
     # Db_bench variable options depending on workload
     db_bench_session_options:
+      fillrandom_80M:
+        use_existing_db: False
+        YCSB_uniform_distribution: True
+        duration: 0
       fillrandom_100M:
         use_existing_db: False
         YCSB_uniform_distribution: True
