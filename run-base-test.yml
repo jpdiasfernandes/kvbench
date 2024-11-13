@@ -46,7 +46,7 @@
 
     - role: prepare_run_monitor_graph
       workload: delta_base_0_100
-      #load_backup: True
+      load_backup: True
       #repetitions: 3
 
     #- role: prepare_run_monitor_graph
