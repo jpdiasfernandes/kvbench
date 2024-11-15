@@ -1,7 +1,7 @@
 - name: Run the base workload that is goind to serve as a comparing factor against the other workloads.
   hosts: localhost
   vars:
-    session_name: base_nvme_80M
+    session_name: base_sata_80M
   connection: local
   gather_facts: True
   roles:
