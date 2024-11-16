@@ -21,8 +21,8 @@ all:
     build_dir: "{{ source_dir }}/build"
     results_dir: "{{ main_dir }}/setup_results"
     utils_dir: "{{ main_dir }}/scripts"
-    db_dir: "{{ main_dir }}/backup-rocksdb-aug/db/rocksdb"
-    db_backup_dir: "{{main_dir}}/backup-rocksdb-aug/db_backup_80M/rocksdb"
+    db_dir: "{{ main_dir }}/mnt-nvme/db/rocksdb"
+    db_backup_dir: "{{main_dir}}/mnt-nvme/db_backup/rocksdb"
     energy_tool_dir: "{{app_dir}}/software-defined-power"
     energy_tool_bin: "{{ energy_tool_dir }}/build"
     energy_tool_server: "sdpmonserver"
@@ -82,10 +82,11 @@ all:
     allowed_cpus: 0,2,4,6,8,10,12,14,16,18,20,22,24,26,28,30,32,34,36,38,40,42,44,46
 
     workload_fixed_settings:
-      num_operations: 80000000
+      num_operations: 200000000
       threads: 16
-      bench_workload_name: ycsbwkldc
-      cool_down_time: 80
+      bench_workload_name: ycsbwklda
+      #Just to test if I can overload with playbook var
+      cool_down_time: 70
 
     # Workload db_bench options
     workload_settings:
