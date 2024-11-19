@@ -29,6 +29,7 @@ all:
     energy_tool_client: "/usr/local/lib/libsdpmonclient.so"
     energy_tool_config: "{{kvbench_dir}}/configs/sdpower.conf"
     ssh_local_git: /home/jpdiasfernandes/.ssh/id_ed25519.pub
+    enable_block_tracing: False
     #repo_url_base: https://github.com/jpdiasfernandes/kvs-energy-bench/tree/main/rocksdb/alibaba/long_tests
 
     # Cmake version
@@ -66,6 +67,7 @@ all:
               - curl
               - libcurl4-openssl-dev
               - python3-ply
+              - blktrace
 
 
     # Session name change whenever

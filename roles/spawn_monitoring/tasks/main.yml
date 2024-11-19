@@ -16,3 +16,8 @@
     screen -S {{ energy_screen_name }} -d -m sudo {{energy_tool_server}} {{energy_tool_config}}
   args:
     chdir: "{{ workload_results_dir }}"
+
+- name: Spawn blktrace monitoring
+  shell: |
+    screen -S {{ trace_screen_name }} -d -m bash -c  "sudo blktrace -d /dev/nvme0n1 -o - | blkparse -i - -d {{ trace_file }}"
+  when: enable_block_tracing

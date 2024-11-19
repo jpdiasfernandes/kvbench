@@ -17,6 +17,11 @@
   shell: |
     screen -X -S {{ energy_screen_name }} stuff "^C"
 
+- name: Join trace process
+  shell: |
+    screen -X -S {{ trace_screen_name }} stuff "^C"
+  when: enable_block_tracing
+
 #Since software-defined-power does not yet implement a output file option
 
 - name: move sys.csv to sys_energy_file location

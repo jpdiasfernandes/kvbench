@@ -103,6 +103,10 @@
   set_fact:
     energy_screen_name:  "energy-{{ session_name }}-{{hostvars[inventory_hostname]['ansible_date_time']['iso8601']}}"
 
+- name: Set trace screen session name
+  set_fact:
+    trace_screen_name:  "blktrace-{{ session_name }}-{{hostvars[inventory_hostname]['ansible_date_time']['iso8601']}}"
+
 #There was a problem when combining two consecutive different workloads.
 #Now we demultiplex by workload. If the deltas of the second workload were different, the previous version would maintain the deltas of the previous
 #Now we multiplex and demultiplex by workload.
@@ -134,3 +138,7 @@
 - name: Set energy-report file
   set_fact:
     energy_report_file: "{{workload_results_dir}}/energy-report"
+
+- name: Set trace_file
+  set_fact:
+    trace_file: "{{results_dir}}/{{session_name}}_{{workload}}.bin"
