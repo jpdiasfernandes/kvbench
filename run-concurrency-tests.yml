@@ -2,6 +2,7 @@
   hosts: localhost
   vars:
     session_name: concurrency_50_50
+    enable_block_tracing: True
     workload_fixed_settings:
       num_operations: 200000000
       threads: 16
