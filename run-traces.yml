@@ -1,0 +1,30 @@
+- name: Run workloads that focus on concurrency specific options of db_bench. Maintaning a fixed set of options, in order to be able to compare the energy consequences of certain changes in the concurrency specific options.
+  hosts: localhost
+  vars:
+    session_name: base_with_traces
+    enable_block_tracing: True
+    workload_fixed_settings:
+      num_operations: 200000000
+      threads: 16
+      cool_down_time: 80
+  connection: local
+  gather_facts: True
+  roles:
+    - set_vars_session
+
+    - cpu_governor_performance
+
+    - role: prepare_run_monitor_graph
+      workload: delta_base_0_100
+      load_backup: True
+      repetitions: 1
+
+    - role: prepare_run_monitor_graph
+      workload: delta_base_50_50
+      load_backup: True
+      repetitions: 1
+
+    - role: prepare_run_monitor_graph
+      workload: delta_base_100_0
+      load_backup: True
+      repetitions: 1
