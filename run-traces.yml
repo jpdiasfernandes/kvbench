@@ -6,6 +6,7 @@
     workload_fixed_settings:
       num_operations: 200000000
       threads: 16
+      bench_workload_name: ycsbwklda
       cool_down_time: 80
   connection: local
   gather_facts: True
