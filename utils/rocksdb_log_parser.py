@@ -256,7 +256,6 @@ def print_db_stats(json_dict, fmt='fancy_grid', file_out=sys.stdout, transpose=T
         table.append(row)
     if transpose:
         table = list(map(list, zip(*table)))
-    stats_fd = open("stats.html", "w")
     print(tabulate(table, tablefmt=fmt), file=file_out)
 
 def print_compaction_stats(json_dict, fmt='fancy_grid', file_out=sys.stdout):
@@ -285,6 +284,8 @@ if __name__ == "__main__":
     parser.add_argument('--units_path', type=str, help="Requried if --db_log is used")
     parser.add_argument('--db_log', type=str)
     parser.add_argument('--bench_log', type=str)
+    parser.add_argument('--out_fmt', type=str, default='table')
+    parser.add_argument('--json_indent', type=int)
 
     args = parser.parse_args()
     if args.units_path == None and args.db_log != None:
@@ -293,12 +294,21 @@ if __name__ == "__main__":
     if args.bench_log != None:
         bench_fd = open(args.bench_log, "r")
         bench_input = bench_fd.read()
-        print_op_stats(bench_input)
+        if args.out_fmt == 'json':
+            json_dict = {
+                "read" : get_stats("read", bench_input),
+                "write": get_stats("write", bench_input)
+            }
+            print(json.dumps(json_dict, indent=args.json_indent))
+        if args.out_fmt == 'table':
+            print_op_stats(bench_input)
     if args.db_log != None:
         ureg = UnitRegistry(args.units_path)
         db_log_fd = open(args.db_log, "r")
         db_log_input = db_log_fd.read()
         db_stats_dict = get_db_stats(db_log_input)
-        print_compaction_stats(db_stats_dict)
-        print_db_stats(db_stats_dict)
-        json_str_stats = json.dumps(stats_to_json_dict(db_stats_dict), indent=2)
+        if args.out_fmt == 'json':
+            print(json.dumps(stats_to_json_dict(db_stats_dict), indent=args.json_indent))
+        if args.out_fmt == 'table':
+            print_compaction_stats(db_stats_dict)
+            print_db_stats(db_stats_dict)
