@@ -6,7 +6,7 @@ all:
       ansible_host: alibaba.cluster.lsd.di.uminho.pt
 
   vars:
-    kvbench_version: 1.0.8
+    kvbench_version: 1.0.9
     # Dirs and files
     local_dir: /home/jpdiasfernandes/Projetos/Dissertação
     ansible_user: gsd

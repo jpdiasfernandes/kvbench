@@ -51,13 +51,13 @@ def get_stat_row(stat):
     return [ stat["type"], stat["count"], latency["avg"], latency["stdev"], latency["min"], latency["median"], latency["max"],
              latency["p50"], latency["p75"], latency["p99"], latency["p99.9"], latency["p99.99"]]
 
-def print_op_stats(text):
+def print_op_stats(text, fmt):
     stat_read = get_stats("read", text)
     stat_write = get_stats("write", text)
 
-    table = [ ['type', 'count', 'avg', 'stdev', 'min', 'median', 'max', 'p50', 'p75', 'p75', 'p99', 'p99.9', 'p99.99'] ,
+    table = [ ['type', 'count', 'avg', 'stdev', 'min', 'median', 'max', 'p50', 'p75', 'p99', 'p99.9', 'p99.99'] ,
               get_stat_row(stat_read), get_stat_row(stat_write)]
-    print(tabulate(table, headers='firstrow', tablefmt='fancy_grid'))
+    print(tabulate(table, headers='firstrow', tablefmt=fmt))
 
 def match_any_stat(line, stats_type='any'):
     db_stat_expressions = {
@@ -286,6 +286,7 @@ if __name__ == "__main__":
     parser.add_argument('--bench_log', type=str)
     parser.add_argument('--out_fmt', type=str, default='table')
     parser.add_argument('--json_indent', type=int)
+    parser.add_argument('--table_fmt', default='fancy_grid')
 
     args = parser.parse_args()
     if args.units_path == None and args.db_log != None:
@@ -301,7 +302,7 @@ if __name__ == "__main__":
             }
             print(json.dumps(json_dict, indent=args.json_indent))
         if args.out_fmt == 'table':
-            print_op_stats(bench_input)
+            print_op_stats(bench_input, args.table_fmt)
     if args.db_log != None:
         ureg = UnitRegistry(args.units_path)
         db_log_fd = open(args.db_log, "r")
@@ -310,5 +311,5 @@ if __name__ == "__main__":
         if args.out_fmt == 'json':
             print(json.dumps(stats_to_json_dict(db_stats_dict), indent=args.json_indent))
         if args.out_fmt == 'table':
-            print_compaction_stats(db_stats_dict)
-            print_db_stats(db_stats_dict)
+            print_compaction_stats(db_stats_dict, args.table_fmt)
+            print_db_stats(db_stats_dict, args.table_fmt)
