@@ -1,7 +1,9 @@
 - name: Restructure results filesystem structure
   hosts: localhost
   gather_facts: false
+  vars:
+    base_dir_var: "/home/jpdiasfernandes/.tmp"
   tasks:
-    - name: Print new files
+    - name: Restructure filesystem structure
       update_results_fs:
-        base_dir: "/home/jpdiasfernandes/.tmp"
+        base_dir:  "{{base_dir_var}}"

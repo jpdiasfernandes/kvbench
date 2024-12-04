@@ -6,6 +6,7 @@ import os
 import json
 import re
 import glob
+from shutil import copy
 from datetime import datetime
 
 accepted_deltas = {
@@ -27,15 +28,39 @@ accepted_files = {
     r'sys-energy-(.*?)\.csv' : "sys-energy.csv",
     r'sys-hardware-(.*?)\.csv' : "sys-hardware.csv",
     r'rocksdb-(.*?)\.log' : "rocksdb.log",
-    r'summary_info\.json' : "summary_info.json",
     r'sdpmonserver\.log'  : "sdpmonserver.log",
     r'pid-(.*?)\.csv' : "pid-energy.csv",
     r'bench-log-(.*?)\.log' : "bench-log.log",
     r'bench-log-(.*?)-throughput\.png' : "bench-log-throughput.png",
-    r'options-(.*?)\.log' : "options.log",
     r'db-log-(.*?)\.log' : "db-log.log",
     r'energy-report-(.*?)\.log' : "energy-report.log"
 }
+
+def refactor_option(abs_info_path):
+    abs_dir_path = os.path.dirname(abs_info_path)
+    reps = 0
+    for relative_path in os.listdir(abs_dir_path):
+        if os.path.isdir(abs_dir_path + "/" + relative_path) and re.search(r'repetition-\d+', relative_path):
+            reps += 1
+
+    for rep in range(reps):
+        new_file_name = abs_dir_path + f"/repetition-{rep}/options.log"
+        copy(abs_info_path, new_file_name)
+    os.remove(abs_info_path)
+
+def refactor_summary_info(abs_summary_path):
+    abs_dir_path = os.path.dirname(abs_summary_path)
+    summary_fd = open(abs_summary_path, "r")
+    summary_info = json.load(summary_fd)
+
+    for rep, test in enumerate(summary_info["tests"]):
+        rep_summary = { "tests" : [test]}
+        new_file_name = abs_dir_path + f"/repetition-{rep}/summary_info.json"
+        new_dir_name = os.path.dirname(new_file_name)
+        os.makedirs(new_dir_name, exist_ok=True)
+        new_file_fd = open(new_file_name, "w")
+        json.dump(rep_summary, new_file_fd, indent=2)
+    os.remove(abs_summary_path)
 
 def check_filemove(path):
     basename = os.path.basename(path)
@@ -167,6 +192,8 @@ class ActionModule(ActionBase):
 
             files_mapping = {}
             visited_files = set()
+            visited_summary_info = set()
+            visited_options = set()
 
             for root, dirs, files in os.walk(base_absolute_path):
                 dir_absolute_path = os.path.abspath(root)
@@ -174,7 +201,11 @@ class ActionModule(ActionBase):
                     for file in files:
                         file_absolute_path = dir_absolute_path + '/' + file
                         new_path = get_newfile_path(file_absolute_path)
-                        if new_path != None and (file_absolute_path not in visited_files):
+                        if file == "summary_info.json":
+                            visited_summary_info.add(file_absolute_path)
+                        if re.search(r'options(.*?)\.log$', file) != None:
+                            visited_options.add(file_absolute_path)
+                        elif new_path != None and (file_absolute_path not in visited_files):
                             visited_files.add(file_absolute_path)
                             files_mapping[file_absolute_path] = new_path
 
@@ -182,7 +213,10 @@ class ActionModule(ActionBase):
                 #Make sure the intermediate directories are created
                 os.makedirs(os.path.dirname(new_abs_path), exist_ok=True)
                 os.rename(abs_path, new_abs_path)
-
+            for abs_summary_path in visited_summary_info:
+                refactor_summary_info(abs_summary_path)
+            for abs_option_path in visited_options:
+                refactor_option(abs_option_path)
         except AnsibleError:
             result['failed'] = True
             result['changed'] = False
