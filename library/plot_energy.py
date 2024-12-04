@@ -1,4 +1,6 @@
 from __future__ import (absolute_import, division, print_function)
+
+from module_utils.energy_report import DiskPlotter
 __metaclass__ = type
 
 DOCUMENTATION = r'''
@@ -24,6 +26,10 @@ options:
         description: A path to the current working directory
         required: false
         type: str
+    io_file:
+        description: Fine grained disk io activity file path
+        required: false
+        type: str
 
 author:
     - José Pedro Fernandes (@jpdiasfernandes)
@@ -36,6 +42,7 @@ EXAMPLES = r'''
         energy_file: pid-1234.csv
         event_file: rocksdb.log
         chdir: /home/user/tool_results
+        io_file: io.json
 '''
 
 RETURN = r'''
@@ -76,7 +83,8 @@ def run_module():
     module_args = dict(
         report_file=dict(type='str', required=True),
         output_prefix=dict(type='str', required=False),
-        chdir=dict(type='str', required=False)
+        chdir=dict(type='str', required=False),
+        io_file=dict(type='str', required=False)
     )
 
     # seed the result dict in the object
@@ -85,7 +93,7 @@ def run_module():
     # state will include any data that you want your module to pass back
     # for consumption, for example, in a subsequent task
     result = dict(
-        changed=True
+        changed=False
     )
 
     # the AnsibleModule object will be our abstraction working with Ansible
@@ -94,7 +102,7 @@ def run_module():
     # supports check mode
     module = AnsibleModule(
         argument_spec=module_args,
-        supports_check_mode=True
+        supports_check_mode=False
     )
 
     # if the user is working with this module in only check mode we do not
@@ -102,7 +110,6 @@ def run_module():
     # state with no modifications
     if module.check_mode:
         module.exit_json(**result)
-
 
     if module.params['chdir'] != None:
         os.chdir(module.params['chdir'])
@@ -113,15 +120,19 @@ def run_module():
     else:
         file_no_format = module.params['output_prefix']
 
-
     report = Report.load_json(module.params['report_file'])
     plotter = ReportPlotter(report)
     plotter.foreground_energy(file_no_format + "-foreground-energy.pdf")
+    result['changed'] = True
     plotter.compaction_energy(file_no_format + "-compaction-energy.pdf")
     plotter.flush_energy(file_no_format + "-flush-energy.pdf")
     plotter.compaction_events_energy(file_no_format + "-compaction-events-energy.pdf", height=20, width=25)
     plotter.compaction_level_report(file_no_format + "-compaction_level_info.pdf")
 
+    if module.params['io_file']:
+        io_file = module.params['io_file']
+        disk_plotter = DiskPlotter(io_file)
+        disk_plotter.plot_compaction_io_info(plotter, 0.1, "events-io-activity.pdf")
     module.exit_json(**result)
 
 def main():

@@ -4,6 +4,9 @@
        hollow_fs:
          base_dir: "{{plot_directory}}"
          out_base_dir: /tmp/hollow
+         patterns:
+           - 'energy-report\.log'
+           - 'io\.json'
 
      - name: create tmp remote directory if not exist
        file:
@@ -20,32 +23,73 @@
        find:
          path: /tmp/hollow
          recurse: yes
-       register: out_find
+         use_regex: yes
+         patterns:
+           - '^energy-report\.log$'
+       register: out_find_report
 
-     - name: Debug /tmp/hollow report files
+     - name: debug find report
        debug:
-         msg: "{{out_find}}"
+         msg: "{{ out_find_report }}"
+
+     - name: get only the paths from out_find_report
+       set_fact:
+         parsed_find_report: "{{ parsed_find_report | default([]) | union([item['path']]) | sort }}"
+       loop: "{{ out_find_report['files'] }}"
+
+     - name: find all io files
+       find:
+         path: /tmp/hollow
+         recurse: yes
+         use_regex: yes
+         patterns:
+           - 'io\.json'
+       register: out_find_io
+       when: io_available
+
+     - name: get only the paths from out_find_io
+       set_fact:
+         parsed_find_io: "{{ parsed_find_io | default([]) | union([item['path']]) | sort }}"
+       loop: "{{ out_find_io['files'] }}"
+       when: io_available
 
      - name: Plot graphs
        plot_energy:
-         report_file: "{{ item['path'] }}"
+         report_file: "{{ item }}"
          output_prefix: graph
-         chdir: "{{item['path'] | dirname}}"
-       loop: "{{out_find['files']}}"
+         chdir: "{{item | dirname }}"
+       loop: "{{parsed_find_report}}"
+       when: not io_available
+
+     - name: Plot graphs when io available
+       plot_energy:
+         report_file: "{{ item.0 }}"
+         output_prefix: graph
+         chdir: "{{item.0 | dirname}}"
+         io_file: "{{ item.1 }}"
+       with_together:
+         - "{{ parsed_find_report  }}"
+         - "{{ parsed_find_io }}"
+       when: io_available
 
      # Only want the log to create the graphs
      - name: Remove duplicate logs
        file:
-         path: "{{ item['path'] }}"
+         path: "{{ item }}"
          state: absent
-       loop: "{{out_find['files']}}"
+       loop: "{{ parsed_find_report }}"
+
+     - name: Remove duplicate io logs
+       file:
+         path: "{{ item }}"
+         state: absent
+       loop: "{{ parsed_find_io }}"
 
      - name: Rsync the results to local
        ansible.posix.synchronize:
          src: /tmp/hollow/
          dest: "{{plot_directory}}"
          mode: pull
-
 
    always:
      - name: remove local temporary hollow fs

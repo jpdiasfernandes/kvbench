@@ -1,6 +1,7 @@
 - name: Run the base workload that is goind to serve as a comparing factor against the other workloads.
   hosts: cloud148
   vars:
+    io_available: False
     plot_directory: sample_dir
     ansible_python_interpreter: auto
   gather_facts: True
