@@ -217,14 +217,14 @@ def sort_metrics(full_name : str):
 
     base_sorting = {
         "e": 0,
-        "d": 1,
         "0_100" : 2,
         "25_75" : 3,
         "50_50" : 4,
         "66_33" : 5,
         "75_25" : 6,
-        "b": 7,
-        "100_0" : 8
+        "d": 7, #95% reads 5%reads
+        "b": 8, #95% reads 5%updates 95.24 % reads 4.76% writes
+        "100_0" : 9
     }
 
     delta_sorts_funcs = {
