@@ -1,0 +1,29 @@
+- name: Plot Top Level graphs for a given test run
+  hosts: localhost
+  connection: local
+  vars:
+
+  tasks:
+    - name: Merge all repetitions summary info
+      deltas_summary_merger:
+        test_dir: '.'
+        area_name: '{{area_name}}'
+        memory_metrics: yes
+        chdir: '{{test_dir}}'
+
+
+    - name: Debug output_prefix
+      debug:
+        msg: "{{ test_dir + '/' + graphs_prefix }}"
+    - name: Ensure output_prefix dir exists
+      file:
+        path: "{{test_dir + '/' + graphs_prefix | dirname }}"
+        state: directory
+        recurse: yes
+
+    - name: Plot graphs from generated summary info file
+      plot_top_level_graphs:
+        summary_file: 'summary.json'
+        area_name: '{{area_name}}'
+        chdir: '{{test_dir}}'
+        output_prefix: '{{graphs_prefix}}'
